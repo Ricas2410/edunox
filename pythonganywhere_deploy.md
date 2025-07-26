@@ -72,6 +72,9 @@ pip install imagekitio
 nano .env.production
 ```
 
+**Important Note about Email Configuration:**
+Since your email functionality is already working perfectly in development, you should copy your current email settings to the production environment. Check your current `.env` file or system settings for the working email configuration.
+
 Add the following content:
 ```env
 # Database Configuration
@@ -87,13 +90,12 @@ IMAGEKIT_PRIVATE_KEY=private_GUCDIbBYRlVFHVL/kEyJM0EZY9s=
 IMAGEKIT_PUBLIC_KEY=public_/xl3626TiK+x0ATTk3n5A1pGdl4=
 IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/edunox
 
-# Email Configuration (Gmail)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-app-password
-EMAIL_USE_TLS=True
-DEFAULT_FROM_EMAIL=Edunox GH <your-email@gmail.com>
+# Email Configuration - Dynamic from Admin Dashboard
+# Your email settings are configured through the admin dashboard, not environment variables
+# The system uses dynamic configuration from SiteConfiguration model
+# You can leave these commented out or set EMAIL_BACKEND for production:
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+# EMAIL_HOST, EMAIL_PORT, etc. are configured via admin dashboard
 
 # Security Settings
 SECURE_SSL_REDIRECT=True
@@ -218,9 +220,53 @@ application = get_wsgi_application()
   - **URL**: `/media/`
   - **Directory**: `/home/edunox/edunox/media/`
 
-## 🔄 Step 6: Database Migration and Setup
+## � Step 6: Email Configuration (Admin Dashboard Setup)
 
-### 6.1 Run Migrations
+### 6.1 Understanding Your Email Setup
+Your system uses **dynamic email configuration** through the admin dashboard, which is much better than hardcoded settings. The email settings are stored in the `SiteConfiguration` model and can be changed through the admin interface.
+
+### 6.2 Set Email Backend for Production
+You only need to set the email backend in your `.env.production` file:
+
+```bash
+nano .env.production
+```
+
+Add this line to enable SMTP email sending in production:
+```env
+# Enable SMTP email backend for production
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+```
+
+### 6.3 Configure Email Settings via Admin Dashboard
+After deployment, you'll configure your email settings through the admin interface:
+
+1. **Login to Admin Panel**: `https://edunox.pythonanywhere.com/admin/`
+2. **Go to Site Configuration**: Navigate to Core → Site Configurations
+3. **Configure Email Settings**: Set your SMTP settings in the admin form:
+   - Email Host (e.g., smtp.gmail.com)
+   - Email Port (e.g., 587)
+   - Email Host User (your email)
+   - Email Host Password (your app password)
+   - Email Use TLS: ✓ (checked)
+   - Default From Email
+
+### 6.4 Test Email Configuration
+After configuring through admin dashboard:
+```bash
+# Test email sending
+python manage.py shell
+```
+
+In the Django shell:
+```python
+from django.core.mail import send_mail
+send_mail('Test', 'Test message', 'your-email@domain.com', ['test@example.com'])
+```
+
+## �🔄 Step 7: Database Migration and Setup
+
+### 7.1 Run Migrations
 ```bash
 # Activate virtual environment
 source venv/bin/activate
@@ -241,13 +287,13 @@ python manage.py createsuperuser
 python manage.py populate_initial_data
 ```
 
-## 🚀 Step 7: Final Deployment Steps
+## 🚀 Step 8: Final Deployment Steps
 
-### 7.1 Reload Web App
+### 8.1 Reload Web App
 - Go to **Web** tab
 - Click **Reload edunox.pythonanywhere.com**
 
-### 7.2 Test Deployment
+### 8.2 Test Deployment
 - Visit: `https://edunox.pythonanywhere.com`
 - Test key functionality:
   - Homepage loads
@@ -256,15 +302,15 @@ python manage.py populate_initial_data
   - File uploads (should go to ImageKit)
   - Email notifications
 
-### 7.3 Configure Domain (Optional)
+### 8.3 Configure Domain (Optional)
 If you have a custom domain:
 - Go to **Web** tab
 - Add your domain in **Domain** section
 - Update DNS records to point to PythonAnywhere
 
-## 🔧 Step 8: Environment Management
+## 🔧 Step 9: Environment Management
 
-### 8.1 Create Management Script
+### 9.1 Create Management Script
 ```bash
 # Create deployment script
 nano deploy_update.sh
