@@ -147,9 +147,20 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# ImageKit Configuration
+IMAGEKIT_PRIVATE_KEY = config('IMAGEKIT_PRIVATE_KEY', default='private_GUCDIbBYRlVFHVL/kEyJM0EZY9s=')
+IMAGEKIT_PUBLIC_KEY = config('IMAGEKIT_PUBLIC_KEY', default='public_/xl3626TiK+x0ATTk3n5A1pGdl4=')
+IMAGEKIT_URL_ENDPOINT = config('IMAGEKIT_URL_ENDPOINT', default='https://ik.imagekit.io/edunox')
+
+# Media files configuration
+if config('USE_IMAGEKIT', default=True, cast=bool):
+    # Use ImageKit for media storage
+    DEFAULT_FILE_STORAGE = 'core.storage.ImageKitStorage'
+    MEDIA_URL = IMAGEKIT_URL_ENDPOINT + '/'
+else:
+    # Use local storage for development
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
