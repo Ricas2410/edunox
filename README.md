@@ -1,51 +1,49 @@
-# EduBridge Ghana
+# 🎓 Edunox GH - Educational Consultancy Platform
 
-Your gateway to affordable higher education and digital empowerment.
+A modern, production-ready Django platform for educational consultancy services, helping students navigate their academic journey with personalized guidance and comprehensive resources.
 
-## Overview
+## ✨ Recent Major Updates
 
-EduBridge Ghana is a grassroots initiative committed to empowering students across Ghana—especially in underserved and rural communities—with access to tuition-free universities, traditional higher institutions, and personalized educational consulting.
+### 🚀 **Production-Ready Deployment**
+- **Fly.io optimized** with health checks and monitoring
+- **Performance enhanced** with caching and connection pooling
+- **Security hardened** with HTTPS enforcement and secure headers
+- **Mobile-first responsive design** with improved UX
 
-## Features
+### 🎨 **UI/UX Improvements**
+- **Fixed mobile navbar** with separate profile dropdown
+- **Enhanced dashboard pages** with beautiful hero sections
+- **Working email toggles** with clear ON/OFF visual states
+- **Consistent blue/purple theme** across all pages
+- **Compact layouts** for better space utilization
 
-### Core Functionality
-- **User Registration & Authentication** - Secure user accounts with email verification
-- **Service Booking System** - Book educational services with calendar integration
-- **Document Management** - Secure upload and management of academic documents
-- **Contact System** - Contact form with file attachments (up to 5MB per file)
-- **Resource Library** - Searchable educational resources and guides
-- **Admin Dashboard** - Comprehensive admin panel for managing users and services
+### 📱 **Mobile Optimizations**
+- **Touch-friendly interfaces** with proper sizing
+- **Responsive grid layouts** that work on all devices
+- **Improved navigation flow** for mobile users
+- **Better accessibility** and user experience
 
-### Services Offered
-- **University Application Support** - Help with applications to UoPeople and other institutions
-- **Scholarship Guidance** - Assistance with scholarship applications
-- **Digital Literacy Training** - Learn essential online learning skills
-- **Personal Application Service** - Complete application assistance for non-tech-savvy users
-- **Educational Consultancy** - Career and program guidance
+## 🛠️ Technology Stack
 
-## Tech Stack
-
-- **Backend**: Django 4.2.7 (Python)
+- **Backend**: Django 4.2+ with Python 3.9+
 - **Frontend**: HTML5, Tailwind CSS, Alpine.js
-- **Database**: SQLite (development), PostgreSQL (production)
-- **Authentication**: Django Allauth
-- **File Storage**: Local storage (development), AWS S3 (production)
-- **Email**: SMTP configuration
-- **Deployment**: Gunicorn, WhiteNoise
+- **Database**: PostgreSQL (production) / SQLite (development)
+- **Deployment**: Docker, Fly.io ready with health monitoring
+- **Performance**: Redis caching, connection pooling, static file optimization
 
-## Installation
+## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.8+
-- pip
-- Virtual environment (recommended)
+- Python 3.9+
+- pip and virtualenv
+- Git
 
-### Setup
+### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd Edubridge
+   git clone https://github.com/yourusername/edunox-gh.git
+   cd edunox-gh
    ```
 
 2. **Create virtual environment**
@@ -59,182 +57,120 @@ EduBridge Ghana is a grassroots initiative committed to empowering students acro
    pip install -r requirements.txt
    ```
 
-4. **Environment Configuration**
+4. **Environment setup**
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
-5. **Database Setup**
+5. **Database setup**
    ```bash
-   python manage.py makemigrations
    python manage.py migrate
-   ```
-
-6. **Create Superuser**
-   ```bash
+   python manage.py populate_initial_data
    python manage.py createsuperuser
    ```
 
-7. **Populate Initial Data**
-   ```bash
-   python manage.py populate_initial_data
-   ```
-
-8. **Collect Static Files**
-   ```bash
-   python manage.py collectstatic
-   ```
-
-9. **Run Development Server**
+6. **Run development server**
    ```bash
    python manage.py runserver
    ```
 
-## Configuration
+Visit `http://127.0.0.1:8000` to access the platform.
 
-### Environment Variables
+## 🌐 Production Deployment
 
-Create a `.env` file in the project root with the following variables:
+### Fly.io Deployment (Recommended)
 
-```env
-# Django Settings
-SECRET_KEY=your-secret-key-here
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-
-# Database (for production)
-DATABASE_URL=postgresql://user:password@localhost:5432/edubridge
-
-# Email Settings
-EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-app-password
-DEFAULT_FROM_EMAIL=noreply@edubridge.com
-
-# AWS S3 (for production file storage)
-AWS_ACCESS_KEY_ID=your-aws-access-key
-AWS_SECRET_ACCESS_KEY=your-aws-secret-key
-AWS_STORAGE_BUCKET_NAME=your-bucket-name
-AWS_S3_REGION_NAME=us-east-1
-```
-
-## Project Structure
-
-```
-Edunox_GH/
-├── edubridge/              # Main project settings
-├── core/                   # Core app (home, about, FAQ)
-├── accounts/               # User management and profiles
-├── services/               # Service booking and management
-├── resources/              # Educational resources
-├── contact/                # Contact form and messaging
-├── dashboard/              # User and admin dashboards
-├── templates/              # HTML templates
-├── static/                 # Static files (CSS, JS, images)
-├── media/                  # User uploaded files
-├── requirements.txt        # Python dependencies
-└── manage.py              # Django management script
-```
-
-## Usage
-
-### For Students
-1. **Register** - Create an account with email verification
-2. **Complete Profile** - Add personal and educational information
-3. **Upload Documents** - Submit required documents (ID, academic results)
-4. **Browse Services** - Explore available educational services
-5. **Book Services** - Schedule consultations and training sessions
-6. **Access Resources** - Use the free educational resource library
-
-### For Administrators
-1. **Admin Dashboard** - Access via `/my-admin/`
-2. **Manage Users** - View and manage user accounts
-3. **Review Documents** - Verify uploaded documents
-4. **Handle Bookings** - Manage service bookings and assignments
-5. **Respond to Contacts** - Handle contact form submissions
-6. **Content Management** - Manage services, resources, and FAQs
-
-## API Endpoints
-
-The application includes RESTful API endpoints for:
-- User management
-- Service booking
-- Resource access
-- Contact submissions
-
-## Security Features
-
-- CSRF protection
-- XSS protection
-- File upload validation
-- User authentication and authorization
-- Secure file storage
-- Input sanitization
-
-## SEO Optimization
-
-- Meta tags and Open Graph
-- Structured data (JSON-LD)
-- XML sitemap
-- Robots.txt
-- Mobile-first responsive design
-- Fast loading times
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support, email info@edubridge.com or create an issue in the repository.
-
-## Deployment
-
-### Production Deployment
-
-1. **Set Environment Variables**
-   - Set `DEBUG=False`
-   - Configure `DATABASE_URL` for PostgreSQL
-   - Set up email configuration
-   - Configure AWS S3 for file storage
-
-2. **Database Migration**
+1. **Install Fly CLI**
    ```bash
-   python manage.py migrate
-   python manage.py collectstatic --noinput
+   curl -L https://fly.io/install.sh | sh
+   flyctl auth login
    ```
 
-3. **Web Server**
-   - Use Gunicorn as WSGI server
-   - Configure Nginx as reverse proxy
-   - Set up SSL certificates
+2. **Deploy with our automated script**
+   ```bash
+   chmod +x deploy.sh
+   ./deploy.sh
+   ```
 
-4. **Monitoring**
-   - Set up logging
-   - Configure error tracking
-   - Monitor performance
+3. **Verify deployment**
+   - Visit your app URL
+   - Check `/health/` endpoint
+   - Test all functionality
 
-## Changelog
+### Manual Deployment Steps
 
-### Version 1.0.0
-- Initial release
-- User registration and authentication
-- Service booking system
-- Document management
-- Contact form with file attachments
-- Resource library
-- Admin dashboard
+```bash
+# Set environment variables
+flyctl secrets set SECRET_KEY="your-secret-key" DEBUG=False
+
+# Deploy
+flyctl deploy
+
+# Run migrations
+flyctl ssh console -C "python manage.py migrate"
+
+# Create superuser
+flyctl ssh console -C "python manage.py createsuperuser"
+```
+
+## 📋 Features
+
+### 👨‍🎓 **For Students**
+- **Service Booking**: Book consultations with real-time availability
+- **Document Management**: Secure upload and verification system
+- **Educational Resources**: Comprehensive guides and materials
+- **Profile Management**: Complete academic and personal profiles
+- **Progress Tracking**: Monitor application status and milestones
+
+### 👨‍💼 **For Administrators**
+- **User Management**: Complete user administration dashboard
+- **Service Management**: Create and manage consultancy services
+- **Booking Management**: Handle appointments and scheduling
+- **Content Management**: Manage resources, FAQs, and site content
+- **Analytics Dashboard**: Track platform performance and usage
+
+### 🔧 **Technical Features**
+- **Mobile-First Design**: Responsive across all devices
+- **Email Integration**: Automated notifications and communications
+- **SEO Optimized**: Built-in SEO tools and meta management
+- **Security**: CSRF protection, secure authentication, data encryption
+- **Performance**: Caching, optimization, efficient database queries
+- **Health Monitoring**: Built-in health checks for deployment monitoring
+
+## 📚 Documentation
+
+- [📖 Deployment Guide](DEPLOYMENT.md)
+- [✅ Production Checklist](PRODUCTION_CHECKLIST.md)
+- [📧 Email Setup Guide](GMAIL_SETUP_GUIDE.md)
+- [🎛️ Admin Dashboard Guide](ADMIN_DASHBOARD_ENHANCEMENTS.md)
+- [🔒 Security Assessment](PERFORMANCE_SECURITY_ASSESSMENT.md)
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📞 Support
+
+For support and questions:
+- **Email**: admin@edunoxgh.com
+- **Issues**: [GitHub Issues](https://github.com/yourusername/edunox-gh/issues)
+- **Documentation**: Check the guides in this repository
+
+## 🎯 Production Status
+
+✅ **Ready for deployment** with:
+- Health monitoring endpoints
+- Production-optimized settings
+- Security hardening
+- Performance optimization
 - Mobile-responsive design
-- SEO optimization
+- Working email notifications
+
+---
+
+**Built with ❤️ for educational excellence in Ghana** 🇬🇭
