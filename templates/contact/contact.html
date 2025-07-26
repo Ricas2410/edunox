@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Contact Us - EduBridge Ghana{% endblock %}
+
+{% block meta_description %}Get in touch with EduBridge Ghana for educational consultancy, university applications, and digital literacy support. We're here to help you achieve your educational goals.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-600 to-indigo-800 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
+        <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+            Have questions about our services? Need help with your educational journey? We're here to help!
+        </p>
+    </div>
+</section>
+
+<!-- Contact Form & Info Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Contact Form -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+                <p class="text-gray-600 mb-6">
+                    Fill out the form below and we'll get back to you as soon as possible. You can also attach relevant documents to help us better understand your needs.
+                </p>
+                
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="rounded-md bg-red-50 p-4">
+                            <div class="text-sm text-red-700">
+                                {{ form.non_field_errors.0 }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {{ form|crispy }}
+
+                    <div class="pt-4">
+                        <button type="submit" class="w-full bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="space-y-8">
+                <!-- Contact Details -->
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-map-marker-alt text-blue-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Address</h3>
+                                <p class="text-gray-600">{{ site_config.address }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-phone text-green-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Phone</h3>
+                                <p class="text-gray-600">{{ site_config.contact_phone }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-envelope text-purple-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Email</h3>
+                                <p class="text-gray-600">{{ site_config.contact_email }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-clock text-orange-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900 mb-1">Office Hours</h3>
+                                <p class="text-gray-600">Monday - Friday: 8:00 AM - 6:00 PM<br>Saturday: 9:00 AM - 4:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+                    
+                    <div class="space-y-4">
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'accounts:register' %}" class="block w-full bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors text-center">
+                                <i class="fas fa-user-plus mr-2"></i>
+                                Create Account
+                            </a>
+                        {% else %}
+                            <a href="{% url 'dashboard:home' %}" class="block w-full bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors text-center">
+                                <i class="fas fa-tachometer-alt mr-2"></i>
+                                Go to Dashboard
+                            </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'services:list' %}" class="block w-full border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium transition-colors text-center">
+                            <i class="fas fa-list mr-2"></i>
+                            View Services
+                        </a>
+                        
+                        <a href="{% url 'resources:list' %}" class="block w-full border border-green-600 text-green-600 hover:bg-green-50 px-6 py-3 rounded-lg font-medium transition-colors text-center">
+                            <i class="fas fa-book mr-2"></i>
+                            Browse Resources
+                        </a>
+                        
+                        <a href="{% url 'core:faq' %}" class="block w-full border border-purple-600 text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg font-medium transition-colors text-center">
+                            <i class="fas fa-question-circle mr-2"></i>
+                            View FAQs
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Social Media -->
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Follow Us</h2>
+                    <p class="text-gray-600 mb-6">Stay connected for updates and educational tips</p>
+                    
+                    <div class="flex space-x-4">
+                        {% if site_config.facebook_url %}
+                            <a href="{{ site_config.facebook_url }}" target="_blank" class="w-12 h-12 bg-blue-600 text-white rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                        {% endif %}
+                        
+                        {% if site_config.twitter_url %}
+                            <a href="{{ site_config.twitter_url }}" target="_blank" class="w-12 h-12 bg-blue-400 text-white rounded-lg flex items-center justify-center hover:bg-blue-500 transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        {% endif %}
+                        
+                        {% if site_config.linkedin_url %}
+                            <a href="{{ site_config.linkedin_url }}" target="_blank" class="w-12 h-12 bg-blue-700 text-white rounded-lg flex items-center justify-center hover:bg-blue-800 transition-colors">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        {% endif %}
+                        
+                        {% if site_config.instagram_url %}
+                            <a href="{{ site_config.instagram_url }}" target="_blank" class="w-12 h-12 bg-pink-600 text-white rounded-lg flex items-center justify-center hover:bg-pink-700 transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Common Questions Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Before You Contact Us</h2>
+            <p class="text-xl text-gray-600">Check if your question is already answered below</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-2">How quickly will you respond?</h3>
+                <p class="text-gray-600 text-sm">We typically respond to messages within 24 hours during business days.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-2">What file types can I attach?</h3>
+                <p class="text-gray-600 text-sm">You can attach PDF, JPG, PNG, DOC, DOCX, and TXT files up to 5MB each.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-2">Do you offer phone consultations?</h3>
+                <p class="text-gray-600 text-sm">Yes, we offer phone consultations. Please mention this in your message to schedule one.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-2">Is there a consultation fee?</h3>
+                <p class="text-gray-600 text-sm">Initial consultations are free. Service fees apply for ongoing support and applications.</p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-8">
+            <a href="{% url 'core:faq' %}" class="text-blue-600 hover:text-blue-700 font-medium">
+                View All FAQs →
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Emergency Contact Section -->
+<section class="py-12 bg-red-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Urgent Assistance Needed?</h2>
+            <p class="text-gray-600 mb-6">
+                If you have an urgent application deadline or need immediate assistance, please call us directly or mention "URGENT" in your message subject.
+            </p>
+            <a href="tel:+233XXXXXXXX" class="bg-red-600 text-white hover:bg-red-700 px-6 py-3 rounded-lg font-medium transition-colors">
+                <i class="fas fa-phone mr-2"></i>
+                Call Now: {{ site_config.contact_phone }}
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

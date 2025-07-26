@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Services - Edunox GH{% endblock %}
+
+{% block meta_description %}Explore Edunox GH's comprehensive educational services including university applications, scholarship guidance, digital literacy training, and educational consultancy.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-600 to-indigo-800 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">Our Services</h1>
+        <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+            Comprehensive educational support services designed to help you achieve your academic goals
+        </p>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="py-8 bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            <!-- Search -->
+            <div class="flex-1 max-w-lg">
+                <div class="relative">
+                    <input type="text" 
+                           placeholder="Search services..." 
+                           class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           id="serviceSearch">
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+            
+            <!-- Filters -->
+            <div class="flex space-x-4">
+                <select id="categoryFilter" class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                
+                <select id="priceFilter" class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Prices</option>
+                    <option value="0-50">GHS 0 - 50</option>
+                    <option value="51-100">GHS 51 - 100</option>
+                    <option value="101-200">GHS 101 - 200</option>
+                    <option value="200+">GHS 200+</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Featured Services -->
+        {% if featured_services %}
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Featured Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for service in featured_services %}
+                <div class="service-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-yellow-200">
+                    <div class="relative">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.name }}" class="w-full h-48 object-cover">
+                        {% else %}
+                            {% load seo_tags %}
+                            <img src="{% default_service_image service.category.name %}" alt="{{ service.name }}" class="w-full h-48 object-cover">
+                        {% endif %}
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold">
+                                <i class="fas fa-star mr-1"></i>Featured
+                            </span>
+                        </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-sm font-bold">
+                                {{ service.get_price_display }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-{{ service.icon|default:'star' }} text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-900">{{ service.name }}</h3>
+                                <p class="text-sm text-gray-500">{{ service.category.name }}</p>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-4">{{ service.short_description }}</p>
+                        
+                        <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                            <span><i class="fas fa-clock mr-1"></i>{{ service.duration }}</span>
+                            <span><i class="fas fa-users mr-1"></i>{{ service.bookings.count }} booked</span>
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <a href="{% url 'services:detail' service.pk %}" class="flex-1 text-center border border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition-colors">
+                                Learn More
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'services:book' service.pk %}" class="flex-1 text-center bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                                    Book Now
+                                </a>
+                            {% else %}
+                                <a href="{% url 'accounts:register_steps' %}" class="flex-1 text-center bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                                    Get Started
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- All Services -->
+        <div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">All Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="servicesGrid">
+                {% for service in services %}
+                <div class="service-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                     data-category="{{ service.category.id }}"
+                     data-price="{{ service.get_effective_price }}"
+                     data-name="{{ service.name|lower }}">
+                    <div class="relative">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.name }}" class="w-full h-48 object-cover">
+                        {% else %}
+                            {% load seo_tags %}
+                            <img src="{% default_service_image service.category.name %}" alt="{{ service.name }}" class="w-full h-48 object-cover">
+                        {% endif %}
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-sm font-bold">
+                                {{ service.get_price_display }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-{{ service.icon|default:'cog' }} text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-900">{{ service.name }}</h3>
+                                <p class="text-sm text-gray-500">{{ service.category.name }}</p>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-4">{{ service.short_description }}</p>
+                        
+                        <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                            <span><i class="fas fa-clock mr-1"></i>{{ service.duration }}</span>
+                            <span><i class="fas fa-users mr-1"></i>{{ service.bookings.count }} booked</span>
+                        </div>
+                        
+                        <!-- Features Preview -->
+                        {% if service.features_list %}
+                        <div class="mb-4">
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                {% for feature in service.features_list|slice:":2" %}
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>{{ feature }}</li>
+                                {% endfor %}
+                                {% if service.features_list|length > 2 %}
+                                <li class="text-blue-600">+ {{ service.features_list|length|add:"-2" }} more features</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="flex space-x-3">
+                            <a href="{% url 'services:detail' service.pk %}" class="flex-1 text-center border border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition-colors">
+                                Learn More
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'services:book' service.pk %}" class="flex-1 text-center bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                                    Book Now
+                                </a>
+                            {% else %}
+                                <a href="{% url 'accounts:register_steps' %}" class="flex-1 text-center bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                                    Get Started
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-medium text-gray-900 mb-2">No Services Found</h3>
+                    <p class="text-gray-600">Try adjusting your search or filter criteria.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+                {% endif %}
+                
+                <span class="px-3 py-2 text-sm text-gray-700">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Last</a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-blue-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-6">Need Help Choosing a Service?</h2>
+        <p class="text-xl text-blue-100 mb-8">
+            Our educational consultants are here to help you select the right services for your goals.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'contact:contact' %}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+                Get Free Consultation
+            </a>
+            <a href="{% url 'core:faq' %}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+                View FAQ
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('serviceSearch');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const priceFilter = document.getElementById('priceFilter');
+    const servicesGrid = document.getElementById('servicesGrid');
+    const serviceCards = servicesGrid.querySelectorAll('.service-card');
+
+    function filterServices() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+        const selectedPriceRange = priceFilter.value;
+
+        serviceCards.forEach(card => {
+            const name = card.dataset.name;
+            const category = card.dataset.category;
+            const price = parseFloat(card.dataset.price);
+
+            let showCard = true;
+
+            // Search filter
+            if (searchTerm && !name.includes(searchTerm)) {
+                showCard = false;
+            }
+
+            // Category filter
+            if (selectedCategory && category !== selectedCategory) {
+                showCard = false;
+            }
+
+            // Price filter
+            if (selectedPriceRange) {
+                if (selectedPriceRange === '0-50' && (price < 0 || price > 50)) {
+                    showCard = false;
+                } else if (selectedPriceRange === '51-100' && (price < 51 || price > 100)) {
+                    showCard = false;
+                } else if (selectedPriceRange === '101-200' && (price < 101 || price > 200)) {
+                    showCard = false;
+                } else if (selectedPriceRange === '200+' && price <= 200) {
+                    showCard = false;
+                }
+            }
+
+            card.style.display = showCard ? 'block' : 'none';
+        });
+
+        // Show/hide no results message
+        const visibleCards = Array.from(serviceCards).filter(card => card.style.display !== 'none');
+        const noResultsMessage = servicesGrid.querySelector('.col-span-full');
+        
+        if (visibleCards.length === 0 && !noResultsMessage) {
+            const noResults = document.createElement('div');
+            noResults.className = 'col-span-full text-center py-12';
+            noResults.innerHTML = `
+                <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">No Services Found</h3>
+                <p class="text-gray-600">Try adjusting your search or filter criteria.</p>
+            `;
+            servicesGrid.appendChild(noResults);
+        } else if (visibleCards.length > 0 && noResultsMessage) {
+            noResultsMessage.remove();
+        }
+    }
+
+    // Add event listeners
+    searchInput.addEventListener('input', filterServices);
+    categoryFilter.addEventListener('change', filterServices);
+    priceFilter.addEventListener('change', filterServices);
+});
+</script>
+{% endblock %}

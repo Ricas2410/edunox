@@ -1,0 +1,273 @@
+{% load static %}
+
+<style>
+/* Admin sidebar mobile improvements */
+.admin-sidebar-overlay {
+    z-index: 9998 !important;
+}
+
+.admin-sidebar-mobile {
+    z-index: 9999 !important;
+}
+
+/* Fix footer overlap issue */
+.admin-main-content {
+    min-height: calc(100vh - 64px);
+    padding-bottom: 200px; /* Space for footer */
+}
+
+@media (min-width: 1024px) {
+    .admin-main-content {
+        margin-left: 256px; /* Account for sidebar width */
+    }
+}
+</style>
+
+<!-- Mobile Admin Sidebar Overlay -->
+<div class="lg:hidden" x-data="{ adminSidebarOpen: false }">
+    <!-- Mobile Admin Sidebar Overlay -->
+    <div x-show="adminSidebarOpen"
+         @click="adminSidebarOpen = false"
+         x-transition:enter="transition-opacity ease-linear duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-linear duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="admin-sidebar-overlay fixed inset-0 bg-gray-600 bg-opacity-75">
+    </div>
+
+    <!-- Mobile Admin Sidebar -->
+    <div x-show="adminSidebarOpen"
+         @click.stop
+         x-transition:enter="transition ease-in-out duration-300 transform"
+         x-transition:enter-start="-translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition ease-in-out duration-300 transform"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="-translate-x-full"
+         class="admin-sidebar-mobile fixed inset-y-0 left-0 w-64 bg-gray-900 shadow-xl">
+
+        <!-- Mobile sidebar content -->
+        <div class="flex-1 flex flex-col min-h-0 pt-20 pb-4 overflow-y-auto">
+            <div class="flex items-center flex-shrink-0 px-4 mb-5">
+                <h2 class="text-lg font-semibold text-white">Admin Panel</h2>
+            </div>
+            <nav class="mt-5 flex-1 px-2 space-y-1">
+                <!-- Dashboard Home -->
+                <a href="{% url 'admin_dashboard:admin_home' %}" class="{% if request.resolver_match.url_name == 'admin_home' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-tachometer-alt {% if request.resolver_match.url_name == 'admin_home' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                    Dashboard
+                </a>
+
+                <!-- Users Management -->
+                <a href="{% url 'admin_dashboard:admin_users' %}" class="{% if request.resolver_match.url_name == 'admin_users' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-users {% if request.resolver_match.url_name == 'admin_users' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                    Users
+                    <span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        {{ new_users_count|default:0 }}
+                    </span>
+                </a>
+
+                <!-- Bookings Management -->
+                <a href="{% url 'admin_dashboard:admin_bookings' %}" class="{% if request.resolver_match.url_name == 'admin_bookings' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-calendar {% if request.resolver_match.url_name == 'admin_bookings' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                    Bookings
+                    {% if pending_bookings_count > 0 %}
+                        <span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            {{ pending_bookings_count }}
+                        </span>
+                    {% endif %}
+                </a>
+
+                <!-- Services Management -->
+                <a href="{% url 'admin_dashboard:admin_services' %}" class="{% if request.resolver_match.url_name == 'admin_services' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-briefcase {% if request.resolver_match.url_name == 'admin_services' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                    All Services
+                </a>
+
+                <!-- Documents Management -->
+                <a href="{% url 'admin_dashboard:admin_documents' %}" class="{% if request.resolver_match.url_name == 'admin_documents' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-file-alt {% if request.resolver_match.url_name == 'admin_documents' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                    Documents
+                    {% if unverified_documents_count > 0 %}
+                        <span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            {{ unverified_documents_count }}
+                        </span>
+                    {% endif %}
+                </a>
+
+                <!-- Contact Messages Management -->
+                <a href="{% url 'admin_dashboard:admin_contacts' %}" class="{% if request.resolver_match.url_name == 'admin_contacts' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-envelope {% if request.resolver_match.url_name == 'admin_contacts' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                    Contact Messages
+                    {% if new_contacts > 0 %}
+                        <span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            {{ new_contacts }}
+                        </span>
+                    {% endif %}
+                </a>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-700 my-4"></div>
+
+                <!-- Site Settings -->
+                <a href="{% url 'admin_dashboard:admin_settings' %}" class="{% if request.resolver_match.url_name == 'admin_settings' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-cogs {% if request.resolver_match.url_name == 'admin_settings' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                    Site Settings
+                </a>
+
+                <!-- Django Admin -->
+                <a href="{% url 'admin:index' %}" target="_blank" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-external-link-alt text-gray-400 group-hover:text-gray-300 mr-3 text-sm"></i>
+                    Django Admin
+                </a>
+
+                <!-- Divider -->
+                <div class="border-t border-gray-700 my-4"></div>
+
+                <!-- User Dashboard -->
+                <a href="{% url 'user_dashboard:home' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-user text-gray-400 group-hover:text-gray-300 mr-3 text-sm"></i>
+                    User Dashboard
+                </a>
+
+                <!-- Public Site -->
+                <a href="{% url 'core:home' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fas fa-globe text-gray-400 group-hover:text-gray-300 mr-3 text-sm"></i>
+                    View Site
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Add event listener for admin sidebar toggle -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Listen for the custom event from the mobile menu button
+            document.addEventListener('toggle-admin-sidebar', function() {
+                // Find the Alpine component and toggle the sidebar
+                const adminSidebarComponent = document.querySelector('[x-data*="adminSidebarOpen"]');
+                if (adminSidebarComponent && adminSidebarComponent._x_dataStack) {
+                    const data = adminSidebarComponent._x_dataStack[0];
+                    data.adminSidebarOpen = !data.adminSidebarOpen;
+                }
+            });
+        });
+    </script>
+</div>
+
+<!-- Desktop Admin Navigation Sidebar -->
+<div class="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:pt-16 lg:bg-gray-900 lg:border-r lg:border-gray-800 lg:z-30">
+    <div class="flex-1 flex flex-col min-h-0 pt-5 pb-4 overflow-y-auto">
+        <div class="flex items-center flex-shrink-0 px-4">
+            <h2 class="text-lg font-semibold text-white">Admin Panel</h2>
+        </div>
+        <nav class="mt-5 flex-1 px-2 space-y-1">
+            <!-- Dashboard Home -->
+            <a href="{% url 'admin_dashboard:admin_home' %}" class="{% if request.resolver_match.url_name == 'admin_home' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-tachometer-alt {% if request.resolver_match.url_name == 'admin_home' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Dashboard
+            </a>
+
+            <!-- Users Management -->
+            <a href="{% url 'admin_dashboard:admin_users' %}" class="{% if request.resolver_match.url_name == 'admin_users' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-users {% if request.resolver_match.url_name == 'admin_users' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Users
+                <span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                    {{ new_users_count|default:0 }}
+                </span>
+            </a>
+
+            <!-- Bookings Management -->
+            <a href="{% url 'admin_dashboard:admin_bookings' %}" class="{% if request.resolver_match.url_name == 'admin_bookings' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-calendar {% if request.resolver_match.url_name == 'admin_bookings' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Bookings
+                {% if pending_bookings_count > 0 %}
+                    <span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        {{ pending_bookings_count }}
+                    </span>
+                {% endif %}
+            </a>
+
+            <!-- Services Management -->
+            <a href="{% url 'admin_dashboard:admin_services' %}" class="{% if request.resolver_match.url_name == 'admin_services' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-briefcase {% if request.resolver_match.url_name == 'admin_services' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                All Services
+            </a>
+
+            <!-- Documents Management -->
+            <a href="{% url 'admin_dashboard:admin_documents' %}" class="{% if request.resolver_match.url_name == 'admin_documents' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-file-alt {% if request.resolver_match.url_name == 'admin_documents' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Documents
+                {% if unverified_documents_count > 0 %}
+                    <span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        {{ unverified_documents_count }}
+                    </span>
+                {% endif %}
+            </a>
+
+            <!-- Contact Messages Management -->
+            <a href="{% url 'admin_dashboard:admin_contacts' %}" class="{% if request.resolver_match.url_name == 'admin_contacts' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-envelope {% if request.resolver_match.url_name == 'admin_contacts' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Contact Messages
+                {% if new_contacts > 0 %}
+                    <span class="ml-auto inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        {{ new_contacts }}
+                    </span>
+                {% endif %}
+            </a>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-700 my-4"></div>
+
+            <!-- Services -->
+            <a href="{% url 'admin_dashboard:admin_services' %}" class="{% if request.resolver_match.url_name == 'admin_services' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-briefcase {% if request.resolver_match.url_name == 'admin_services' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Services
+            </a>
+
+            <!-- Bookings -->
+            <a href="{% url 'admin_dashboard:admin_bookings' %}" class="{% if request.resolver_match.url_name == 'admin_bookings' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-calendar {% if request.resolver_match.url_name == 'admin_bookings' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Bookings
+            </a>
+
+            <!-- Consultancy Packages -->
+            <a href="{% url 'admin_dashboard:admin_consultancy' %}" class="{% if request.resolver_match.url_name == 'admin_consultancy' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-package {% if request.resolver_match.url_name == 'admin_consultancy' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Consultancy Packages
+            </a>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-700 my-4"></div>
+
+            <!-- Site Settings -->
+            <a href="{% url 'admin_dashboard:admin_settings' %}" class="{% if request.resolver_match.url_name == 'admin_settings' %}bg-gray-800 text-white{% else %}text-gray-300 hover:bg-gray-700 hover:text-white{% endif %} group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-cogs {% if request.resolver_match.url_name == 'admin_settings' %}text-white{% else %}text-gray-400 group-hover:text-gray-300{% endif %} mr-3 text-sm"></i>
+                Site Settings
+            </a>
+
+            <!-- Django Admin -->
+            <a href="{% url 'admin:index' %}" target="_blank" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-external-link-alt text-gray-400 group-hover:text-gray-300 mr-3 text-sm"></i>
+                Django Admin
+            </a>
+
+            <!-- Divider -->
+            <div class="border-t border-gray-700 my-4"></div>
+
+            <!-- User Dashboard -->
+            <a href="{% url 'user_dashboard:home' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-user text-gray-400 group-hover:text-gray-300 mr-3 text-sm"></i>
+                User Dashboard
+            </a>
+
+            <!-- Public Site -->
+            <a href="{% url 'core:home' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-globe text-gray-400 group-hover:text-gray-300 mr-3 text-sm"></i>
+                View Site
+            </a>
+        </nav>
+    </div>
+</div>

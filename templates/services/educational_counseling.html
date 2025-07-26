@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Educational Counseling - Edunox GH{% endblock %}
+
+{% block meta_description %}Get personalized educational guidance and career counseling. Receive expert advice on program selection, career planning, and goal setting for your educational journey.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/mobile-hero.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section hero-counseling">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="hero-grid grid grid-cols-1 lg:grid-cols-2 items-center">
+            <div class="hero-content">
+                <h1 class="hero-title font-bold text-white" style="font-size: 3rem; margin-bottom: 1.5rem;">
+                    Educational Counseling
+                </h1>
+                <p class="hero-description" style="font-size: 1.25rem; margin-bottom: 2rem; line-height: 1.6;">
+                    Receive personalized guidance to help you choose the best program, school, or career path that fits your dreams and goals. Our expert counselors provide one-on-one support for your educational journey.
+                </p>
+
+                <div class="hero-buttons flex flex-col sm:flex-row gap-4">
+                    {% if service %}
+                        <a href="{% url 'services:book' service.pk %}" class="hero-button hero-button-primary" style="padding: 1rem 2rem; display: inline-block; text-align: center;">
+                            Book Session - GH₵{{ service.price }}
+                        </a>
+                    {% endif %}
+                    <a href="#process" class="hero-button hero-button-secondary" style="padding: 1rem 2rem; display: inline-block; text-align: center;">
+                        Our Process
+                    </a>
+                </div>
+            </div>
+
+            <div class="hidden lg:block">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     alt="Educational counseling"
+                     class="hero-image">
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-overlay"></div>
+</section>
+
+<!-- Service Overview -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <!-- What We Provide -->
+            <div class="lg:col-span-2">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">Comprehensive Educational Guidance</h2>
+                
+                <div class="space-y-8">
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-search text-teal-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Career Assessment</h3>
+                            <p class="text-gray-600">Comprehensive evaluation of your interests, skills, and aptitudes to identify suitable career paths and educational programs.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-lightbulb text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Program Recommendations</h3>
+                            <p class="text-gray-600">Personalized recommendations for degree programs, universities, and educational pathways that align with your goals and circumstances.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-bullseye text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Goal Setting</h3>
+                            <p class="text-gray-600">Help you set realistic, achievable educational and career goals with clear timelines and milestones.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-route text-purple-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Action Plan Development</h3>
+                            <p class="text-gray-600">Create a detailed action plan with specific steps, resources, and timelines to achieve your educational objectives.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Session Details -->
+            <div>
+                <div class="bg-gray-50 rounded-xl p-6 mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Session Details</h3>
+                    {% if service %}
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Price:</span>
+                                <span class="font-semibold text-gray-900">GH₵{{ service.price }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Duration:</span>
+                                <span class="font-semibold text-gray-900">{{ service.duration }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Format:</span>
+                                <span class="font-semibold text-gray-900">One-on-One</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Follow-up:</span>
+                                <span class="font-semibold text-gray-900">Email Support</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <a href="{% url 'services:book' service.pk %}" class="w-full bg-teal-600 text-white hover:bg-teal-700 px-6 py-3 rounded-lg font-medium transition-colors text-center block">
+                                Book Counseling Session
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- What to Bring -->
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-yellow-800 mb-4">What to Bring</h3>
+                    <ul class="space-y-2 text-sm text-yellow-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-yellow-600 mt-1 mr-2"></i>
+                            <span>Academic transcripts/certificates</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-yellow-600 mt-1 mr-2"></i>
+                            <span>Career interests and goals</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-yellow-600 mt-1 mr-2"></i>
+                            <span>Financial considerations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-yellow-600 mt-1 mr-2"></i>
+                            <span>Questions and concerns</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Counseling Process -->
+<section id="process" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Counseling Process</h2>
+            <p class="text-xl text-gray-600">Structured approach to educational guidance</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="bg-white rounded-xl p-6 shadow-lg text-center">
+                <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl font-bold text-teal-600">1</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Initial Assessment</h3>
+                <p class="text-gray-600 text-sm">Evaluate your background, interests, and goals through comprehensive discussion and assessment tools.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-lg text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl font-bold text-blue-600">2</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Options Exploration</h3>
+                <p class="text-gray-600 text-sm">Explore various educational and career options that match your profile and aspirations.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-lg text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl font-bold text-green-600">3</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Plan Development</h3>
+                <p class="text-gray-600 text-sm">Create a detailed action plan with specific steps, timelines, and resources needed.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-lg text-center">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-2xl font-bold text-purple-600">4</span>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-3">Ongoing Support</h3>
+                <p class="text-gray-600 text-sm">Receive follow-up support and guidance as you implement your educational plan.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Areas of Focus -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Areas of Focus</h2>
+            <p class="text-xl text-gray-600">Comprehensive guidance across all educational aspects</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Academic Planning -->
+            <div class="bg-teal-50 rounded-xl p-6 border border-teal-200">
+                <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-graduation-cap text-teal-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Academic Planning</h3>
+                <ul class="space-y-2 text-gray-700 text-sm">
+                    <li>• Program selection guidance</li>
+                    <li>• University comparison</li>
+                    <li>• Admission requirements</li>
+                    <li>• Academic pathway planning</li>
+                    <li>• Transfer credit evaluation</li>
+                </ul>
+            </div>
+            
+            <!-- Career Guidance -->
+            <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-briefcase text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Career Guidance</h3>
+                <ul class="space-y-2 text-gray-700 text-sm">
+                    <li>• Career exploration</li>
+                    <li>• Skills assessment</li>
+                    <li>• Job market analysis</li>
+                    <li>• Professional development</li>
+                    <li>• Industry insights</li>
+                </ul>
+            </div>
+            
+            <!-- Financial Planning -->
+            <div class="bg-green-50 rounded-xl p-6 border border-green-200">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Financial Planning</h3>
+                <ul class="space-y-2 text-gray-700 text-sm">
+                    <li>• Education cost analysis</li>
+                    <li>• Scholarship opportunities</li>
+                    <li>• Financial aid guidance</li>
+                    <li>• Budget planning</li>
+                    <li>• ROI considerations</li>
+                </ul>
+            </div>
+            
+            <!-- Personal Development -->
+            <div class="bg-purple-50 rounded-xl p-6 border border-purple-200">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-user-graduate text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Personal Development</h3>
+                <ul class="space-y-2 text-gray-700 text-sm">
+                    <li>• Goal setting strategies</li>
+                    <li>• Motivation techniques</li>
+                    <li>• Study skills development</li>
+                    <li>• Time management</li>
+                    <li>• Confidence building</li>
+                </ul>
+            </div>
+            
+            <!-- Technology Integration -->
+            <div class="bg-orange-50 rounded-xl p-6 border border-orange-200">
+                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-laptop text-orange-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Technology Integration</h3>
+                <ul class="space-y-2 text-gray-700 text-sm">
+                    <li>• Online learning readiness</li>
+                    <li>• Digital literacy assessment</li>
+                    <li>• Technology requirements</li>
+                    <li>• Platform familiarization</li>
+                    <li>• Technical support planning</li>
+                </ul>
+            </div>
+            
+            <!-- Special Circumstances -->
+            <div class="bg-red-50 rounded-xl p-6 border border-red-200">
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-heart text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Special Circumstances</h3>
+                <ul class="space-y-2 text-gray-700 text-sm">
+                    <li>• Non-traditional students</li>
+                    <li>• Career changers</li>
+                    <li>• Adult learners</li>
+                    <li>• Working professionals</li>
+                    <li>• Family considerations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories -->
+<section class="py-20 bg-teal-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Success Stories</h2>
+            <p class="text-xl text-gray-600">How our counseling has helped students achieve their goals</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-user text-teal-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900">Kwame A.</h4>
+                        <p class="text-gray-600 text-sm">Business Student</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 text-sm italic">"The counseling session helped me choose the right program and university. I'm now successfully studying Business Administration at UoPeople."</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-user text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900">Ama S.</h4>
+                        <p class="text-gray-600 text-sm">Career Changer</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 text-sm italic">"After 10 years in retail, the counseling helped me transition to IT. I'm now pursuing Computer Science and loving it!"</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                        <i class="fas fa-user text-green-600"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-900">Joseph M.</h4>
+                        <p class="text-gray-600 text-sm">First-Generation Student</p>
+                    </div>
+                </div>
+                <p class="text-gray-700 text-sm italic">"As the first in my family to attend university, the guidance was invaluable. I now have a clear path to my engineering degree."</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section style="padding: 5rem 0; background-color: #0f766e; color: white;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" style="text-align: center;">
+        <h2 style="font-size: 2.25rem; font-weight: bold; color: white; margin-bottom: 1.5rem;">Ready to Plan Your Educational Future?</h2>
+        <p style="font-size: 1.25rem; color: #e6fffa; margin-bottom: 2rem; line-height: 1.6;">
+            Get personalized guidance to make informed decisions about your education and career path.
+        </p>
+        <div style="display: flex; flex-direction: column; gap: 1rem; justify-content: center; align-items: center;">
+            {% if service %}
+                <a href="{% url 'services:book' service.pk %}"
+                   style="background-color: #fbbf24; color: #134e4a; padding: 1rem 2rem; border-radius: 0.5rem; font-size: 1.125rem; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-block; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                   onmouseover="this.style.backgroundColor='#f59e0b'; this.style.transform='scale(1.05)'"
+                   onmouseout="this.style.backgroundColor='#fbbf24'; this.style.transform='scale(1)'">
+                    Book Counseling Session
+                </a>
+            {% endif %}
+            <a href="{% url 'contact:contact' %}"
+               style="border: 2px solid white; color: white; padding: 1rem 2rem; border-radius: 0.5rem; font-size: 1.125rem; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-block; text-align: center;"
+               onmouseover="this.style.backgroundColor='white'; this.style.color='#0f766e'"
+               onmouseout="this.style.backgroundColor='transparent'; this.style.color='white'">
+                Ask Questions First
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

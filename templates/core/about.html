@@ -1,0 +1,332 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - Edunox GH{% endblock %}
+
+{% block meta_description %}Learn about Edunox GH's mission to empower underserved students with access to free and affordable higher education through digital literacy support and educational consultancy.{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Mobile-responsive hero section */
+@media (max-width: 640px) {
+    .about-hero {
+        padding: 2rem 0 !important;
+    }
+
+    .about-hero h1 {
+        font-size: 2rem !important; /* 32px */
+        line-height: 1.2 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .about-hero p {
+        font-size: 1rem !important; /* 16px */
+        line-height: 1.5 !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .stat-card {
+        padding: 0.75rem !important;
+    }
+
+    .stat-number {
+        font-size: 1.5rem !important;
+    }
+
+    .stat-label {
+        font-size: 0.75rem !important;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+    .about-hero {
+        padding: 3rem 0 !important;
+    }
+
+    .about-hero h1 {
+        font-size: 2.5rem !important; /* 40px */
+    }
+
+    .about-hero p {
+        font-size: 1.125rem !important; /* 18px */
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero relative bg-gradient-to-br from-blue-600 to-indigo-800 text-white py-20">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
+            <div class="text-center lg:text-left">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">About Edunox GH</h1>
+                <p class="text-xl md:text-2xl text-blue-100 mb-8">
+                    A grassroots initiative committed to empowering students across Ghana—especially in underserved and rural communities—with access to tuition-free universities and personalized educational consulting.
+                </p>
+                <div class="stats-grid grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center lg:justify-start">
+                    <div class="stat-card bg-blue-500/20 backdrop-blur-sm rounded-lg p-4 text-center">
+                        <div class="stat-number text-2xl font-bold text-yellow-400">500+</div>
+                        <div class="stat-label text-sm text-blue-100">Students Helped</div>
+                    </div>
+                    <div class="stat-card bg-blue-500/20 backdrop-blur-sm rounded-lg p-4 text-center">
+                        <div class="stat-number text-2xl font-bold text-yellow-400">50+</div>
+                        <div class="stat-label text-sm text-blue-100">Communities Reached</div>
+                    </div>
+                    <div class="stat-card bg-blue-500/20 backdrop-blur-sm rounded-lg p-4 text-center">
+                        <div class="stat-number text-2xl font-bold text-yellow-400">100%</div>
+                        <div class="stat-label text-sm text-blue-100">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hidden lg:block">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Students learning together" class="rounded-lg shadow-2xl w-full h-96 object-cover">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    EduBridge Ghana is a grassroots initiative committed to empowering students across Ghana—especially in underserved and rural communities—with access to tuition-free universities, traditional higher institutions, and personalized educational consulting.
+                </p>
+                <p class="text-lg text-gray-600 mb-6">
+                    We believe everyone deserves the chance to learn, grow, and succeed—regardless of digital literacy, location, or financial status.
+                </p>
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-heart text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900">Passion for Education</h3>
+                        <p class="text-gray-600">Driven by the belief that education transforms lives</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                {% load seo_tags %}
+                <img src="{% if site_config.about_mission_image %}{{ site_config.about_mission_image.url }}{% else %}https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80{% endif %}" alt="Students learning" class="rounded-lg shadow-lg w-full h-96 object-cover">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- What We Do Section -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">What We Do</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                We specialize in helping aspiring students navigate the application process and transition into online or traditional universities with confidence.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">University Application Support</h3>
+                <p class="text-gray-600">We help you apply to institutions like University of the People (UoPeople), as well as public and private universities in Ghana and abroad.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-award text-2xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Scholarship Guidance</h3>
+                <p class="text-gray-600">We assist with applying for available scholarships to reduce or eliminate exam/application fees.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-laptop text-2xl text-purple-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Digital Literacy Training</h3>
+                <p class="text-gray-600">Learn how to study online, attend virtual classes, and access learning materials.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-user-tie text-2xl text-orange-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Personal Application Service</h3>
+                <p class="text-gray-600">Not computer literate? We'll collect your particulars and apply on your behalf.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-comments text-2xl text-red-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Educational Consultancy</h3>
+                <p class="text-gray-600">We offer guidance to help you choose the best program, school, or career path that fits your dreams.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-book text-2xl text-indigo-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Free Resources</h3>
+                <p class="text-gray-600">Access our library of free educational resources, guides, and materials to support your learning journey.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Approach Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                {% load seo_tags %}
+                <img src="{% if site_config.about_approach_image %}{{ site_config.about_approach_image.url }}{% else %}https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80{% endif %}" alt="Our approach" class="rounded-lg shadow-lg w-full h-96 object-cover">
+            </div>
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Approach</h2>
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-4 mt-1">
+                            <span class="text-white font-bold text-sm">1</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-2">Personalized Assessment</h3>
+                            <p class="text-gray-600">We start by understanding your educational background, goals, and challenges to provide tailored guidance.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-4 mt-1">
+                            <span class="text-white font-bold text-sm">2</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-2">Comprehensive Support</h3>
+                            <p class="text-gray-600">From application assistance to digital literacy training, we provide end-to-end support throughout your journey.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center mr-4 mt-1">
+                            <span class="text-white font-bold text-sm">3</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900 mb-2">Ongoing Mentorship</h3>
+                            <p class="text-gray-600">Our relationship doesn't end with admission. We continue to support you throughout your educational journey.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fees Section -->
+<section class="py-20 bg-blue-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">About Our Fees</h2>
+        <p class="text-lg text-gray-600 mb-8">
+            While reading information on our website is free, a modest service fee is charged to cover:
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-lg p-6 shadow-md">
+                <i class="fas fa-wifi text-blue-600 text-2xl mb-4"></i>
+                <h3 class="font-semibold text-gray-900 mb-2">Internet Data Bundles</h3>
+                <p class="text-sm text-gray-600">Connectivity for research and applications</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow-md">
+                <i class="fas fa-car text-green-600 text-2xl mb-4"></i>
+                <h3 class="font-semibold text-gray-900 mb-2">Travel to Remote Areas</h3>
+                <p class="text-sm text-gray-600">Reaching students in underserved communities</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow-md">
+                <i class="fas fa-hands-helping text-purple-600 text-2xl mb-4"></i>
+                <h3 class="font-semibold text-gray-900 mb-2">Personalized Assistance</h3>
+                <p class="text-sm text-gray-600">One-on-one application support</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow-md">
+                <i class="fas fa-book-open text-orange-600 text-2xl mb-4"></i>
+                <h3 class="font-semibold text-gray-900 mb-2">Training Materials</h3>
+                <p class="text-sm text-gray-600">Educational resources and session materials</p>
+            </div>
+        </div>
+        
+        <div class="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p class="text-lg font-medium text-yellow-800">
+                <i class="fas fa-info-circle mr-2"></i>
+                Please note: University of the People is tuition-free. Our fee is for support and outreach—not for education.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Impact</h2>
+            <p class="text-xl text-gray-600">Making a difference in students' lives across Ghana</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-4xl font-bold text-blue-600 mb-2">500+</div>
+                <div class="text-gray-600">Students Helped</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-green-600 mb-2">95%</div>
+                <div class="text-gray-600">Success Rate</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-purple-600 mb-2">50+</div>
+                <div class="text-gray-600">Partner Universities</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-orange-600 mb-2">10</div>
+                <div class="text-gray-600">Regions Covered</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 bg-blue-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-6">Ready to Start Your Educational Journey?</h2>
+        <p class="text-xl text-blue-100 mb-8">
+            Join hundreds of students who have successfully accessed higher education through our support.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'accounts:register' %}" class="bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
+                    Get Started Now
+                </a>
+            {% else %}
+                <a href="{% url 'services:list' %}" class="bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
+                    Explore Services
+                </a>
+            {% endif %}
+            <a href="{% url 'contact:contact' %}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
+                Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

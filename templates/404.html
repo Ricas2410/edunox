@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found - EduBridge Ghana{% endblock %}
+
+{% block meta_description %}The page you're looking for could not be found. Return to EduBridge Ghana homepage or explore our educational services.{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 text-center">
+        <!-- Error Icon -->
+        <div class="mx-auto">
+            <div class="w-32 h-32 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-search text-6xl text-blue-600"></i>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div class="space-y-4">
+            <h1 class="text-6xl font-bold text-gray-900">404</h1>
+            <h2 class="text-3xl font-bold text-gray-800">Page Not Found</h2>
+            <p class="text-lg text-gray-600 max-w-sm mx-auto">
+                Sorry, we couldn't find the page you're looking for. It might have been moved, deleted, or you entered the wrong URL.
+            </p>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="space-y-4">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'core:home' %}" class="bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center">
+                    <i class="fas fa-home mr-2"></i>
+                    Go Home
+                </a>
+                <a href="{% url 'services:list' %}" class="border border-blue-600 text-blue-600 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center">
+                    <i class="fas fa-briefcase mr-2"></i>
+                    View Services
+                </a>
+            </div>
+            
+            <div class="pt-4">
+                <a href="javascript:history.back()" class="text-gray-500 hover:text-gray-700 font-medium">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Go Back
+                </a>
+            </div>
+        </div>
+        
+        <!-- Help Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
+            <div class="space-y-3 text-sm text-gray-600">
+                <div class="flex items-center">
+                    <i class="fas fa-phone text-blue-600 mr-3"></i>
+                    <span>Call us: +233 XX XXX XXXX</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-envelope text-blue-600 mr-3"></i>
+                    <span>Email: admin@deigratiams.edu.gh</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-comments text-blue-600 mr-3"></i>
+                    <a href="{% url 'contact:contact' %}" class="text-blue-600 hover:text-blue-800">Contact Support</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Popular Links -->
+        <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Popular Pages</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <a href="{% url 'services:uopeople_application' %}" class="text-blue-600 hover:text-blue-800 flex items-center">
+                    <i class="fas fa-university mr-2"></i>
+                    UoPeople Application
+                </a>
+                <a href="{% url 'services:basic_computer_skills' %}" class="text-blue-600 hover:text-blue-800 flex items-center">
+                    <i class="fas fa-laptop mr-2"></i>
+                    Computer Skills Training
+                </a>
+                <a href="{% url 'services:educational_counseling' %}" class="text-blue-600 hover:text-blue-800 flex items-center">
+                    <i class="fas fa-user-tie mr-2"></i>
+                    Educational Counseling
+                </a>
+                <a href="{% url 'core:about' %}" class="text-blue-600 hover:text-blue-800 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    About Us
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Suggestions -->
+<div class="bg-white border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="text-center">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Looking for something specific?</h3>
+            <div class="max-w-md mx-auto">
+                <form action="{% url 'services:list' %}" method="GET" class="flex">
+                    <input type="text" name="search" placeholder="Search our services..." class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-r-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

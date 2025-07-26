@@ -1,0 +1,316 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Educational Resources - Edunox GH{% endblock %}
+
+{% block meta_description %}Access free educational resources, guides, and materials to support your learning journey. University application guides, scholarship information, and digital literacy resources.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">Educational Resources</h1>
+        <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+            Free guides, materials, and resources to support your educational journey and career development
+        </p>
+    </div>
+</section>
+
+<!-- Search and Filter Section -->
+<section class="py-8 bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            <!-- Search -->
+            <div class="flex-1 max-w-lg">
+                <div class="relative">
+                    <input type="text"
+                           placeholder="Search resources..."
+                           class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                           id="resourceSearch">
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+            
+            <!-- Filters -->
+            <div class="flex space-x-4">
+                <select id="categoryFilter" class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <select id="typeFilter" class="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">All Types</option>
+                    <option value="GUIDE">Guides</option>
+                    <option value="TEMPLATE">Templates</option>
+                    <option value="VIDEO">Videos</option>
+                    <option value="DOCUMENT">Documents</option>
+                    <option value="LINK">External Links</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Resources -->
+{% if featured_resources %}
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Featured Resources</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for resource in featured_resources %}
+            <div class="resource-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-yellow-200">
+                <div class="relative">
+                    {% if resource.image %}
+                        <img src="{{ resource.image.url }}" alt="{{ resource.title }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-{{ resource.get_icon }} text-white text-4xl"></i>
+                        </div>
+                    {% endif %}
+                    <div class="absolute top-4 left-4">
+                        <span class="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-semibold">
+                            <i class="fas fa-star mr-1"></i>Featured
+                        </span>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-sm font-bold">
+                            {{ resource.get_resource_type_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mr-3" style="background-color: {{ resource.category.color }}20;">
+                            <i class="fas fa-{{ resource.category.icon }} text-2xl" style="color: {{ resource.category.color }};"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">{{ resource.title }}</h3>
+                            <p class="text-sm text-gray-500">{{ resource.category.name }}</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-4">{{ resource.description|truncatechars:120 }}</p>
+                    
+                    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                        <span><i class="fas fa-eye mr-1"></i>{{ resource.views }} views</span>
+                        <span><i class="fas fa-download mr-1"></i>{{ resource.downloads }} downloads</span>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <a href="{% url 'resources:detail' resource.pk %}" class="flex-1 text-center border border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition-colors">
+                            Learn More
+                        </a>
+                        {% if resource.file or resource.external_url %}
+                            <a href="{% url 'resources:download' resource.pk %}" class="flex-1 text-center bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-download mr-1"></i>Access
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Resource Categories -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Browse by Category</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {% for category in categories %}
+            <a href="?category={{ category.id }}" class="group block">
+                <div class="bg-white border-2 border-gray-200 rounded-xl p-6 text-center hover:border-blue-500 hover:shadow-lg transition-all duration-300">
+                    <div class="w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-4" style="background-color: {{ category.color }}20;">
+                        <i class="fas fa-{{ category.icon }} text-3xl" style="color: {{ category.color }};"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ category.name }}</h3>
+                    <p class="text-gray-600 text-sm mb-3">{{ category.description }}</p>
+                    <span class="text-blue-600 font-medium">{{ category.resources.count }} resources</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- All Resources -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">All Resources</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="resourcesGrid">
+            {% for resource in resources %}
+            <div class="resource-card bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300" 
+                 data-category="{{ resource.category.id }}" 
+                 data-type="{{ resource.resource_type }}"
+                 data-title="{{ resource.title|lower }}">
+                <div class="relative">
+                    {% if resource.image %}
+                        <img src="{{ resource.image.url }}" alt="{{ resource.title }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="w-full h-48 bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center">
+                            <i class="fas fa-{{ resource.get_icon }} text-white text-4xl"></i>
+                        </div>
+                    {% endif %}
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-white text-gray-900 px-3 py-1 rounded-full text-sm font-bold">
+                            {{ resource.get_resource_type_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center mr-3" style="background-color: {{ resource.category.color }}20;">
+                            <i class="fas fa-{{ resource.category.icon }}" style="color: {{ resource.category.color }};"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">{{ resource.title }}</h3>
+                            <p class="text-sm text-gray-500">{{ resource.category.name }}</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-4">{{ resource.description|truncatechars:120 }}</p>
+                    
+                    <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                        <span><i class="fas fa-calendar mr-1"></i>{{ resource.created_at|date:"M d, Y" }}</span>
+                        <span><i class="fas fa-eye mr-1"></i>{{ resource.views }} views</span>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <a href="{% url 'resources:detail' resource.pk %}" class="flex-1 text-center border border-blue-600 text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg font-medium transition-colors">
+                            Learn More
+                        </a>
+                        {% if resource.file or resource.external_url %}
+                            <a href="{% url 'resources:download' resource.pk %}" class="flex-1 text-center bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors">
+                                <i class="fas fa-download mr-1"></i>Access
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">No Resources Found</h3>
+                <p class="text-gray-600">Try adjusting your search or filter criteria.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+                {% endif %}
+                
+                <span class="px-3 py-2 text-sm text-gray-700">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">Last</a>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-6">Need Personalized Guidance?</h2>
+        <p class="text-xl text-blue-100 mb-8">
+            Our educational consultants can help you navigate these resources and create a personalized learning plan.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            {% if user.is_authenticated %}
+                <a href="{% url 'services:list' %}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+                    Book Consultation
+                </a>
+            {% else %}
+                <a href="{% url 'accounts:register_steps' %}" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+                    Get Started
+                </a>
+            {% endif %}
+            <a href="{% url 'contact:contact' %}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold transition-colors">
+                Ask Questions
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('resourceSearch');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const typeFilter = document.getElementById('typeFilter');
+    const resourcesGrid = document.getElementById('resourcesGrid');
+    const resourceCards = resourcesGrid.querySelectorAll('.resource-card');
+
+    function filterResources() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categoryFilter.value;
+        const selectedType = typeFilter.value;
+
+        resourceCards.forEach(card => {
+            const title = card.dataset.title;
+            const category = card.dataset.category;
+            const type = card.dataset.type;
+
+            let showCard = true;
+
+            // Search filter
+            if (searchTerm && !title.includes(searchTerm)) {
+                showCard = false;
+            }
+
+            // Category filter
+            if (selectedCategory && category !== selectedCategory) {
+                showCard = false;
+            }
+
+            // Type filter
+            if (selectedType && type !== selectedType) {
+                showCard = false;
+            }
+
+            card.style.display = showCard ? 'block' : 'none';
+        });
+
+        // Show/hide no results message
+        const visibleCards = Array.from(resourceCards).filter(card => card.style.display !== 'none');
+        let noResultsMessage = resourcesGrid.querySelector('.col-span-full');
+        
+        if (visibleCards.length === 0 && !noResultsMessage) {
+            const noResults = document.createElement('div');
+            noResults.className = 'col-span-full text-center py-12';
+            noResults.innerHTML = `
+                <i class="fas fa-search text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">No Resources Found</h3>
+                <p class="text-gray-600">Try adjusting your search or filter criteria.</p>
+            `;
+            resourcesGrid.appendChild(noResults);
+        } else if (visibleCards.length > 0 && noResultsMessage) {
+            noResultsMessage.remove();
+        }
+    }
+
+    // Add event listeners
+    searchInput.addEventListener('input', filterResources);
+    categoryFilter.addEventListener('change', filterResources);
+    typeFilter.addEventListener('change', filterResources);
+});
+</script>
+{% endblock %}

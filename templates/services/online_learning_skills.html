@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Online Learning Skills Training - Edunox GH{% endblock %}
+
+{% block meta_description %}Master online learning skills for effective virtual education. Learn virtual classroom navigation, study techniques, time management, and digital note-taking.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #4f46e5 0%, #1e40af 100%) !important;
+        color: white !important;
+    }
+
+    .hero-section h1 {
+        color: white !important;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .hero-section p {
+        color: #e0e7ff !important;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .hero-section a {
+        text-decoration: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section" style="background: linear-gradient(135deg, #4f46e5 0%, #1e40af 100%); color: white; padding: 5rem 0; position: relative;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div style="z-index: 2; position: relative;">
+                <h1 style="font-size: 3rem; font-weight: bold; margin-bottom: 1.5rem; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                    Online Learning Skills Training
+                </h1>
+                <p style="font-size: 1.25rem; color: #e0e7ff; margin-bottom: 2rem; line-height: 1.6; text-shadow: 1px 1px 2px rgba(0,0,0,0.2);">
+                    Master the art of online learning with our comprehensive training program. Develop skills for effective virtual classroom participation, time management, and digital study techniques.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    {% if service %}
+                        <a href="{% url 'services:book' service.pk %}" style="background-color: #fbbf24; color: #312e81; padding: 1rem 2rem; border-radius: 0.5rem; font-size: 1.125rem; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-block; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                           onmouseover="this.style.backgroundColor='#f59e0b'; this.style.transform='scale(1.05)'"
+                           onmouseout="this.style.backgroundColor='#fbbf24'; this.style.transform='scale(1)'">
+                            Book Training - GH₵{{ service.price }}
+                        </a>
+                    {% endif %}
+                    <a href="#skills" style="border: 2px solid white; color: white; padding: 1rem 2rem; border-radius: 0.5rem; font-size: 1.125rem; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-block; text-align: center;"
+                       onmouseover="this.style.backgroundColor='white'; this.style.color='#4f46e5'"
+                       onmouseout="this.style.backgroundColor='transparent'; this.style.color='white'">
+                        View Skills
+                    </a>
+                </div>
+            </div>
+
+            <div class="hidden lg:block" style="z-index: 1; position: relative;">
+                <img src="https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                     alt="Online learning"
+                     style="border-radius: 0.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); width: 100%; height: 24rem; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Background overlay for better text readability -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(79, 70, 229, 0.1); z-index: 1;"></div>
+</section>
+
+<!-- Service Overview -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <!-- What You'll Master -->
+            <div class="lg:col-span-2">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8">What You'll Master</h2>
+                
+                <div class="space-y-8">
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-video text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Virtual Classroom Navigation</h3>
+                            <p class="text-gray-600">Learn to navigate online learning platforms, participate in virtual classes, and use interactive tools effectively.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-book-open text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Online Study Techniques</h3>
+                            <p class="text-gray-600">Develop effective study strategies specifically designed for online learning environments and digital content.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-clock text-purple-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Time Management</h3>
+                            <p class="text-gray-600">Master time management skills essential for self-paced learning and balancing online studies with other commitments.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-edit text-orange-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Digital Note-Taking</h3>
+                            <p class="text-gray-600">Learn modern digital note-taking techniques and tools to organize and retain information effectively.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Training Details -->
+            <div>
+                <div class="bg-gray-50 rounded-xl p-6 mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Training Details</h3>
+                    {% if service %}
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Price:</span>
+                                <span class="font-semibold text-gray-900">GH₵{{ service.price }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Duration:</span>
+                                <span class="font-semibold text-gray-900">{{ service.duration }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Format:</span>
+                                <span class="font-semibold text-gray-900">Interactive Training</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Level:</span>
+                                <span class="font-semibold text-gray-900">Beginner to Intermediate</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <a href="{% url 'services:book' service.pk %}" class="w-full bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-3 rounded-lg font-medium transition-colors text-center block">
+                                Book Training
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Prerequisites -->
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-blue-800 mb-4">Prerequisites</h3>
+                    <ul class="space-y-2 text-sm text-blue-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 mt-1 mr-2"></i>
+                            <span>Basic computer skills</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 mt-1 mr-2"></i>
+                            <span>Internet browsing experience</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 mt-1 mr-2"></i>
+                            <span>Email account setup</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-600 mt-1 mr-2"></i>
+                            <span>Motivation to learn online</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Core Online Learning Skills</h2>
+            <p class="text-xl text-gray-600">Essential skills for successful online education</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Platform Navigation -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-compass text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Platform Navigation</h3>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li>• Learning Management Systems (LMS)</li>
+                    <li>• Course dashboards and menus</li>
+                    <li>• Assignment submissions</li>
+                    <li>• Grade tracking</li>
+                    <li>• Discussion forums</li>
+                </ul>
+            </div>
+            
+            <!-- Virtual Communication -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-comments text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Virtual Communication</h3>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li>• Video conferencing etiquette</li>
+                    <li>• Chat and messaging tools</li>
+                    <li>• Online collaboration</li>
+                    <li>• Peer interaction</li>
+                    <li>• Instructor communication</li>
+                </ul>
+            </div>
+            
+            <!-- Study Strategies -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-brain text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Study Strategies</h3>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li>• Active reading techniques</li>
+                    <li>• Memory retention methods</li>
+                    <li>• Self-assessment tools</li>
+                    <li>• Goal setting and tracking</li>
+                    <li>• Motivation maintenance</li>
+                </ul>
+            </div>
+            
+            <!-- Time Management -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-calendar-alt text-orange-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Time Management</h3>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li>• Creating study schedules</li>
+                    <li>• Deadline management</li>
+                    <li>• Prioritization techniques</li>
+                    <li>• Avoiding procrastination</li>
+                    <li>• Work-life balance</li>
+                </ul>
+            </div>
+            
+            <!-- Digital Tools -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-tools text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Digital Tools</h3>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li>• Note-taking applications</li>
+                    <li>• Cloud storage services</li>
+                    <li>• Productivity apps</li>
+                    <li>• Research tools</li>
+                    <li>• Citation managers</li>
+                </ul>
+            </div>
+            
+            <!-- Technical Skills -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-cog text-teal-600 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Technical Skills</h3>
+                <ul class="space-y-2 text-gray-600 text-sm">
+                    <li>• Troubleshooting common issues</li>
+                    <li>• Software installation</li>
+                    <li>• Internet connectivity</li>
+                    <li>• File format conversions</li>
+                    <li>• Backup strategies</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Training Modules -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Training Modules</h2>
+            <p class="text-xl text-gray-600">Structured learning path for online success</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Week 1 -->
+            <div class="bg-indigo-50 rounded-xl p-6 border border-indigo-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center mr-3">
+                        <span class="text-white font-bold">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Week 1: Platform Mastery</h3>
+                </div>
+                <ul class="space-y-2 text-gray-700">
+                    <li>• Introduction to online learning platforms</li>
+                    <li>• Navigating course interfaces</li>
+                    <li>• Accessing course materials</li>
+                    <li>• Understanding course structure</li>
+                    <li>• Basic troubleshooting</li>
+                </ul>
+            </div>
+            
+            <!-- Week 2 -->
+            <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                        <span class="text-white font-bold">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Week 2: Study Techniques</h3>
+                </div>
+                <ul class="space-y-2 text-gray-700">
+                    <li>• Effective online reading strategies</li>
+                    <li>• Digital note-taking methods</li>
+                    <li>• Information organization</li>
+                    <li>• Memory enhancement techniques</li>
+                    <li>• Self-assessment practices</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Tips -->
+<section class="py-20 bg-indigo-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Online Learning Success Tips</h2>
+            <p class="text-xl text-gray-600">Proven strategies for online education success</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-xl p-6 text-center shadow-lg">
+                <i class="fas fa-home text-indigo-600 text-3xl mb-4"></i>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Create a Study Space</h3>
+                <p class="text-gray-600 text-sm">Designate a quiet, organized area for learning</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 text-center shadow-lg">
+                <i class="fas fa-calendar-check text-blue-600 text-3xl mb-4"></i>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Stick to Schedule</h3>
+                <p class="text-gray-600 text-sm">Maintain consistent study times and routines</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 text-center shadow-lg">
+                <i class="fas fa-users text-green-600 text-3xl mb-4"></i>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Stay Connected</h3>
+                <p class="text-gray-600 text-sm">Engage with classmates and instructors regularly</p>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 text-center shadow-lg">
+                <i class="fas fa-trophy text-orange-600 text-3xl mb-4"></i>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Celebrate Progress</h3>
+                <p class="text-gray-600 text-sm">Acknowledge achievements and milestones</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 bg-indigo-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-white mb-6">Master Online Learning Today</h2>
+        <p class="text-xl text-indigo-100 mb-8">
+            Develop the skills you need to succeed in online education and unlock new opportunities.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            {% if service %}
+                <a href="{% url 'services:book' service.pk %}" class="bg-yellow-400 text-indigo-900 hover:bg-yellow-300 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
+                    Start Learning Skills Training
+                </a>
+            {% endif %}
+            <a href="{% url 'contact:contact' %}" class="border-2 border-white text-white hover:bg-white hover:text-indigo-700 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
+                Get More Information
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

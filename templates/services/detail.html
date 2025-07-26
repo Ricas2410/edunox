@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ service.name }} - EduBridge Ghana{% endblock %}
+
+{% block meta_description %}{{ service.short_description }} - {{ service.description|truncatechars:150 }}{% endblock %}
+
+{% block content %}
+<!-- Service Hero Section -->
+<section class="bg-gradient-to-br from-blue-600 to-indigo-800 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="flex items-center mb-4">
+                    <a href="{% url 'services:list' %}" class="text-blue-200 hover:text-white mr-4">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Services
+                    </a>
+                    <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
+                        {{ service.category.name }}
+                    </span>
+                </div>
+                
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">{{ service.name }}</h1>
+                <p class="text-xl text-blue-100 mb-8">{{ service.short_description }}</p>
+                
+                <div class="flex items-center space-x-6 mb-8">
+                    <div class="flex items-center">
+                        <i class="fas fa-clock text-blue-300 mr-2"></i>
+                        <span>{{ service.duration }}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-users text-blue-300 mr-2"></i>
+                        <span>{{ service.bookings.count }} booked</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-star text-yellow-400 mr-2"></i>
+                        <span>4.9 rating</span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'services:book' service.pk %}" class="bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 text-center">
+                            <i class="fas fa-calendar-plus mr-2"></i>
+                            Book Now - {{ service.get_price_display }}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts:register_steps' %}" class="bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 text-center">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Get Started - GHS {{ service.price }}
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'contact:contact' %}" class="border-2 border-white text-white hover:bg-white hover:text-blue-700 px-8 py-4 rounded-lg text-lg font-semibold transition-all text-center">
+                        <i class="fas fa-comments mr-2"></i>
+                        Ask Questions
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hidden lg:block">
+                {% if service.image %}
+                    <img src="{{ service.image.url }}" alt="{{ service.name }}" class="rounded-lg shadow-2xl w-full h-96 object-cover">
+                {% else %}
+                    {% load seo_tags %}
+                    <img src="{% default_service_image service.category.name %}" alt="{{ service.name }}" class="rounded-lg shadow-2xl w-full h-96 object-cover">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Service Details -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <!-- Main Content -->
+            <div class="lg:col-span-2">
+                <!-- Description -->
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">About This Service</h2>
+                    <div class="prose prose-lg text-gray-600">
+                        {{ service.description|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Features -->
+                {% if service.features_list %}
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">What's Included</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for feature in service.features_list %}
+                        <div class="flex items-center p-4 bg-green-50 rounded-lg">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <span class="text-gray-700">{{ feature }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Requirements -->
+                {% if service.requirements_list %}
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Requirements</h2>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <ul class="space-y-3">
+                            {% for requirement in service.requirements_list %}
+                            <li class="flex items-start">
+                                <i class="fas fa-info-circle text-blue-500 mr-3 mt-1"></i>
+                                <span class="text-gray-700">{{ requirement }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Process -->
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">How It Works</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-white text-xl font-bold">1</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Book Service</h3>
+                            <p class="text-gray-600">Choose your preferred date and time for the service</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-white text-xl font-bold">2</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Confirmation</h3>
+                            <p class="text-gray-600">We'll confirm your booking and send you details</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <span class="text-white text-xl font-bold">3</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Get Service</h3>
+                            <p class="text-gray-600">Receive personalized support and guidance</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+                    <div class="space-y-4" x-data="{ openFaq: null }">
+                        <div class="border border-gray-200 rounded-lg">
+                            <button @click="openFaq = openFaq === 1 ? null : 1" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
+                                <span class="font-medium text-gray-900">How long does this service take?</span>
+                                <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': openFaq === 1 }"></i>
+                            </button>
+                            <div x-show="openFaq === 1" x-transition class="px-6 pb-4">
+                                <p class="text-gray-600">The service duration is {{ service.duration }}. This includes consultation, preparation, and follow-up support.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg">
+                            <button @click="openFaq = openFaq === 2 ? null : 2" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
+                                <span class="font-medium text-gray-900">What if I need to reschedule?</span>
+                                <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': openFaq === 2 }"></i>
+                            </button>
+                            <div x-show="openFaq === 2" x-transition class="px-6 pb-4">
+                                <p class="text-gray-600">You can reschedule your appointment up to 24 hours before the scheduled time without any additional charges.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg">
+                            <button @click="openFaq = openFaq === 3 ? null : 3" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50">
+                                <span class="font-medium text-gray-900">Is there a refund policy?</span>
+                                <i class="fas fa-chevron-down transition-transform" :class="{ 'rotate-180': openFaq === 3 }"></i>
+                            </button>
+                            <div x-show="openFaq === 3" x-transition class="px-6 pb-4">
+                                <p class="text-gray-600">We offer a full refund if you cancel at least 48 hours before your scheduled appointment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <!-- Booking Card -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6 sticky top-8">
+                    <div class="text-center mb-6">
+                        <div class="text-3xl font-bold text-gray-900 mb-2">GHS {{ service.price }}</div>
+                        <p class="text-gray-600">{{ service.duration }}</p>
+                    </div>
+                    
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'services:book' service.pk %}" class="w-full bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors text-center block mb-4">
+                            <i class="fas fa-calendar-plus mr-2"></i>
+                            Book This Service
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts:register_steps' %}" class="w-full bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors text-center block mb-4">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Sign Up to Book
+                        </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'contact:contact' %}" class="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition-colors text-center block">
+                        <i class="fas fa-comments mr-2"></i>
+                        Ask Questions
+                    </a>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="font-semibold text-gray-900 mb-3">Service Highlights</h4>
+                        <ul class="space-y-2 text-sm text-gray-600">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Expert guidance</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Personalized support</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Follow-up included</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Money-back guarantee</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mt-6">
+                    <h4 class="font-semibold text-blue-900 mb-3">Need Help?</h4>
+                    <p class="text-blue-700 text-sm mb-4">Our team is here to answer any questions about this service.</p>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center text-blue-700">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>+233 XX XXX XXXX</span>
+                        </div>
+                        <div class="flex items-center text-blue-700">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>info@edubridge.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Services -->
+{% if related_services %}
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Related Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for related_service in related_services %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                <div class="p-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-{{ related_service.icon|default:'cog' }} text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ related_service.name }}</h3>
+                            <p class="text-sm text-gray-500">GHS {{ related_service.price }}</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">{{ related_service.short_description }}</p>
+                    <a href="{% url 'services:detail' related_service.pk %}" class="text-blue-600 hover:text-blue-700 font-medium">
+                        Learn More →
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Bookings - Edunox GH{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<!-- Include Dashboard Navigation -->
+{% include 'partials/dashboard_nav.html' %}
+
+<div class="lg:pl-64 min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 text-white py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold">My Bookings</h1>
+                    <p class="text-blue-100 mt-1 text-sm sm:text-base">Track your service bookings and appointments</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="{% url 'user_dashboard:home' %}" class="inline-flex items-center px-3 py-1.5 text-blue-100 hover:text-white hover:bg-blue-600 rounded-md text-sm font-medium transition-colors border border-blue-400">
+                        <i class="fas fa-arrow-left text-xs mr-1.5"></i>Back to Dashboard
+                    </a>
+                    <a href="{% url 'services:list' %}" class="inline-flex items-center px-3 py-1.5 bg-white text-blue-700 hover:bg-blue-50 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-plus text-xs mr-1.5"></i>Book New Service
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Booking Stats - Compact Side-by-Side Layout -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+            <!-- Total Bookings -->
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calendar text-blue-600 text-sm"></i>
+                    </div>
+                    <div class="ml-2 flex-1">
+                        <p class="text-lg font-bold text-gray-900">{{ bookings.count }}</p>
+                        <p class="text-xs text-gray-600">Total Bookings</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending -->
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-600 text-sm"></i>
+                    </div>
+                    <div class="ml-2 flex-1">
+                        <p class="text-lg font-bold text-gray-900">{{ bookings|length }}</p>
+                        <p class="text-xs text-gray-600">Pending</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed -->
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600 text-sm"></i>
+                    </div>
+                    <div class="ml-2 flex-1">
+                        <p class="text-lg font-bold text-gray-900">0</p>
+                        <p class="text-xs text-gray-600">Completed</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- This Month -->
+            <div class="bg-white rounded-lg shadow-sm p-3">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-purple-600 text-sm"></i>
+                    </div>
+                    <div class="ml-2 flex-1">
+                        <p class="text-lg font-bold text-gray-900">0</p>
+                        <p class="text-xs text-gray-600">This Month</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookings List -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-4 py-3 border-b border-gray-200">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <h2 class="text-lg font-semibold text-gray-900">All Bookings</h2>
+                    <div class="flex flex-wrap gap-2">
+                        <select class="border border-gray-300 rounded-md px-2 py-1 text-xs font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">All Status</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="CONFIRMED">Confirmed</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                        <select class="border border-gray-300 rounded-md px-2 py-1 text-xs font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">All Services</option>
+                            <option value="consultation">Consultation</option>
+                            <option value="training">Training</option>
+                            <option value="application">Application Support</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            {% if bookings %}
+                <div class="p-2 space-y-2">
+                    {% for booking in bookings %}
+                    <div class="bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors shadow-sm">
+                        <div class="p-3">
+                            <!-- Header with Service Info and Status -->
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center flex-1">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-2">
+                                        <i class="fas fa-{{ booking.service.icon|default:'calendar' }} text-blue-600 text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-sm font-semibold text-gray-900">{{ booking.service.name }}</h3>
+                                        <p class="text-xs text-gray-500 truncate">{{ booking.service.short_description }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Status Badge -->
+                                <div class="ml-2">
+                                    {% if booking.status == 'PENDING' %}
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-clock text-xs mr-1"></i>Pending
+                                        </span>
+                                    {% elif booking.status == 'CONFIRMED' %}
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            <i class="fas fa-check text-xs mr-1"></i>Confirmed
+                                        </span>
+                                    {% elif booking.status == 'IN_PROGRESS' %}
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                            <i class="fas fa-play text-xs mr-1"></i>In Progress
+                                        </span>
+                                    {% elif booking.status == 'COMPLETED' %}
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <i class="fas fa-check-circle text-xs mr-1"></i>Completed
+                                        </span>
+                                    {% elif booking.status == 'CANCELLED' %}
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                            <i class="fas fa-times text-xs mr-1"></i>Cancelled
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Booking Details Grid -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-2">
+                                <div class="flex items-center text-xs text-gray-600 bg-gray-50 rounded px-2 py-1">
+                                    <i class="fas fa-calendar text-xs mr-1 text-gray-400 flex-shrink-0"></i>
+                                    <span class="truncate">{{ booking.preferred_date|date:"M d, Y" }}</span>
+                                </div>
+                                <div class="flex items-center text-xs text-gray-600 bg-gray-50 rounded px-2 py-1">
+                                    <i class="fas fa-clock text-xs mr-1 text-gray-400 flex-shrink-0"></i>
+                                    <span class="truncate">{{ booking.preferred_time|time:"g:i A" }}</span>
+                                </div>
+                                <div class="flex items-center text-xs text-gray-600 bg-gray-50 rounded px-2 py-1">
+                                    <i class="fas fa-dollar-sign text-xs mr-1 text-gray-400 flex-shrink-0"></i>
+                                    <span class="truncate">GHS {{ booking.service.price }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Messages and Notes -->
+                            {% if booking.message or booking.admin_notes %}
+                                <div class="space-y-1 mb-2">
+                                    {% if booking.message %}
+                                        <div class="p-1.5 bg-gray-50 rounded border-l-2 border-gray-300">
+                                            <p class="text-xs text-gray-700">
+                                                <span class="font-medium">Message:</span> {{ booking.message|truncatechars:50 }}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if booking.admin_notes %}
+                                        <div class="p-1.5 bg-blue-50 rounded border-l-2 border-blue-300">
+                                            <p class="text-xs text-blue-700">
+                                                <span class="font-medium">Admin:</span> {{ booking.admin_notes|truncatechars:50 }}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+
+                            <!-- Footer with Actions and Date -->
+                            <div class="flex items-center justify-between pt-1.5 border-t border-gray-100">
+                                <div class="flex gap-1">
+                                    {% if booking.status == 'PENDING' %}
+                                        <button type="button" onclick="cancelBooking({{ booking.id }})" class="inline-flex items-center px-1.5 py-0.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded text-xs font-medium transition-colors">
+                                            <i class="fas fa-times text-xs mr-1"></i>Cancel
+                                        </button>
+                                        <button type="button" onclick="rescheduleBooking({{ booking.id }})" class="inline-flex items-center px-1.5 py-0.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded text-xs font-medium transition-colors">
+                                            <i class="fas fa-edit text-xs mr-1"></i>Reschedule
+                                        </button>
+                                    {% elif booking.status == 'CONFIRMED' %}
+                                        <button type="button" onclick="viewBookingDetails({{ booking.id }})" class="inline-flex items-center px-1.5 py-0.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded text-xs font-medium transition-colors">
+                                            <i class="fas fa-eye text-xs mr-1"></i>Details
+                                        </button>
+                                    {% elif booking.status == 'COMPLETED' %}
+                                        <button type="button" onclick="leaveReview({{ booking.id }})" class="inline-flex items-center px-1.5 py-0.5 text-green-600 hover:text-green-700 hover:bg-green-50 rounded text-xs font-medium transition-colors">
+                                            <i class="fas fa-star text-xs mr-1"></i>Review
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                                <p class="text-xs text-gray-400">
+                                    {{ booking.created_at|date:"M d" }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination -->
+                {% if is_paginated %}
+                    <div class="px-4 py-3 border-t border-gray-200 bg-gray-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div class="text-xs text-gray-700">
+                                Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} bookings
+                            </div>
+                            <div class="flex gap-2">
+                                {% if page_obj.has_previous %}
+                                    <a href="?page={{ page_obj.previous_page_number }}" class="inline-flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <i class="fas fa-chevron-left text-xs mr-1"></i>Previous
+                                    </a>
+                                {% endif %}
+                                {% if page_obj.has_next %}
+                                    <a href="?page={{ page_obj.next_page_number }}" class="inline-flex items-center px-2 py-1 border border-gray-300 rounded-md text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                        Next<i class="fas fa-chevron-right text-xs ml-1"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="px-4 py-6 text-center">
+                    <i class="fas fa-calendar-plus text-3xl text-gray-300 mb-2"></i>
+                    <h3 class="text-base font-medium text-gray-900 mb-1">No Bookings Yet</h3>
+                    <p class="text-xs text-gray-600 mb-3">Start your educational journey by booking your first service.</p>
+                    <a href="{% url 'services:list' %}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white hover:bg-blue-700 rounded-md text-sm font-medium transition-colors">
+                        <i class="fas fa-plus text-xs mr-1.5"></i>Book Your First Service
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function cancelBooking(bookingId) {
+    if (confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
+        fetch(`/services/booking/${bookingId}/cancel/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                location.reload(); // Refresh the page to show updated status
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while cancelling the booking.');
+        });
+    }
+}
+
+function rescheduleBooking(bookingId) {
+    // Create a simple reschedule modal
+    const newDate = prompt('Enter new date (YYYY-MM-DD):');
+    if (!newDate) return;
+
+    const newTime = prompt('Enter new time (HH:MM, e.g., 14:00):');
+    if (!newTime) return;
+
+    // Validate date format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    const timeRegex = /^\d{2}:\d{2}$/;
+
+    if (!dateRegex.test(newDate)) {
+        alert('Please enter date in YYYY-MM-DD format');
+        return;
+    }
+
+    if (!timeRegex.test(newTime)) {
+        alert('Please enter time in HH:MM format');
+        return;
+    }
+
+    fetch(`/services/booking/${bookingId}/reschedule/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            new_date: newDate,
+            new_time: newTime
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload(); // Refresh the page to show updated status
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while rescheduling the booking.');
+    });
+}
+
+function viewBookingDetails(bookingId) {
+    // In a real implementation, this would show booking details
+    alert('Booking details view would be implemented here.');
+}
+
+function leaveReview(bookingId) {
+    // In a real implementation, this would open a review modal
+    alert('Review functionality would be implemented here.');
+}
+
+// Filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const statusFilter = document.querySelector('select:first-of-type');
+    const serviceFilter = document.querySelector('select:last-of-type');
+    
+    if (statusFilter && serviceFilter) {
+        [statusFilter, serviceFilter].forEach(filter => {
+            filter.addEventListener('change', function() {
+                // In a real implementation, this would filter the bookings
+                console.log('Filter changed:', this.value);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'emails/base.html' %}
+
+{% block title %}Booking Confirmation - EduBridge Ghana{% endblock %}
+
+{% block header_title %}Booking Confirmed!{% endblock %}
+{% block header_subtitle %}Your service booking has been successfully submitted{% endblock %}
+
+{% block content %}
+<h2>Hello {{ booking.user.get_full_name|default:booking.user.username }}!</h2>
+
+<div class="success-box">
+    <p><strong>Great news!</strong> Your booking for <strong>{{ booking.service.name }}</strong> has been successfully submitted and is now pending confirmation.</p>
+</div>
+
+<h3>Booking Details</h3>
+<table class="details-table">
+    <tr>
+        <th>Booking Reference</th>
+        <td>#{{ booking.id }}</td>
+    </tr>
+    <tr>
+        <th>Service</th>
+        <td>{{ booking.service.name }}</td>
+    </tr>
+    <tr>
+        <th>Category</th>
+        <td>{{ booking.service.category.name }}</td>
+    </tr>
+    <tr>
+        <th>Preferred Date</th>
+        <td>{{ booking.preferred_date|date:"l, F d, Y" }}</td>
+    </tr>
+    <tr>
+        <th>Preferred Time</th>
+        <td>{{ booking.preferred_time|time:"g:i A" }}</td>
+    </tr>
+    <tr>
+        <th>Duration</th>
+        <td>{{ booking.service.duration }}</td>
+    </tr>
+    <tr>
+        <th>Price</th>
+        <td>GHS {{ booking.service.price }}</td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td><strong style="color: #F59E0B;">Pending Confirmation</strong></td>
+    </tr>
+</table>
+
+{% if booking.message %}
+<h3>Your Message</h3>
+<div class="info-box">
+    <p>{{ booking.message }}</p>
+</div>
+{% endif %}
+
+<h3>What Happens Next?</h3>
+<p>Our team will review your booking request and contact you within <strong>24 hours</strong> to confirm the appointment details. Here's what you can expect:</p>
+
+<ol>
+    <li><strong>Review:</strong> Our team will review your booking request</li>
+    <li><strong>Confirmation:</strong> We'll contact you via email or phone to confirm</li>
+    <li><strong>Preparation:</strong> You'll receive detailed information about your appointment</li>
+    <li><strong>Service:</strong> Attend your scheduled appointment and receive expert guidance</li>
+</ol>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ site_url }}{% url 'dashboard:bookings' %}" class="button">View My Bookings</a>
+    <a href="{{ site_url }}{% url 'services:list' %}" class="button button-secondary">Book Another Service</a>
+</div>
+
+<div class="info-box">
+    <h3>Need to Make Changes?</h3>
+    <p>If you need to reschedule or cancel your booking, please contact us as soon as possible:</p>
+    <ul>
+        <li>📧 Email: {% if site_config %}{{ site_config.contact_email }}{% else %}info@Edunox.com{% endif %}</li>
+        <li>📞 Phone: {% if site_config %}{{ site_config.contact_phone }}{% else %}+233 XX XXX XXXX{% endif %}</li>
+        <li>💬 Contact Form: <a href="{{ site_url }}{% url 'contact:contact' %}">Send Message</a></li>
+    </ul>
+</div>
+
+<h3>Prepare for Your Appointment</h3>
+<p>To make the most of your session, please:</p>
+<ul>
+    <li>Gather any relevant documents or materials</li>
+    <li>Prepare a list of questions you'd like to discuss</li>
+    <li>Ensure you have a stable internet connection (for online sessions)</li>
+    <li>Arrive 5-10 minutes early for in-person appointments</li>
+</ul>
+
+<p>Thank you for choosing EduBridge Ghana. We're excited to help you achieve your educational goals!</p>
+
+<p>Best regards,<br>
+<strong>The EduBridge Ghana Team</strong></p>
+{% endblock %}

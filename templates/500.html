@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - EduBridge Ghana</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-red-50 to-orange-100">
+    <div class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 text-center">
+            <!-- Error Icon -->
+            <div class="mx-auto">
+                <div class="w-32 h-32 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-6xl text-red-600"></i>
+                </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div class="space-y-4">
+                <h1 class="text-6xl font-bold text-gray-900">500</h1>
+                <h2 class="text-3xl font-bold text-gray-800">Server Error</h2>
+                <p class="text-lg text-gray-600 max-w-sm mx-auto">
+                    We're experiencing some technical difficulties. Our team has been notified and is working to fix the issue.
+                </p>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/" class="bg-red-600 text-white hover:bg-red-700 px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-home mr-2"></i>
+                        Go Home
+                    </a>
+                    <button onclick="window.location.reload()" class="border border-red-600 text-red-600 hover:bg-red-50 px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-redo mr-2"></i>
+                        Try Again
+                    </button>
+                </div>
+                
+                <div class="pt-4">
+                    <a href="javascript:history.back()" class="text-gray-500 hover:text-gray-700 font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Go Back
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Contact Support -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Need Immediate Help?</h3>
+                <div class="space-y-3 text-sm text-gray-600">
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-envelope text-red-600 mr-3"></i>
+                        <span>Email: admin@deigratiams.edu.gh</span>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-phone text-red-600 mr-3"></i>
+                        <span>Call: +233 XX XXX XXXX</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-xs text-gray-500">
+                        Error ID: {{ request.META.HTTP_X_REQUEST_ID|default:"N/A" }}
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Status Updates -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">What's Happening?</h3>
+                <div class="text-sm text-gray-600 space-y-2">
+                    <p>• Our technical team has been automatically notified</p>
+                    <p>• We're working to resolve this issue as quickly as possible</p>
+                    <p>• Your data and account information are safe</p>
+                    <p>• Try refreshing the page in a few minutes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-4">
+        <div class="text-center">
+            <p class="text-sm text-gray-500">
+                © 2024 EduBridge Ghana. We apologize for the inconvenience.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

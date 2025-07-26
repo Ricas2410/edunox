@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Account - Edunox GH{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registration-container {
+        min-height: calc(100vh - 80px);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .registration-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .registration-card .logo-container {
+        max-width: 80px;
+        max-height: 80px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+    
+    .form-input {
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        transform: translateY(0);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+    }
+    
+    .error-message {
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+    
+    .success-message {
+        background-color: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: #16a34a;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="registration-container flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full">
+        <div class="registration-card p-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                {% load seo_tags %}
+                <img class="logo-container mx-auto mb-4" src="{% site_logo %}" alt="Edunox GH">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Create Your Account</h1>
+                <p class="text-gray-600">Join Edunox GH and start your educational journey</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'error' %}error-message{% else %}success-message{% endif %}">
+                        <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %} mr-2"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Registration Form -->
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Name Fields -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            First Name *
+                        </label>
+                        <input type="text" 
+                               name="{{ form.first_name.name }}" 
+                               id="{{ form.first_name.id_for_label }}"
+                               value="{{ form.first_name.value|default:'' }}"
+                               class="form-input w-full"
+                               placeholder="Enter your first name"
+                               required>
+                        {% if form.first_name.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.first_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Last Name *
+                        </label>
+                        <input type="text" 
+                               name="{{ form.last_name.name }}" 
+                               id="{{ form.last_name.id_for_label }}"
+                               value="{{ form.last_name.value|default:'' }}"
+                               class="form-input w-full"
+                               placeholder="Enter your last name"
+                               required>
+                        {% if form.last_name.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.last_name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Email Field -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address *
+                    </label>
+                    <input type="email" 
+                           name="{{ form.email.name }}" 
+                           id="{{ form.email.id_for_label }}"
+                           value="{{ form.email.value|default:'' }}"
+                           class="form-input w-full"
+                           placeholder="Enter your email address"
+                           required>
+                    {% if form.email.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Password Fields -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Password *
+                        </label>
+                        <input type="password" 
+                               name="{{ form.password1.name }}" 
+                               id="{{ form.password1.id_for_label }}"
+                               class="form-input w-full"
+                               placeholder="Create a strong password"
+                               required>
+                        {% if form.password1.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.password1.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Confirm Password *
+                        </label>
+                        <input type="password" 
+                               name="{{ form.password2.name }}" 
+                               id="{{ form.password2.id_for_label }}"
+                               class="form-input w-full"
+                               placeholder="Confirm your password"
+                               required>
+                        {% if form.password2.errors %}
+                            <p class="text-red-600 text-sm mt-1">{{ form.password2.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="flex items-start">
+                    <input type="checkbox" 
+                           name="{{ form.accept_terms.name }}" 
+                           id="{{ form.accept_terms.id_for_label }}"
+                           class="mt-1 mr-3"
+                           required>
+                    <label for="{{ form.accept_terms.id_for_label }}" class="text-sm text-gray-600">
+                        I agree to the <a href="{% url 'core:terms' %}" class="text-blue-600 hover:text-blue-700">Terms of Service</a>
+                        and <a href="{% url 'core:privacy' %}" class="text-blue-600 hover:text-blue-700">Privacy Policy</a>
+                    </label>
+                </div>
+                {% if form.accept_terms.errors %}
+                    <p class="text-red-600 text-sm">{{ form.accept_terms.errors.0 }}</p>
+                {% endif %}
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-primary w-full text-white">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Account
+                </button>
+
+                <!-- Login Link -->
+                <div class="text-center">
+                    <p class="text-sm text-gray-600">
+                        Already have an account? 
+                        <a href="{% url 'account_login' %}" class="text-blue-600 hover:text-blue-700 font-medium">
+                            Sign in here
+                        </a>
+                    </p>
+                </div>
+            </form>
+
+            <!-- Additional Info -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-2">
+                        <i class="fas fa-shield-alt mr-1"></i>
+                        Your information is secure and protected
+                    </p>
+                    <p class="text-xs text-gray-500">
+                        You can complete your profile and upload documents after registration
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation and UX improvements
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    form.addEventListener('submit', function(e) {
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+    });
+    
+    // Password strength indicator (optional)
+    const password1 = document.getElementById('{{ form.password1.id_for_label }}');
+    const password2 = document.getElementById('{{ form.password2.id_for_label }}');
+    
+    if (password2) {
+        password2.addEventListener('input', function() {
+            if (password1.value && password2.value) {
+                if (password1.value === password2.value) {
+                    password2.style.borderColor = '#10b981';
+                } else {
+                    password2.style.borderColor = '#ef4444';
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

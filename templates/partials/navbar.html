@@ -1,0 +1,499 @@
+{% load static %}
+{% load seo_tags %}
+
+<style>
+.site-logo {
+    max-height: 40px !important;
+    max-width: 40px !important;
+    height: 40px !important;
+    width: 40px !important;
+    object-fit: contain !important;
+}
+nav .logo-container {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
+nav .logo-container span {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    min-width: max-content !important;
+}
+
+/* Mobile Navigation Improvements */
+@media (max-width: 640px) {
+    nav .logo-container span {
+        font-size: 1.125rem !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* Mobile menu styling improvements */
+.mobile-menu {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.mobile-menu-item {
+    transition: all 0.2s ease-in-out;
+    border-radius: 8px;
+    margin: 2px 0;
+}
+
+.mobile-menu-item:hover {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    transform: translateX(4px);
+}
+
+.mobile-user-section {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+}
+
+.mobile-auth-section {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+}
+
+.mobile-menu-button {
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.mobile-menu-button:hover {
+    background-color: #f1f5f9;
+    transform: scale(1.05);
+}
+
+.mobile-menu-button:active {
+    transform: scale(0.95);
+}
+
+/* Services section styling */
+.mobile-services-section {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+    padding: 8px;
+    margin: 4px 0;
+}
+
+/* Services dropdown toggle */
+.mobile-services-toggle {
+    cursor: pointer;
+    user-select: none;
+}
+
+.mobile-services-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.mobile-services-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+.mobile-services-content.expanded {
+    max-height: 500px;
+    opacity: 1;
+}
+
+/* Mobile navbar improvements */
+@media (max-width: 768px) {
+    .mobile-menu {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        max-height: calc(100vh - 64px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        background: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-menu-item {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        text-decoration: none;
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+
+    .mobile-services-section {
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .mobile-services-toggle {
+        width: 100%;
+        text-align: left;
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+
+    .mobile-services-content {
+        border-left: 3px solid #3b82f6;
+    }
+
+    /* Ensure proper spacing for mobile */
+    nav .logo-container {
+        min-width: 0;
+        flex-shrink: 1;
+    }
+
+    nav .logo-container span {
+        font-size: 1rem !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Fix icon alignment */
+    .mobile-menu-item i {
+        flex-shrink: 0;
+    }
+}
+</style>
+<nav class="bg-white shadow-lg sticky top-0 z-40" x-data="{ mobileMenuOpen: false }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <!-- Logo and Brand -->
+            <div class="flex items-center h-16 flex-shrink-0">
+                <a href="{% url 'core:home' %}" class="logo-container flex items-center h-full">
+                    <img class="site-logo" src="{% site_logo %}" alt="Edunox GH">
+                    <span class="ml-3 text-xl font-bold text-blue-600 leading-none">Edunox GH</span>
+                </a>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'core:home' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors">
+                    Home
+                </a>
+                <a href="{% url 'core:about' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors">
+                    About
+                </a>
+
+                <!-- Services Dropdown -->
+                <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                    <button class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors flex items-center">
+                        Services
+                        <i class="fas fa-chevron-down ml-1 text-sm"></i>
+                    </button>
+                    <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-1" class="absolute z-10 left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200">
+                        <div class="py-2">
+                            <a href="{% url 'services:list' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-list mr-2"></i>All Services
+                            </a>
+                            <div class="border-t border-gray-100 my-1"></div>
+
+                            <!-- University Applications -->
+                            <div class="px-4 py-1">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">University Applications</p>
+                            </div>
+                            <a href="{% url 'services:uopeople_application' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-university mr-2"></i>UoPeople Application
+                            </a>
+                            <a href="{% url 'services:ghana_university_application' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-school mr-2"></i>Ghana Universities
+                            </a>
+
+                            <div class="border-t border-gray-100 my-1"></div>
+
+                            <!-- Digital Training -->
+                            <div class="px-4 py-1">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Digital Training</p>
+                            </div>
+                            <a href="{% url 'services:basic_computer_skills' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-desktop mr-2"></i>Basic Computer Skills
+                            </a>
+                            <a href="{% url 'services:online_learning_skills' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-video mr-2"></i>Online Learning Skills
+                            </a>
+
+                            <div class="border-t border-gray-100 my-1"></div>
+
+                            <!-- Consultancy -->
+                            <div class="px-4 py-1">
+                                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Consultancy</p>
+                            </div>
+                            <a href="{% url 'services:educational_counseling' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-user-tie mr-2"></i>Educational Counseling
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {% if site_config.library_url %}
+                    <a href="{{ site_config.library_url }}" {% if site_config.library_opens_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %} class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors">
+                        <i class="fas fa-book mr-1"></i>E-Library
+                        {% if site_config.library_opens_new_tab %}<i class="fas fa-external-link-alt ml-1 text-xs"></i>{% endif %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'resources:list' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors">
+                        <i class="fas fa-book mr-1"></i>E-Library
+                    </a>
+                {% endif %}
+
+                {% if site_config.jobs_url %}
+                    <a href="{{ site_config.jobs_url }}" {% if site_config.jobs_opens_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %} class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors">
+                        <i class="fas fa-briefcase mr-1"></i>Find Jobs
+                        {% if site_config.jobs_opens_new_tab %}<i class="fas fa-external-link-alt ml-1 text-xs"></i>{% endif %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'resources:list' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors">
+                        <i class="fas fa-briefcase mr-1"></i>Find Jobs
+                    </a>
+                {% endif %}
+                <a href="{% url 'contact:contact' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-base font-medium transition-colors">
+                    Contact
+                </a>
+                
+                {% if user.is_authenticated %}
+                    <!-- User Menu -->
+                    <div class="relative" x-data="{ userMenuOpen: false }">
+                        <button @click="userMenuOpen = !userMenuOpen" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            {% if user.profile.profile_picture %}
+                                <img class="h-8 w-8 rounded-full object-cover" src="{{ user.profile.profile_picture.url }}" alt="{{ user.get_full_name }}">
+                            {% else %}
+                                <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
+                                    <span class="text-white text-sm font-medium">{{ user.first_name|first|default:user.username|first }}</span>
+                                </div>
+                            {% endif %}
+                            <span class="ml-2 text-gray-700">{{ user.first_name|default:user.username }}</span>
+                            <i class="fas fa-chevron-down ml-1 text-gray-400"></i>
+                        </button>
+                        
+                        <div x-show="userMenuOpen" @click.away="userMenuOpen = false" 
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5">
+                            <a href="{% url 'user_dashboard:home' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                            </a>
+                            <a href="{% url 'user_dashboard:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i>Profile
+                            </a>
+                            <a href="{% url 'user_dashboard:bookings' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-calendar mr-2"></i>My Bookings
+                            </a>
+                            {% if user.is_staff %}
+                                <div class="border-t border-gray-100"></div>
+                                <a href="{% url 'admin_dashboard:admin_home' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-cog mr-2"></i>Admin Panel
+                                </a>
+                            {% endif %}
+                            <div class="border-t border-gray-100"></div>
+                            <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Auth Links -->
+                    <a href="{% url 'account_login' %}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                        Login
+                    </a>
+                    <a href="{% url 'accounts:register' %}" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
+                        Get Started
+                    </a>
+                {% endif %}
+            </div>
+            
+            <!-- Mobile menu button -->
+            <div class="md:hidden flex items-center space-x-3" x-data="{ mobileUserMenuOpen: false }">
+                {% if user.is_authenticated %}
+                    <!-- Mobile user profile dropdown -->
+                    <div class="relative">
+                        <button @click="mobileUserMenuOpen = !mobileUserMenuOpen" class="flex items-center">
+                            {% if user.profile.profile_picture %}
+                                <img class="h-8 w-8 rounded-full object-cover" src="{{ user.profile.profile_picture.url }}" alt="{{ user.get_full_name }}">
+                            {% else %}
+                                <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
+                                    <span class="text-white text-sm font-medium">{{ user.first_name|first|default:user.username|first }}</span>
+                                </div>
+                            {% endif %}
+                        </button>
+
+                        <!-- Mobile Profile Dropdown -->
+                        <div x-show="mobileUserMenuOpen" @click.away="mobileUserMenuOpen = false"
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50">
+                            <a href="{% url 'user_dashboard:home' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                            </a>
+                            <a href="{% url 'user_dashboard:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i>Profile
+                            </a>
+                            <a href="{% url 'user_dashboard:bookings' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-calendar mr-2"></i>My Bookings
+                            </a>
+                            <a href="{% url 'user_dashboard:documents' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-file-alt mr-2"></i>Documents
+                            </a>
+                            {% if user.is_staff %}
+                                <div class="border-t border-gray-100"></div>
+                                <a href="{% url 'admin_dashboard:admin_home' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-cog mr-2"></i>Admin Panel
+                                </a>
+                            {% endif %}
+                            <div class="border-t border-gray-100"></div>
+                            <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+                <button @click="mobileMenuOpen = !mobileMenuOpen"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors">
+                    <span class="sr-only">Open main menu</span>
+                    <i x-show="!mobileMenuOpen" class="fas fa-bars text-xl"></i>
+                    <i x-show="mobileMenuOpen" class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div x-show="mobileMenuOpen" @click.away="mobileMenuOpen = false"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="transform opacity-0 -translate-y-2"
+         x-transition:enter-end="transform opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="transform opacity-100 translate-y-0"
+         x-transition:leave-end="transform opacity-0 -translate-y-2"
+         class="md:hidden mobile-menu"
+         x-data="{ servicesOpen: false }">
+        <div class="divide-y divide-gray-200">
+            <!-- Main Navigation Items -->
+            <div class="py-2">
+                <a href="{% url 'core:home' %}" class="mobile-menu-item flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                    <i class="fas fa-home mr-3 text-blue-500 w-5"></i>
+                    <span>Home</span>
+                </a>
+                <a href="{% url 'core:about' %}" class="mobile-menu-item flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                    <i class="fas fa-info-circle mr-3 text-blue-500 w-5"></i>
+                    <span>About</span>
+                </a>
+            </div>
+
+            <!-- Services Section with Collapsible Dropdown -->
+            <div class="mobile-services-section">
+                <button @click="servicesOpen = !servicesOpen"
+                        class="mobile-services-toggle w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors focus:outline-none">
+                    <span class="flex items-center">
+                        <i class="fas fa-briefcase mr-3 text-blue-500 w-5"></i>
+                        <span>Services</span>
+                    </span>
+                    <i class="fas fa-chevron-down transition-transform duration-200 text-sm"
+                       :class="{ 'rotate-180': servicesOpen }"></i>
+                </button>
+
+                <div x-show="servicesOpen"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 transform scale-95"
+                     x-transition:enter-end="opacity-100 transform scale-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 transform scale-100"
+                     x-transition:leave-end="opacity-0 transform scale-95"
+                     class="mobile-services-content bg-gray-50"
+                     style="display: none;">
+                    <a href="{% url 'services:list' %}" class="mobile-menu-item flex items-center px-8 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors text-sm">
+                        <i class="fas fa-list mr-3 text-blue-400 w-4"></i>
+                        <span>All Services</span>
+                    </a>
+                    <a href="{% url 'services:uopeople_application' %}" class="mobile-menu-item flex items-center px-8 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors text-sm">
+                        <i class="fas fa-university mr-3 text-blue-400 w-4"></i>
+                        <span>UoPeople Application</span>
+                    </a>
+                    <a href="{% url 'services:ghana_university_application' %}" class="mobile-menu-item flex items-center px-8 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors text-sm">
+                        <i class="fas fa-school mr-3 text-blue-400 w-4"></i>
+                        <span>Ghana Universities</span>
+                    </a>
+                    <a href="{% url 'services:basic_computer_skills' %}" class="mobile-menu-item flex items-center px-8 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors text-sm">
+                        <i class="fas fa-desktop mr-3 text-blue-400 w-4"></i>
+                        <span>Computer Skills</span>
+                    </a>
+                    <a href="{% url 'services:online_learning_skills' %}" class="mobile-menu-item flex items-center px-8 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors text-sm">
+                        <i class="fas fa-video mr-3 text-blue-400 w-4"></i>
+                        <span>Online Learning</span>
+                    </a>
+                    <a href="{% url 'services:educational_counseling' %}" class="mobile-menu-item flex items-center px-8 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-colors text-sm">
+                        <i class="fas fa-user-tie mr-3 text-blue-400 w-4"></i>
+                        <span>Educational Counseling</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Other Navigation Items -->
+            <div class="py-2">
+                {% if site_config.library_url %}
+                    <a href="{{ site_config.library_url }}" {% if site_config.library_opens_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %} class="mobile-menu-item flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                        <i class="fas fa-book mr-3 text-blue-500 w-5"></i>
+                        <span>E-Library</span>
+                        {% if site_config.library_opens_new_tab %}<i class="fas fa-external-link-alt ml-2 text-xs"></i>{% endif %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'resources:list' %}" class="mobile-menu-item flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                        <i class="fas fa-book mr-3 text-blue-500 w-5"></i>
+                        <span>E-Library</span>
+                    </a>
+                {% endif %}
+
+                {% if site_config.jobs_url %}
+                    <a href="{{ site_config.jobs_url }}" {% if site_config.jobs_opens_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %} class="mobile-menu-item flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                        <i class="fas fa-briefcase mr-3 text-blue-500 w-5"></i>
+                        <span>Find Jobs</span>
+                        {% if site_config.jobs_opens_new_tab %}<i class="fas fa-external-link-alt ml-2 text-xs"></i>{% endif %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'resources:list' %}" class="mobile-menu-item flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                        <i class="fas fa-briefcase mr-3 text-blue-500 w-5"></i>
+                        <span>Find Jobs</span>
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'contact:contact' %}" class="mobile-menu-item flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                    <i class="fas fa-envelope mr-3 text-blue-500 w-5"></i>
+                    <span>Contact</span>
+                </a>
+            </div>
+            
+            <!-- Auth Section (Only for non-authenticated users) -->
+            {% if not user.is_authenticated %}
+                <div class="py-2 bg-gray-50">
+                    <a href="{% url 'account_login' %}" class="mobile-menu-item flex items-center px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors">
+                        <i class="fas fa-sign-in-alt mr-3 text-blue-500 w-5"></i>
+                        <span>Login</span>
+                    </a>
+                    <a href="{% url 'accounts:register' %}" class="mobile-menu-item flex items-center px-4 py-3 text-white bg-blue-600 hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-user-plus mr-3 w-5"></i>
+                        <span>Get Started</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        </div>
+    </div>
+</nav>

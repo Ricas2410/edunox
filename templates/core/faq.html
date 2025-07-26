@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Frequently Asked Questions - Edunox GH{% endblock %}
+
+{% block meta_description %}Get answers to common questions about Edunox GH's educational services, university applications, scholarships, and digital literacy training.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-600 to-indigo-800 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">Frequently Asked Questions</h1>
+        <p class="text-xl text-blue-100 max-w-3xl mx-auto">
+            Find answers to common questions about our services and how we can help you achieve your educational goals
+        </p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="py-8 bg-white border-b">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative">
+            <input type="text" 
+                   placeholder="Search FAQs..." 
+                   class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                   data-search=".faq-item">
+            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% if faqs %}
+            <div class="space-y-4" x-data="{ openFaq: null }">
+                {% for faq in faqs %}
+                <div class="faq-item bg-white rounded-lg shadow-md">
+                    <button @click="openFaq = openFaq === {{ forloop.counter }} ? null : {{ forloop.counter }}" 
+                            class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg">
+                        <span class="text-lg font-medium text-gray-900">{{ faq.question }}</span>
+                        <i class="fas fa-chevron-down transition-transform duration-200" 
+                           :class="{ 'rotate-180': openFaq === {{ forloop.counter }} }"></i>
+                    </button>
+                    <div x-show="openFaq === {{ forloop.counter }}" 
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 transform scale-95"
+                         x-transition:enter-end="opacity-100 transform scale-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 transform scale-100"
+                         x-transition:leave-end="opacity-0 transform scale-95"
+                         class="px-6 pb-4">
+                        <div class="text-gray-600 leading-relaxed">
+                            {{ faq.answer|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <i class="fas fa-question-circle text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">No FAQs Available</h3>
+                <p class="text-gray-600">Check back later for frequently asked questions.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">FAQ Categories</h2>
+            <p class="text-xl text-gray-600">Browse questions by topic</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-blue-50 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">University Applications</h3>
+                <p class="text-gray-600 mb-4">Questions about applying to universities and the application process</p>
+                <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">View Questions →</a>
+            </div>
+            
+            <div class="bg-green-50 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-award text-2xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Scholarships</h3>
+                <p class="text-gray-600 mb-4">Information about scholarship opportunities and application assistance</p>
+                <a href="#" class="text-green-600 hover:text-green-700 font-medium">View Questions →</a>
+            </div>
+            
+            <div class="bg-purple-50 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-laptop text-2xl text-purple-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Digital Literacy</h3>
+                <p class="text-gray-600 mb-4">Questions about our digital literacy training and online learning</p>
+                <a href="#" class="text-purple-600 hover:text-purple-700 font-medium">View Questions →</a>
+            </div>
+            
+            <div class="bg-orange-50 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-dollar-sign text-2xl text-orange-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Fees & Pricing</h3>
+                <p class="text-gray-600 mb-4">Information about our service fees and payment options</p>
+                <a href="#" class="text-orange-600 hover:text-orange-700 font-medium">View Questions →</a>
+            </div>
+            
+            <div class="bg-red-50 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-file-alt text-2xl text-red-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Documents</h3>
+                <p class="text-gray-600 mb-4">Questions about required documents and verification process</p>
+                <a href="#" class="text-red-600 hover:text-red-700 font-medium">View Questions →</a>
+            </div>
+            
+            <div class="bg-indigo-50 rounded-lg p-6 text-center hover:shadow-lg transition-shadow">
+                <div class="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-headset text-2xl text-indigo-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Support</h3>
+                <p class="text-gray-600 mb-4">Questions about our support services and how to get help</p>
+                <a href="#" class="text-indigo-600 hover:text-indigo-700 font-medium">View Questions →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Help Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Still Have Questions?</h2>
+                <p class="text-gray-600">Can't find what you're looking for? We're here to help!</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">Email Us</h3>
+                    <p class="text-sm text-gray-600 mb-3">Get detailed answers via email</p>
+                    <a href="{% url 'contact:contact' %}" class="text-blue-600 hover:text-blue-700 font-medium">Send Message</a>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-phone text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">Call Us</h3>
+                    <p class="text-sm text-gray-600 mb-3">Speak directly with our team</p>
+                    <a href="tel:+233XXXXXXXX" class="text-green-600 hover:text-green-700 font-medium">+233 XX XXX XXXX</a>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-calendar text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-900 mb-2">Book Consultation</h3>
+                    <p class="text-sm text-gray-600 mb-3">Schedule a one-on-one session</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'services:list' %}" class="text-purple-600 hover:text-purple-700 font-medium">Book Now</a>
+                    {% else %}
+                        <a href="{% url 'accounts:register' %}" class="text-purple-600 hover:text-purple-700 font-medium">Get Started</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Questions Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Most Popular Questions</h2>
+            <p class="text-xl text-gray-600">The questions we get asked most often</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-2">Is University of the People really free?</h3>
+                <p class="text-gray-600 text-sm">Yes, UoPeople is tuition-free. Our fees cover support services, not education costs.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-2">What documents do I need?</h3>
+                <p class="text-gray-600 text-sm">You'll need your ID and academic results (WASSCE, BECE, or equivalent).</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-2">How long does the application process take?</h3>
+                <p class="text-gray-600 text-sm">Typically 1-3 weeks depending on the university and completeness of documents.</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="font-semibold text-gray-900 mb-2">Do you help with scholarships?</h3>
+                <p class="text-gray-600 text-sm">Yes, we assist with finding and applying for scholarships to reduce costs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

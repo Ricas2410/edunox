@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Access Forbidden - EduBridge Ghana{% endblock %}
+
+{% block meta_description %}You don't have permission to access this page. Please contact support if you believe this is an error.{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 text-center">
+        <!-- Error Icon -->
+        <div class="mx-auto">
+            <div class="w-32 h-32 mx-auto bg-yellow-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-lock text-6xl text-yellow-600"></i>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div class="space-y-4">
+            <h1 class="text-6xl font-bold text-gray-900">403</h1>
+            <h2 class="text-3xl font-bold text-gray-800">Access Forbidden</h2>
+            <p class="text-lg text-gray-600 max-w-sm mx-auto">
+                You don't have permission to access this page. Please check your account status or contact support.
+            </p>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="space-y-4">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'core:home' %}" class="bg-yellow-600 text-white hover:bg-yellow-700 px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center">
+                    <i class="fas fa-home mr-2"></i>
+                    Go Home
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard:user_dashboard' %}" class="border border-yellow-600 text-yellow-600 hover:bg-yellow-50 px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-tachometer-alt mr-2"></i>
+                        Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="border border-yellow-600 text-yellow-600 hover:bg-yellow-50 px-6 py-3 rounded-lg font-medium transition-colors inline-flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Login
+                    </a>
+                {% endif %}
+            </div>
+            
+            <div class="pt-4">
+                <a href="javascript:history.back()" class="text-gray-500 hover:text-gray-700 font-medium">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Go Back
+                </a>
+            </div>
+        </div>
+        
+        <!-- Help Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Why am I seeing this?</h3>
+            <div class="space-y-3 text-sm text-gray-600 text-left">
+                <div class="flex items-start">
+                    <i class="fas fa-user-times text-yellow-600 mr-3 mt-1"></i>
+                    <span>You may not have the required permissions</span>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-clock text-yellow-600 mr-3 mt-1"></i>
+                    <span>Your session may have expired</span>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-shield-alt text-yellow-600 mr-3 mt-1"></i>
+                    <span>This page requires special access</span>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-user-check text-yellow-600 mr-3 mt-1"></i>
+                    <span>Your account may need verification</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Support -->
+        <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
+            <div class="space-y-3 text-sm text-gray-600">
+                <div class="flex items-center justify-center">
+                    <i class="fas fa-envelope text-yellow-600 mr-3"></i>
+                    <span>Email: admin@deigratiams.edu.gh</span>
+                </div>
+                <div class="flex items-center justify-center">
+                    <i class="fas fa-phone text-yellow-600 mr-3"></i>
+                    <span>Call: +233 XX XXX XXXX</span>
+                </div>
+                <div class="flex items-center justify-center">
+                    <i class="fas fa-comments text-yellow-600 mr-3"></i>
+                    <a href="{% url 'contact:contact' %}" class="text-yellow-600 hover:text-yellow-800">Contact Support</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

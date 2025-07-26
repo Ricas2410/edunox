@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Edunox GH - Your Gateway to Affordable Higher Education{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Empowering underserved students in Ghana with access to free and affordable university education through outreach, digital literacy support, and educational consultancy.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}education Ghana, university application Ghana, University of the People Ghana, scholarship Ghana, digital literacy training, free university education, educational consultancy Ghana, UoPeople application help, online education Ghana, affordable higher education{% endblock %}">
+    <meta name="author" content="Edunox GH">
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+    <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="geo.region" content="GH">
+    <meta name="geo.placename" content="Accra, Ghana">
+    <meta name="geo.position" content="5.6037;-0.1870">
+    <meta name="ICBM" content="5.6037, -0.1870">
+    <meta name="language" content="English">
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
+    <meta name="revisit-after" content="7 days">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}Edunox GH - Your Gateway to Affordable Higher Education{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Empowering underserved students in Ghana with access to free and affordable university education.{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% block og_image %}{% load static %}{% static 'images/Edunox-logo.png' %}{% endblock %}">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Edunox GH - Your Gateway to Affordable Higher Education{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Empowering underserved students in Ghana with access to free and affordable university education.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% load static %}{% static 'images/Edunox-logo.png' %}{% endblock %}">
+    
+    <!-- Favicon -->
+    {% load seo_tags %}
+    <link rel="icon" type="image/x-icon" href="{% site_favicon %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% site_favicon %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% site_favicon %}">
+    <link rel="apple-touch-icon" sizes="57x57" href="{% site_favicon %}">
+    <meta name="msapplication-TileImage" content="{% site_favicon %}">
+    <meta name="msapplication-TileColor" content="#3B82F6">
+    
+    <!-- CSS -->
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+    
+    <!-- Additional CSS -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Edunox GH",
+        "description": "Empowering underserved students in Ghana with access to free and affordable university education",
+        "url": "{{ request.build_absolute_uri }}",
+        "logo": "{% static 'images/Edunox-logo.png' %}",
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "Ghana",
+            "addressLocality": "Accra"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+233-XX-XXX-XXXX",
+            "contactType": "customer service",
+            "email": "info@Edunox.com"
+        }
+    }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    {% include 'partials/navbar.html' %}
+    
+    <!-- Messages -->
+    {% if messages %}
+        <div class="fixed top-20 right-4 z-50 space-y-2">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} bg-white border-l-4 p-4 shadow-lg rounded-r-lg max-w-sm" 
+                     style="border-left-color: {% if message.tags == 'success' %}#10B981{% elif message.tags == 'error' %}#EF4444{% elif message.tags == 'warning' %}#F59E0B{% else %}#3B82F6{% endif %};">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            {% if message.tags == 'success' %}
+                                <i class="fas fa-check-circle text-green-500"></i>
+                            {% elif message.tags == 'error' %}
+                                <i class="fas fa-exclamation-circle text-red-500"></i>
+                            {% elif message.tags == 'warning' %}
+                                <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle text-blue-500"></i>
+                            {% endif %}
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-gray-700">{{ message }}</p>
+                        </div>
+                        <div class="ml-auto pl-3">
+                            <button type="button" class="text-gray-400 hover:text-gray-600" onclick="this.parentElement.parentElement.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    {% include 'partials/footer.html' %}
+    
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    <!-- Additional JavaScript -->
+    {% block extra_js %}{% endblock %}
+
+    <!-- Google Analytics -->
+    {% if not debug %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    {% endif %}
+
+    <!-- Microsoft Clarity -->
+    {% if not debug %}
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "CLARITY_PROJECT_ID");
+    </script>
+    {% endif %}
+
+    <!-- Auto-hide messages -->
+    <script>
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 500);
+            });
+        }, 5000);
+    </script>
+
+    <!-- Schema.org Local Business -->
+    {% json_ld_website %}
+
+    <!-- Performance monitoring -->
+    <script>
+        // Core Web Vitals monitoring
+        function sendToAnalytics(metric) {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', metric.name, {
+                    event_category: 'Web Vitals',
+                    value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
+                    event_label: metric.id,
+                    non_interaction: true,
+                });
+            }
+        }
+
+        // Load web-vitals library if available
+        if ('web-vitals' in window) {
+            webVitals.getCLS(sendToAnalytics);
+            webVitals.getFID(sendToAnalytics);
+            webVitals.getFCP(sendToAnalytics);
+            webVitals.getLCP(sendToAnalytics);
+            webVitals.getTTFB(sendToAnalytics);
+        }
+    </script>
+</body>
+</html>

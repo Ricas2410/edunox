@@ -1,0 +1,472 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Edunox GH{% endblock %}
+
+{% block content %}
+<!-- Include Admin Navigation -->
+{% include 'partials/admin_nav.html' %}
+
+<div class="admin-main-content bg-gray-50 min-h-screen">
+    <!-- Top navigation -->
+    <div class="bg-white shadow-sm border-b border-gray-200 lg:pl-64">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Mobile menu button -->
+                    <button type="button"
+                            class="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors"
+                            id="mobile-menu-button"
+                            x-data
+                            @click="$dispatch('toggle-admin-sidebar')">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+
+                    <!-- Page title -->
+                    <h1 class="ml-4 lg:ml-0 text-2xl font-semibold text-gray-900">
+                        Admin Dashboard
+                    </h1>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- User menu -->
+                    <div class="relative">
+                        <button type="button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="user-menu-button">
+                            <span class="sr-only">Open user menu</span>
+                            <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                                <span class="text-sm font-medium text-white">{{ user.first_name.0|default:user.username.0|upper }}</span>
+                            </div>
+                            <span class="ml-3 text-gray-700 text-sm font-medium">{{ user.get_full_name|default:user.username }}</span>
+                            <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="py-8 lg:pl-64">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Dashboard Header -->
+<div class="bg-white rounded-lg shadow mb-6">
+    <div class="px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-bold text-gray-900">Welcome back, {{ user.get_full_name|default:user.username }}!</h2>
+                <p class="text-gray-600">Here's what's happening with your platform today.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button type="button" onclick="refreshDashboard()" class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white hover:bg-blue-700 rounded-md text-sm font-medium transition-colors">
+                    <i class="fas fa-sync-alt text-xs mr-1.5"></i>Refresh
+                </button>
+                <a href="{% url 'admin:index' %}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors">
+                    <i class="fas fa-cog text-xs mr-1.5"></i>Django Admin
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
+        <!-- Quick Stats - Mobile Friendly Layout -->
+        <div class="space-y-4 mb-6">
+            <!-- First Row: Total Users & Total Bookings -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white rounded-lg shadow p-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-blue-600 text-lg"></i>
+                        </div>
+                        <div class="ml-3 flex-1">
+                            <p class="text-xl font-bold text-gray-900">{{ total_users }}</p>
+                            <p class="text-sm text-gray-600">Total Users</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <i class="fas fa-plus text-xs mr-1"></i>{{ new_users_today }} today
+                        </span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-calendar text-yellow-600 text-lg"></i>
+                        </div>
+                        <div class="ml-3 flex-1">
+                            <p class="text-xl font-bold text-gray-900">{{ total_bookings }}</p>
+                            <p class="text-sm text-gray-600">Total Bookings</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            <i class="fas fa-clock text-xs mr-1"></i>{{ pending_bookings }} pending
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second Row: Documents & Messages -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-white rounded-lg shadow p-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-alt text-green-600 text-lg"></i>
+                        </div>
+                        <div class="ml-3 flex-1">
+                            <p class="text-xl font-bold text-gray-900">{{ total_documents }}</p>
+                            <p class="text-sm text-gray-600">Documents</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            <i class="fas fa-exclamation-triangle text-xs mr-1"></i>{{ unverified_documents }} unverified
+                        </span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-envelope text-purple-600 text-lg"></i>
+                        </div>
+                        <div class="ml-3 flex-1">
+                            <p class="text-xl font-bold text-gray-900">{{ total_messages }}</p>
+                            <p class="text-sm text-gray-600">Messages</p>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            <i class="fas fa-envelope-open text-xs mr-1"></i>{{ unread_messages }} unread
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Recent Bookings -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-900">Recent Bookings</h2>
+                    <a href="{% url 'admin_dashboard:admin_bookings' %}" class="inline-flex items-center px-2 py-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded text-xs font-medium transition-colors">
+                        <i class="fas fa-arrow-right text-xs mr-1"></i>View All
+                    </a>
+                </div>
+                
+                {% if recent_bookings %}
+                    <div class="divide-y divide-gray-200">
+                        {% for booking in recent_bookings %}
+                        <div class="px-4 py-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                            <i class="fas fa-{{ booking.service.icon|default:'calendar' }} text-blue-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-900">{{ booking.service.name }}</h3>
+                                            <p class="text-sm text-gray-600">{{ booking.user.get_full_name|default:booking.user.username }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 text-sm text-gray-500">
+                                        {{ booking.preferred_date|date:"M d, Y" }} at {{ booking.preferred_time|time:"g:i A" }}
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    {% if booking.status == 'PENDING' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            Pending
+                                        </span>
+                                    {% elif booking.status == 'CONFIRMED' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            Confirmed
+                                        </span>
+                                    {% elif booking.status == 'COMPLETED' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Completed
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="px-4 py-8 text-center">
+                        <i class="fas fa-calendar text-3xl text-gray-300 mb-3"></i>
+                        <p class="text-sm text-gray-600">No recent bookings</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Pending Documents -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-900">Documents Pending Verification</h2>
+                    <a href="{% url 'admin_dashboard:admin_documents' %}" class="inline-flex items-center px-2 py-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded text-xs font-medium transition-colors">
+                        <i class="fas fa-arrow-right text-xs mr-1"></i>View All
+                    </a>
+                </div>
+                
+                {% if pending_documents %}
+                    <div class="divide-y divide-gray-200">
+                        {% for document in pending_documents %}
+                        <div class="px-4 py-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                                            {% if document.file_extension == '.pdf' %}
+                                                <i class="fas fa-file-pdf text-red-600"></i>
+                                            {% else %}
+                                                <i class="fas fa-file text-red-600"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-900">{{ document.title }}</h3>
+                                            <p class="text-sm text-gray-600">{{ document.user.get_full_name|default:document.user.username }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 text-sm text-gray-500">
+                                        Uploaded {{ document.created_at|timesince }} ago
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <button type="button" onclick="verifyDocument({{ document.id }})" class="inline-flex items-center px-2 py-1 text-green-600 hover:text-green-700 hover:bg-green-50 rounded text-xs font-medium transition-colors">
+                                        <i class="fas fa-check text-xs mr-1"></i>Verify
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="px-4 py-8 text-center">
+                        <i class="fas fa-check-circle text-3xl text-gray-300 mb-3"></i>
+                        <p class="text-sm text-gray-600">All documents verified</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Bookings Chart -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Bookings This Month</h3>
+                <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+                    <canvas id="bookingsChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- User Registration Chart -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">User Registrations</h3>
+                <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+                    <canvas id="usersChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-6 bg-white rounded-lg shadow p-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <a href="{% url 'admin_dashboard:admin_users' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-colors group">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-blue-200">
+                        <i class="fas fa-users text-blue-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Manage Users</p>
+                </a>
+
+                <a href="{% url 'admin_dashboard:admin_bookings' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-yellow-50 hover:border-yellow-300 transition-colors group">
+                    <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-yellow-200">
+                        <i class="fas fa-calendar text-yellow-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Bookings</p>
+                </a>
+
+                <a href="{% url 'admin_dashboard:admin_documents' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-300 transition-colors group">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-green-200">
+                        <i class="fas fa-file-alt text-green-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Documents</p>
+                </a>
+
+                <a href="{% url 'admin_dashboard:admin_contacts' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-purple-50 hover:border-purple-300 transition-colors group">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-purple-200">
+                        <i class="fas fa-envelope text-purple-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Messages</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Content Management -->
+        <div class="bg-white rounded-lg shadow p-4 mt-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Content Management</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <a href="{% url 'admin_dashboard:admin_services' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-300 transition-colors group">
+                    <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-indigo-200">
+                        <i class="fas fa-briefcase text-indigo-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Services</p>
+                </a>
+
+                <a href="{% url 'resources:list' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-green-50 hover:border-green-300 transition-colors group">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-green-200">
+                        <i class="fas fa-book text-green-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Resources</p>
+                </a>
+
+                <a href="{% url 'admin_dashboard:admin_consultancy' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-orange-50 hover:border-orange-300 transition-colors group">
+                    <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-orange-200">
+                        <i class="fas fa-package text-orange-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Packages</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Site Configuration -->
+        <div class="bg-white rounded-lg shadow p-4 mt-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Site Configuration</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <a href="{% url 'admin_dashboard:admin_settings' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-red-50 hover:border-red-300 transition-colors group">
+                    <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-red-200">
+                        <i class="fas fa-cogs text-red-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Settings</p>
+                </a>
+
+                <a href="{% url 'services:list' %}" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-teal-50 hover:border-teal-300 transition-colors group">
+                    <div class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-teal-200">
+                        <i class="fas fa-tags text-teal-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Categories</p>
+                </a>
+
+                <a href="{% url 'admin:index' %}" target="_blank" class="flex flex-col items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-colors group">
+                    <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-gray-200">
+                        <i class="fas fa-external-link-alt text-gray-600 text-sm"></i>
+                    </div>
+                    <p class="text-xs font-medium text-gray-900 text-center">Django Admin</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Bookings Chart with Real Data
+const bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+const bookingsChart = new Chart(bookingsCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Pending', 'Completed', 'Cancelled'],
+        datasets: [{
+            label: 'Bookings Status',
+            data: [
+                {{ pending_bookings|default:0 }},
+                {{ completed_bookings|default:0 }},
+                {{ cancelled_bookings|default:0 }}
+            ],
+            backgroundColor: [
+                'rgba(251, 191, 36, 0.8)',
+                'rgba(34, 197, 94, 0.8)',
+                'rgba(239, 68, 68, 0.8)'
+            ],
+            borderColor: [
+                'rgb(251, 191, 36)',
+                'rgb(34, 197, 94)',
+                'rgb(239, 68, 68)'
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Booking Status Distribution'
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Users Chart with Real Data
+const usersCtx = document.getElementById('usersChart').getContext('2d');
+const usersChart = new Chart(usersCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Total Users', 'New This Week', 'Verified Users', 'Pending Verification'],
+        datasets: [{
+            label: 'User Statistics',
+            data: [
+                {{ total_users|default:0 }},
+                {{ new_users_this_week|default:0 }},
+                {{ verified_users|default:0 }},
+                {{ pending_users|default:0 }}
+            ],
+            backgroundColor: [
+                'rgba(59, 130, 246, 0.8)',
+                'rgba(34, 197, 94, 0.8)',
+                'rgba(16, 185, 129, 0.8)',
+                'rgba(251, 191, 36, 0.8)'
+            ],
+            borderColor: [
+                'rgb(59, 130, 246)',
+                'rgb(34, 197, 94)',
+                'rgb(16, 185, 129)',
+                'rgb(251, 191, 36)'
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            title: {
+                display: true,
+                text: 'User Statistics Overview'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+
+function refreshDashboard() {
+    location.reload();
+}
+
+function verifyDocument(documentId) {
+    if (confirm('Are you sure you want to verify this document?')) {
+        // In a real implementation, this would make an API call
+        alert('Document verification functionality would be implemented here.');
+    }
+}
+</script>
+{% endblock %}

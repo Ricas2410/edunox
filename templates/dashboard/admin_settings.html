@@ -1,0 +1,1302 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Site Settings - Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+.toggle-switch {
+    background-color: #d1d5db !important;
+    border-radius: 9999px;
+    width: 2.75rem;
+    height: 1.5rem;
+    position: relative;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.toggle-switch.bg-blue-600 {
+    background-color: #2563eb !important;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 0.125rem;
+    left: 0.125rem;
+    background-color: white;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.toggle-slider.translate-x-5 {
+    transform: translateX(1.25rem);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- CSRF Token for JavaScript -->
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+<!-- Include Admin Navigation -->
+{% include 'partials/admin_nav.html' %}
+
+<div class="lg:pl-64 bg-gray-50 min-h-screen">
+    <!-- Top navigation -->
+    <div class="bg-white shadow-sm border-b border-gray-200">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Mobile menu button -->
+                    <button type="button" class="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100" id="mobile-menu-button">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+
+                    <!-- Page title -->
+                    <h1 class="ml-4 lg:ml-0 text-2xl font-semibold text-gray-900">
+                        Site Settings
+                    </h1>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- User menu -->
+                    <div class="relative">
+                        <button type="button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="user-menu-button">
+                            <span class="sr-only">Open user menu</span>
+                            <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                                <span class="text-sm font-medium text-white">{{ user.first_name.0|default:user.username.0|upper }}</span>
+                            </div>
+                            <span class="ml-3 text-gray-700 text-sm font-medium">{{ user.get_full_name|default:user.username }}</span>
+                            <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="space-y-6">
+    <!-- Settings Navigation -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+                <button onclick="showTab('general')" id="general-tab" class="tab-button border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-cog mr-2"></i>General
+                </button>
+                <button onclick="showTab('branding')" id="branding-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-palette mr-2"></i>Branding
+                </button>
+                <button onclick="showTab('email')" id="email-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-envelope mr-2"></i>Email
+                </button>
+                <button onclick="showTab('social')" id="social-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-share-alt mr-2"></i>Social Media
+                </button>
+                <button onclick="showTab('advanced')" id="advanced-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-tools mr-2"></i>Advanced
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- General Settings -->
+    <div id="general-content" class="tab-content">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-6">General Settings</h3>
+            <form id="generalForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
+                        <input type="text" id="siteName" name="site_name" value="{{ config.site_name }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">E-Library URL</label>
+                        <input type="url" id="libraryUrl" name="library_url" value="{{ config.library_url }}" placeholder="https://library.example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jobs URL</label>
+                        <input type="url" id="jobsUrl" name="jobs_url" value="{{ config.jobs_url }}" placeholder="https://jobs.example.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="flex items-center space-x-4 pt-6">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="libraryOpensNewTab" name="library_opens_new_tab" {% if config.library_opens_new_tab %}checked{% endif %} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="libraryOpensNewTab" class="ml-2 text-sm text-gray-700">E-Library opens in new tab</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="jobsOpensNewTab" name="jobs_opens_new_tab" {% if config.jobs_opens_new_tab %}checked{% endif %} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="jobsOpensNewTab" class="ml-2 text-sm text-gray-700">Jobs opens in new tab</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Site Description</label>
+                    <textarea rows="3" id="siteDescription" name="site_description" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ config.site_description }}</textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Email</label>
+                        <input type="email" id="contactEmail" name="contact_email" value="{{ config.contact_email }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Contact Phone</label>
+                        <input type="tel" id="contactPhone" name="contact_phone" value="{{ config.contact_phone }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                    <textarea rows="2" id="address" name="address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">{{ config.address }}</textarea>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" id="libraryOpensNewTab" name="library_opens_new_tab" {% if config.library_opens_new_tab %}checked{% endif %} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                    <label for="libraryOpensNewTab" class="ml-2 text-sm text-gray-700">Open library link in new tab</label>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="Africa/Accra" selected>Africa/Accra (GMT)</option>
+                            <option value="UTC">UTC</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="GHS" selected>Ghanaian Cedi (GH₵)</option>
+                            <option value="USD">US Dollar ($)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button type="submit" onclick="saveGeneralSettings(event)" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Branding Settings -->
+    <div id="branding-content" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-6">Branding Settings</h3>
+            <form id="brandingForm" class="space-y-6" enctype="multipart/form-data">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Logo</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center" id="logoUploadArea">
+                            {% if config.logo %}
+                                <img src="{{ config.logo.url }}" alt="Current Logo" class="max-h-20 mx-auto mb-2">
+                                <p class="text-sm text-gray-600 mb-2">Current Logo</p>
+                            {% else %}
+                                <i class="fas fa-image text-gray-400 text-3xl mb-2"></i>
+                                <p class="text-gray-600">Upload your logo</p>
+                            {% endif %}
+                            <input type="file" id="logoFile" name="logo" class="hidden" accept="image/*" onchange="handleFileUpload('logo', this)">
+                            <button type="button" onclick="document.getElementById('logoFile').click()" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                Choose File
+                            </button>
+                            <p class="text-xs text-gray-500 mt-2">Recommended: 500x500px or larger, PNG/JPG format</p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Favicon</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center" id="faviconUploadArea">
+                            {% if config.favicon %}
+                                <img src="{{ config.favicon.url }}" alt="Current Favicon" class="max-h-16 mx-auto mb-2">
+                                <p class="text-sm text-gray-600 mb-2">Current Favicon</p>
+                            {% else %}
+                                <i class="fas fa-star text-gray-400 text-3xl mb-2"></i>
+                                <p class="text-gray-600">Upload favicon</p>
+                            {% endif %}
+                            <input type="file" id="faviconFile" name="favicon" class="hidden" accept="image/*,.ico" onchange="handleFileUpload('favicon', this)">
+                            <button type="button" onclick="document.getElementById('faviconFile').click()" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                Choose File
+                            </button>
+                            <p class="text-xs text-gray-500 mt-2">Recommended: 32x32px or 64x64px, ICO/PNG format</p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center" id="heroUploadArea">
+                            {% if config.hero_image %}
+                                <img src="{{ config.hero_image.url }}" alt="Current Hero" class="max-h-20 mx-auto mb-2">
+                                <p class="text-sm text-gray-600 mb-2">Current Hero Image</p>
+                            {% else %}
+                                <i class="fas fa-image text-gray-400 text-3xl mb-2"></i>
+                                <p class="text-gray-600">Upload hero image</p>
+                            {% endif %}
+                            <input type="file" id="heroFile" name="hero_image" class="hidden" accept="image/*" onchange="handleFileUpload('hero_image', this)">
+                            <button type="button" onclick="document.getElementById('heroFile').click()" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                Choose File
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page Images Section -->
+                <div class="mt-8">
+                    <h4 class="text-lg font-medium text-gray-900 mb-4">Page Hero Images</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">About Page</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="aboutPageUploadArea">
+                                {% if config.about_page_image %}
+                                    <img src="{{ config.about_page_image.url }}" alt="About Page" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-info-circle text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">About image</p>
+                                {% endif %}
+                                <input type="file" id="aboutPageFile" name="about_page_image" class="hidden" accept="image/*" onchange="handleFileUpload('about_page_image', this)">
+                                <button type="button" onclick="document.getElementById('aboutPageFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Services Page</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="servicesPageUploadArea">
+                                {% if config.services_page_image %}
+                                    <img src="{{ config.services_page_image.url }}" alt="Services Page" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-cogs text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">Services image</p>
+                                {% endif %}
+                                <input type="file" id="servicesPageFile" name="services_page_image" class="hidden" accept="image/*" onchange="handleFileUpload('services_page_image', this)">
+                                <button type="button" onclick="document.getElementById('servicesPageFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Resources Page</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="resourcesPageUploadArea">
+                                {% if config.resources_page_image %}
+                                    <img src="{{ config.resources_page_image.url }}" alt="Resources Page" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-book text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">Resources image</p>
+                                {% endif %}
+                                <input type="file" id="resourcesPageFile" name="resources_page_image" class="hidden" accept="image/*" onchange="handleFileUpload('resources_page_image', this)">
+                                <button type="button" onclick="document.getElementById('resourcesPageFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Contact Page</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="contactPageUploadArea">
+                                {% if config.contact_page_image %}
+                                    <img src="{{ config.contact_page_image.url }}" alt="Contact Page" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-envelope text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">Contact image</p>
+                                {% endif %}
+                                <input type="file" id="contactPageFile" name="contact_page_image" class="hidden" accept="image/*" onchange="handleFileUpload('contact_page_image', this)">
+                                <button type="button" onclick="document.getElementById('contactPageFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Page Section Images -->
+                <div class="mt-8">
+                    <h4 class="text-lg font-medium text-gray-900 mb-4">About Page Section Images</h4>
+                    <p class="text-sm text-gray-600 mb-4">Images for specific sections on the About page.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Our Mission</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="aboutMissionUploadArea">
+                                {% if config.about_mission_image %}
+                                    <img src="{{ config.about_mission_image.url }}" alt="Our Mission" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-heart text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">Mission image</p>
+                                {% endif %}
+                                <input type="file" id="aboutMissionFile" name="about_mission_image" class="hidden" accept="image/*" onchange="handleFileUpload('about_mission_image', this)">
+                                <button type="button" onclick="document.getElementById('aboutMissionFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Our Approach</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="aboutApproachUploadArea">
+                                {% if config.about_approach_image %}
+                                    <img src="{{ config.about_approach_image.url }}" alt="Our Approach" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-lightbulb text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">Approach image</p>
+                                {% endif %}
+                                <input type="file" id="aboutApproachFile" name="about_approach_image" class="hidden" accept="image/*" onchange="handleFileUpload('about_approach_image', this)">
+                                <button type="button" onclick="document.getElementById('aboutApproachFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Default Service Images Section -->
+                <div class="mt-8">
+                    <h4 class="text-lg font-medium text-gray-900 mb-4">Default Service Category Images</h4>
+                    <p class="text-sm text-gray-600 mb-4">These images are used as fallbacks when individual services don't have images uploaded.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">University Services</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="universityDefaultUploadArea">
+                                {% if config.university_default_image %}
+                                    <img src="{{ config.university_default_image.url }}" alt="University Default" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-university text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">University</p>
+                                {% endif %}
+                                <input type="file" id="universityDefaultFile" name="university_default_image" class="hidden" accept="image/*" onchange="handleFileUpload('university_default_image', this)">
+                                <button type="button" onclick="document.getElementById('universityDefaultFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Scholarship Services</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="scholarshipDefaultUploadArea">
+                                {% if config.scholarship_default_image %}
+                                    <img src="{{ config.scholarship_default_image.url }}" alt="Scholarship Default" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-graduation-cap text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">Scholarship</p>
+                                {% endif %}
+                                <input type="file" id="scholarshipDefaultFile" name="scholarship_default_image" class="hidden" accept="image/*" onchange="handleFileUpload('scholarship_default_image', this)">
+                                <button type="button" onclick="document.getElementById('scholarshipDefaultFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Digital Skills</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="digitalDefaultUploadArea">
+                                {% if config.digital_default_image %}
+                                    <img src="{{ config.digital_default_image.url }}" alt="Digital Default" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-laptop-code text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">Digital</p>
+                                {% endif %}
+                                <input type="file" id="digitalDefaultFile" name="digital_default_image" class="hidden" accept="image/*" onchange="handleFileUpload('digital_default_image', this)">
+                                <button type="button" onclick="document.getElementById('digitalDefaultFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Consultancy</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="consultancyDefaultUploadArea">
+                                {% if config.consultancy_default_image %}
+                                    <img src="{{ config.consultancy_default_image.url }}" alt="Consultancy Default" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-handshake text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">Consultancy</p>
+                                {% endif %}
+                                <input type="file" id="consultancyDefaultFile" name="consultancy_default_image" class="hidden" accept="image/*" onchange="handleFileUpload('consultancy_default_image', this)">
+                                <button type="button" onclick="document.getElementById('consultancyDefaultFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">General Default</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center" id="generalDefaultUploadArea">
+                                {% if config.general_default_image %}
+                                    <img src="{{ config.general_default_image.url }}" alt="General Default" class="max-h-16 mx-auto mb-2">
+                                {% else %}
+                                    <i class="fas fa-image text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-xs text-gray-600">General</p>
+                                {% endif %}
+                                <input type="file" id="generalDefaultFile" name="general_default_image" class="hidden" accept="image/*" onchange="handleFileUpload('general_default_image', this)">
+                                <button type="button" onclick="document.getElementById('generalDefaultFile').click()" class="mt-1 bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700">
+                                    Choose
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Primary Color</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color" id="primaryColorPicker" value="{{ config.primary_color }}" class="w-12 h-10 border border-gray-300 rounded" onchange="updateColorText('primaryColor', this.value)">
+                            <input type="text" id="primaryColor" name="primary_color" value="{{ config.primary_color }}" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="updateColorPicker('primaryColorPicker', this.value)">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Secondary Color</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color" id="secondaryColorPicker" value="{{ config.secondary_color }}" class="w-12 h-10 border border-gray-300 rounded" onchange="updateColorText('secondaryColor', this.value)">
+                            <input type="text" id="secondaryColor" name="secondary_color" value="{{ config.secondary_color }}" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="updateColorPicker('secondaryColorPicker', this.value)">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Accent Color</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color" id="accentColorPicker" value="{{ config.accent_color }}" class="w-12 h-10 border border-gray-300 rounded" onchange="updateColorText('accentColor', this.value)">
+                            <input type="text" id="accentColor" name="accent_color" value="{{ config.accent_color }}" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="updateColorPicker('accentColorPicker', this.value)">
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Custom CSS</label>
+                    <textarea rows="6" id="customCSS" name="custom_css" placeholder="/* Add your custom CSS here */" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm">{{ config.custom_css|default:"" }}</textarea>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" onclick="saveBrandingSettings(event)" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Email Settings -->
+    <div id="email-content" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-6">Email Settings</h3>
+            <form id="emailForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Backend</label>
+                    <select id="emailBackend" name="email_backend" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onchange="toggleEmailFields()">
+                        <option value="django.core.mail.backends.smtp.EmailBackend" {% if config.email_backend == 'django.core.mail.backends.smtp.EmailBackend' %}selected{% endif %}>SMTP (Production)</option>
+                        <option value="django.core.mail.backends.console.EmailBackend" {% if config.email_backend == 'django.core.mail.backends.console.EmailBackend' %}selected{% endif %}>Console (Development)</option>
+                        <option value="django.core.mail.backends.dummy.EmailBackend" {% if config.email_backend == 'django.core.mail.backends.dummy.EmailBackend' %}selected{% endif %}>Dummy (No Email)</option>
+                    </select>
+                    <p class="text-sm text-gray-500 mt-1">Choose SMTP for production, Console for development</p>
+                </div>
+
+                <div id="smtpSettings" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">SMTP Host</label>
+                            <input type="text" id="emailHost" name="email_host" value="{{ config.email_host }}" placeholder="smtp.gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">
+                                <strong>Gmail:</strong> smtp.gmail.com | <strong>Zoho:</strong> smtp.zoho.com | <strong>Outlook:</strong> smtp-mail.outlook.com
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">SMTP Port</label>
+                            <input type="number" id="emailPort" name="email_port" value="{{ config.email_port }}" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-xs text-gray-500 mt-1">TLS: 587, SSL: 465</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">SMTP Username</label>
+                            <input type="email" id="emailHostUser" name="email_host_user" value="{{ config.email_host_user }}" placeholder="your-email@gmail.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">SMTP Password</label>
+                            <input type="password" id="emailHostPassword" name="email_host_password" value="{{ config.email_host_password }}" placeholder="••••••••" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onpaste="cleanAppPassword(this)" onblur="cleanAppPassword(this)">
+                            <p class="text-xs text-gray-500 mt-1">
+                                <strong>Gmail:</strong> Use App Password (requires 2FA) | <strong>Others:</strong> Use regular password
+                            </p>
+                            <p class="text-xs text-blue-600 mt-1">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                <a href="#" onclick="showGmailHelp()" class="underline">Gmail setup help</a>
+                            </p>
+                            <p class="text-xs text-green-600 mt-1" id="passwordCleanedMessage" style="display: none;">
+                                <i class="fas fa-check-circle mr-1"></i>
+                                Spaces removed from App Password
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="emailUseTLS" name="email_use_tls" {% if config.email_use_tls %}checked{% endif %} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <label for="emailUseTLS" class="ml-2 text-sm text-gray-700">Use TLS encryption</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="emailUseSSL" name="email_use_ssl" {% if config.email_use_ssl %}checked{% endif %} class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <label for="emailUseSSL" class="ml-2 text-sm text-gray-700">Use SSL encryption</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Default From Email</label>
+                    <input type="email" id="defaultFromEmail" name="default_from_email" value="{{ config.default_from_email }}" placeholder="noreply@edubridgeghana.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 class="font-medium text-blue-900 mb-2">Quick Setup Guides</h4>
+                    <div class="space-y-2 text-sm text-blue-800">
+                        <p><strong>Gmail:</strong> Host: smtp.gmail.com, Port: 587, TLS: Yes, Use App Password</p>
+                        <p><strong>Zoho:</strong> Host: smtp.zoho.com, Port: 587, TLS: Yes, Use App Password</p>
+                        <p><strong>Outlook:</strong> Host: smtp-mail.outlook.com, Port: 587, TLS: Yes</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between">
+                    <button type="button" onclick="testEmail()" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-paper-plane mr-2"></i>Test Email
+                    </button>
+                    <button type="submit" onclick="saveEmailSettings(event)" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Social Media Settings -->
+    <div id="social-content" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-6">Social Media Settings</h3>
+            <form id="socialForm" class="space-y-6">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fab fa-facebook-f text-blue-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
+                            <input type="url" id="facebookUrl" name="facebook_url" value="{{ config.facebook_url }}" placeholder="https://facebook.com/edubridgeghana" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fab fa-twitter text-blue-400"></i>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Twitter</label>
+                            <input type="url" id="twitterUrl" name="twitter_url" value="{{ config.twitter_url }}" placeholder="https://twitter.com/edubridgeghana" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                            <i class="fab fa-instagram text-pink-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+                            <input type="url" id="instagramUrl" name="instagram_url" value="{{ config.instagram_url }}" placeholder="https://instagram.com/edubridgeghana" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fab fa-linkedin text-blue-700"></i>
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                            <input type="url" id="linkedinUrl" name="linkedin_url" value="{{ config.linkedin_url }}" placeholder="https://linkedin.com/company/edubridgeghana" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" onclick="saveSocialSettings(event)" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Advanced Settings -->
+    <div id="advanced-content" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-6">Advanced Settings</h3>
+            <form class="space-y-6">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Maintenance Mode</h4>
+                            <p class="text-sm text-gray-600">Put the site in maintenance mode</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="maintenanceMode" {% if config.maintenance_mode %}checked{% endif %} class="sr-only" onchange="toggleSetting('maintenance_mode', this.checked); updateToggleUI(this)">
+                            <div class="toggle-switch w-11 h-6 bg-gray-300 rounded-full relative transition-colors duration-200 {% if config.maintenance_mode %}bg-blue-600{% endif %}">
+                                <div class="toggle-slider absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-200 {% if config.maintenance_mode %}transform translate-x-5{% endif %}"></div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div>
+                            <h4 class="font-medium text-gray-900">User Registration</h4>
+                            <p class="text-sm text-gray-600">Allow new users to register</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="userRegistration" {% if config.allow_user_registration %}checked{% endif %} class="sr-only" onchange="toggleSetting('allow_user_registration', this.checked); updateToggleUI(this)">
+                            <div class="toggle-switch w-11 h-6 bg-gray-300 rounded-full relative transition-colors duration-200 {% if config.allow_user_registration %}bg-blue-600{% endif %}">
+                                <div class="toggle-slider absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-200 {% if config.allow_user_registration %}transform translate-x-5{% endif %}"></div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Email Verification</h4>
+                            <p class="text-sm text-gray-600">Require email verification for new users</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="emailVerification" {% if config.require_email_verification %}checked{% endif %} class="sr-only" onchange="toggleSetting('require_email_verification', this.checked); updateToggleUI(this)">
+                            <div class="toggle-switch w-11 h-6 bg-gray-300 rounded-full relative transition-colors duration-200 {% if config.require_email_verification %}bg-blue-600{% endif %}">
+                                <div class="toggle-slider absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-200 {% if config.require_email_verification %}transform translate-x-5{% endif %}"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Google Analytics ID</label>
+                    <input type="text" id="googleAnalyticsId" value="{{ config.google_analytics_id }}" placeholder="G-XXXXXXXXXX" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Custom Header Scripts</label>
+                    <textarea rows="4" id="customHeaderScripts" placeholder="<!-- Add custom scripts here -->" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm">{{ config.custom_header_scripts }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Custom Footer Scripts</label>
+                    <textarea rows="4" id="customFooterScripts" placeholder="<!-- Add custom scripts here -->" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm">{{ config.custom_footer_scripts }}</textarea>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button type="submit" onclick="saveAdvancedSettings(event)" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showTab(tabName) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+    });
+    
+    // Remove active class from all tabs
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('border-blue-500', 'text-blue-600');
+        button.classList.add('border-transparent', 'text-gray-500');
+    });
+    
+    // Show selected tab content
+    document.getElementById(tabName + '-content').classList.remove('hidden');
+    
+    // Add active class to selected tab
+    const activeTab = document.getElementById(tabName + '-tab');
+    activeTab.classList.remove('border-transparent', 'text-gray-500');
+    activeTab.classList.add('border-blue-500', 'text-blue-600');
+}
+
+// Update toggle UI
+function updateToggleUI(checkbox) {
+    const toggleSwitch = checkbox.nextElementSibling;
+    const slider = toggleSwitch.querySelector('.toggle-slider');
+
+    if (checkbox.checked) {
+        toggleSwitch.classList.remove('bg-gray-300');
+        toggleSwitch.classList.add('bg-blue-600');
+        slider.classList.add('transform', 'translate-x-5');
+    } else {
+        toggleSwitch.classList.remove('bg-blue-600');
+        toggleSwitch.classList.add('bg-gray-300');
+        slider.classList.remove('transform', 'translate-x-5');
+    }
+}
+
+// Toggle setting function for advanced settings
+function toggleSetting(settingName, value) {
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+
+    const data = {};
+    data[settingName] = value;
+
+    fetch('/dashboard/api/admin/settings/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            showNotification('Setting updated successfully!', 'success');
+        } else {
+            // Show error message and revert toggle
+            showNotification('Error updating setting: ' + data.error, 'error');
+            // Revert the toggle
+            const checkbox = document.getElementById(getCheckboxId(settingName));
+            if (checkbox) {
+                checkbox.checked = !value;
+                updateToggleUI(checkbox);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error updating setting', 'error');
+        // Revert the toggle
+        const checkbox = document.getElementById(getCheckboxId(settingName));
+        if (checkbox) {
+            checkbox.checked = !value;
+            updateToggleUI(checkbox);
+        }
+    });
+}
+
+function getCheckboxId(settingName) {
+    const mapping = {
+        'maintenance_mode': 'maintenanceMode',
+        'allow_user_registration': 'userRegistration',
+        'require_email_verification': 'emailVerification'
+    };
+    return mapping[settingName];
+}
+
+function saveAdvancedSettings(event) {
+    event.preventDefault();
+
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+
+    const data = {
+        google_analytics_id: document.getElementById('googleAnalyticsId').value,
+        custom_header_scripts: document.getElementById('customHeaderScripts').value,
+        custom_footer_scripts: document.getElementById('customFooterScripts').value
+    };
+
+    fetch('/dashboard/api/admin/settings/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Advanced settings saved successfully!', 'success');
+        } else {
+            showNotification('Error saving settings: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error saving settings', 'error');
+    });
+}
+
+function showNotification(message, type) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+        type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+    }`;
+    notification.textContent = message;
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// File upload handling
+function handleFileUpload(fileType, input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const uploadArea = document.getElementById(fileType + 'UploadArea') ||
+                          document.getElementById(fileType.replace('_', '') + 'UploadArea');
+        if (uploadArea) {
+            const img = uploadArea.querySelector('img');
+            if (img) {
+                img.src = e.target.result;
+            } else {
+                // Create new image element
+                const newImg = document.createElement('img');
+                newImg.src = e.target.result;
+                newImg.className = 'max-h-20 mx-auto mb-2';
+                newImg.alt = 'Preview';
+
+                // Replace icon with image
+                const icon = uploadArea.querySelector('i');
+                const text = uploadArea.querySelector('p');
+                if (icon) icon.style.display = 'none';
+                if (text) text.textContent = 'File selected: ' + file.name;
+
+                uploadArea.insertBefore(newImg, uploadArea.querySelector('button'));
+            }
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+// Color picker synchronization
+function updateColorText(textInputId, colorValue) {
+    document.getElementById(textInputId).value = colorValue;
+}
+
+function updateColorPicker(pickerInputId, textValue) {
+    if (/^#[0-9A-F]{6}$/i.test(textValue)) {
+        document.getElementById(pickerInputId).value = textValue;
+    }
+}
+
+// Branding form submission
+function saveBrandingSettings(event) {
+    event.preventDefault();
+
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+
+    const form = document.getElementById('brandingForm');
+    const formData = new FormData(form);
+
+    fetch('/dashboard/api/admin/settings/upload/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Branding settings saved successfully!', 'success');
+
+            // Update image previews if new URLs are provided
+            const imageUpdates = {
+                'logo_url': '#logoUploadArea img',
+                'favicon_url': '#faviconUploadArea img',
+                'hero_image_url': '#heroUploadArea img',
+                'about_page_image_url': '#aboutPageUploadArea img',
+                'services_page_image_url': '#servicesPageUploadArea img',
+                'resources_page_image_url': '#resourcesPageUploadArea img',
+                'contact_page_image_url': '#contactPageUploadArea img',
+                'about_mission_image_url': '#aboutMissionUploadArea img',
+                'about_approach_image_url': '#aboutApproachUploadArea img',
+                'university_default_image_url': '#universityDefaultUploadArea img',
+                'scholarship_default_image_url': '#scholarshipDefaultUploadArea img',
+                'digital_default_image_url': '#digitalDefaultUploadArea img',
+                'consultancy_default_image_url': '#consultancyDefaultUploadArea img',
+                'general_default_image_url': '#generalDefaultUploadArea img'
+            };
+
+            Object.keys(imageUpdates).forEach(urlKey => {
+                if (data[urlKey]) {
+                    const img = document.querySelector(imageUpdates[urlKey]);
+                    if (img) {
+                        img.src = data[urlKey];
+                    } else {
+                        // Create new image if it doesn't exist
+                        const uploadArea = document.querySelector(imageUpdates[urlKey].replace(' img', ''));
+                        if (uploadArea) {
+                            const newImg = document.createElement('img');
+                            newImg.src = data[urlKey];
+                            newImg.className = uploadArea.id.includes('Page') || uploadArea.id.includes('Default') ? 'max-h-16 mx-auto mb-2' : 'max-h-20 mx-auto mb-2';
+                            newImg.alt = 'Uploaded Image';
+
+                            // Hide icon and update text
+                            const icon = uploadArea.querySelector('i');
+                            const text = uploadArea.querySelector('p');
+                            if (icon) icon.style.display = 'none';
+                            if (text) text.textContent = 'Image uploaded';
+
+                            uploadArea.insertBefore(newImg, uploadArea.querySelector('button'));
+                        }
+                    }
+                }
+            });
+        } else {
+            showNotification('Error saving branding settings: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error saving branding settings', 'error');
+    });
+}
+
+// Email settings functions
+function toggleEmailFields() {
+    const backend = document.getElementById('emailBackend').value;
+    const smtpSettings = document.getElementById('smtpSettings');
+
+    if (backend === 'django.core.mail.backends.smtp.EmailBackend') {
+        smtpSettings.style.display = 'block';
+    } else {
+        smtpSettings.style.display = 'none';
+    }
+}
+
+function showGmailHelp() {
+    const helpText = `
+Gmail SMTP Setup Guide:
+
+1. Enable 2-Factor Authentication:
+   - Go to Google Account → Security
+   - Enable 2-Step Verification
+
+2. Generate App Password:
+   - Go to Google Account → Security → App passwords
+   - Select "Mail" and "Other (Custom name)"
+   - Enter "Edunox GH" as the name
+   - Copy the 16-character password
+
+3. Use these settings:
+   - Host: smtp.gmail.com
+   - Port: 587
+   - Username: Your full Gmail address
+   - Password: The App Password (not your regular password)
+   - TLS: Enabled
+   - SSL: Disabled
+
+4. Common Issues:
+   - "Username and Password not accepted" → Use App Password
+   - "Less secure app access" → Enable 2FA and use App Password
+   - Connection refused → Check host and port settings
+
+Need more help? Check the Gmail Setup Guide documentation.
+    `;
+
+    alert(helpText);
+}
+
+function cleanAppPassword(input) {
+    const originalValue = input.value;
+    const cleanedValue = originalValue.replace(/\s/g, ''); // Remove all whitespace
+
+    if (originalValue !== cleanedValue && cleanedValue.length > 0) {
+        input.value = cleanedValue;
+
+        // Show message that spaces were removed
+        const message = document.getElementById('passwordCleanedMessage');
+        if (message) {
+            message.style.display = 'block';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 3000);
+        }
+    }
+}
+
+function saveEmailSettings(event) {
+    event.preventDefault();
+
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+
+    // Collect form data manually to handle checkboxes properly
+    const data = {
+        email_backend: document.getElementById('emailBackend').value,
+        email_host: document.getElementById('emailHost').value,
+        email_port: parseInt(document.getElementById('emailPort').value) || 587,
+        email_use_tls: document.getElementById('emailUseTLS').checked,
+        email_use_ssl: document.getElementById('emailUseSSL').checked,
+        email_host_user: document.getElementById('emailHostUser').value,
+        email_host_password: document.getElementById('emailHostPassword').value.replace(/\s/g, ''), // Remove spaces
+        default_from_email: document.getElementById('defaultFromEmail').value
+    };
+
+    // Validate required fields for SMTP
+    if (data.email_backend === 'django.core.mail.backends.smtp.EmailBackend') {
+        if (!data.email_host.trim()) {
+            showNotification('SMTP host is required for SMTP backend', 'error');
+            return;
+        }
+        if (!data.email_host_user.trim()) {
+            showNotification('SMTP username is required for SMTP backend', 'error');
+            return;
+        }
+        if (!data.email_host_password.trim()) {
+            showNotification('SMTP password is required for SMTP backend', 'error');
+            return;
+        }
+        if (!data.default_from_email.trim()) {
+            showNotification('Default from email is required', 'error');
+            return;
+        }
+    }
+
+    // Show loading state
+    const saveButton = event.target;
+    const originalText = saveButton.innerHTML;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+    saveButton.disabled = true;
+
+    fetch('/dashboard/api/admin/settings/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Email settings saved successfully!', 'success');
+        } else {
+            showNotification('Error saving email settings: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error saving email settings', 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        saveButton.innerHTML = originalText;
+        saveButton.disabled = false;
+    });
+}
+
+function testEmail() {
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+
+    // First save the current settings before testing
+    const emailData = {
+        email_backend: document.getElementById('emailBackend').value,
+        email_host: document.getElementById('emailHost').value,
+        email_port: parseInt(document.getElementById('emailPort').value) || 587,
+        email_use_tls: document.getElementById('emailUseTLS').checked,
+        email_use_ssl: document.getElementById('emailUseSSL').checked,
+        email_host_user: document.getElementById('emailHostUser').value,
+        email_host_password: document.getElementById('emailHostPassword').value.replace(/\s/g, ''), // Remove spaces
+        default_from_email: document.getElementById('defaultFromEmail').value
+    };
+
+    // Validate required fields before testing
+    if (emailData.email_backend === 'django.core.mail.backends.smtp.EmailBackend') {
+        if (!emailData.email_host.trim()) {
+            showNotification('Please configure SMTP host before testing', 'error');
+            return;
+        }
+        if (!emailData.email_host_user.trim()) {
+            showNotification('Please configure SMTP username before testing', 'error');
+            return;
+        }
+        if (!emailData.email_host_password.trim()) {
+            showNotification('Please configure SMTP password before testing', 'error');
+            return;
+        }
+    }
+
+    const testEmailAddress = prompt('Enter email address to send test email to:', emailData.email_host_user || 'admin@example.com');
+
+    if (!testEmailAddress) return;
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(testEmailAddress)) {
+        showNotification('Please enter a valid email address', 'error');
+        return;
+    }
+
+    // Get the test button (need to find it since event.target might not be available)
+    const testButton = document.querySelector('button[onclick="testEmail()"]');
+    const originalText = testButton.innerHTML;
+    testButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+    testButton.disabled = true;
+
+    // First save the settings, then test
+    fetch('/dashboard/api/admin/settings/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(emailData)
+    })
+    .then(response => response.json())
+    .then(saveData => {
+        if (saveData.success) {
+            // Settings saved, now test email
+            return fetch('/dashboard/api/admin/settings/test-email/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ test_email: testEmailAddress })
+            });
+        } else {
+            throw new Error('Failed to save email settings: ' + saveData.error);
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification(data.message, 'success');
+        } else {
+            showNotification('Test email failed: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error sending test email: ' + error.message, 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        testButton.innerHTML = originalText;
+        testButton.disabled = false;
+    });
+}
+
+// Helper function to get CSRF token
+function getCSRFToken() {
+    const token = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (!token) {
+        console.error('CSRF token not found');
+        showNotification('Security token not found. Please refresh the page.', 'error');
+        return null;
+    }
+    return token.value;
+}
+
+// General settings form submission
+function saveGeneralSettings(event) {
+    event.preventDefault();
+
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+
+    const data = {
+        site_name: document.getElementById('siteName').value,
+        site_description: document.getElementById('siteDescription').value,
+        contact_email: document.getElementById('contactEmail').value,
+        contact_phone: document.getElementById('contactPhone').value,
+        address: document.getElementById('address').value,
+        library_url: document.getElementById('libraryUrl').value,
+        library_opens_new_tab: document.getElementById('libraryOpensNewTab').checked,
+        jobs_url: document.getElementById('jobsUrl').value,
+        jobs_opens_new_tab: document.getElementById('jobsOpensNewTab').checked
+    };
+
+    // Validate required fields
+    if (!data.site_name.trim()) {
+        showNotification('Site name is required', 'error');
+        return;
+    }
+    if (!data.contact_email.trim()) {
+        showNotification('Contact email is required', 'error');
+        return;
+    }
+
+    fetch('/dashboard/api/admin/settings/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('General settings saved successfully!', 'success');
+        } else {
+            showNotification('Error saving general settings: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error saving general settings. Please try again.', 'error');
+    });
+}
+
+// Social media settings form submission
+function saveSocialSettings(event) {
+    event.preventDefault();
+
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+
+    const data = {
+        facebook_url: document.getElementById('facebookUrl').value,
+        twitter_url: document.getElementById('twitterUrl').value,
+        instagram_url: document.getElementById('instagramUrl').value,
+        linkedin_url: document.getElementById('linkedinUrl').value
+    };
+
+    fetch('/dashboard/api/admin/settings/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Social media settings saved successfully!', 'success');
+        } else {
+            showNotification('Error saving social media settings: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error saving social media settings. Please try again.', 'error');
+    });
+}
+
+// Initialize first tab as active
+document.addEventListener('DOMContentLoaded', function() {
+    showTab('general');
+    toggleEmailFields(); // Initialize email fields visibility
+});
+</script>
+{% endblock %}

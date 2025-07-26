@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Book {{ service.name }} - EduBridge Ghana{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    .time-slot {
+        transition: all 0.2s ease;
+    }
+    .time-slot:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .time-slot.selected {
+        background-color: #3B82F6;
+        color: white;
+        border-color: #3B82F6;
+    }
+    .time-slot.unavailable {
+        background-color: #F3F4F6;
+        color: #9CA3AF;
+        cursor: not-allowed;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center mb-4">
+                <a href="{% url 'services:detail' service.pk %}" class="text-blue-600 hover:text-blue-700 mr-4">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Service
+                </a>
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                    {{ service.category.name }}
+                </span>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900">Book {{ service.name }}</h1>
+            <p class="text-gray-600 mt-2">Schedule your appointment and provide any additional details</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Booking Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <form method="post" id="bookingForm" class="space-y-6">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="rounded-md bg-red-50 p-4">
+                                <div class="text-sm text-red-700">
+                                    {{ form.non_field_errors.0 }}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Step 1: Date Selection -->
+                        <div class="booking-step" id="step-1">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                                <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full mr-3 text-sm">1</span>
+                                Choose Date
+                            </h2>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label>
+                                <input type="text"
+                                       id="datePicker"
+                                       name="preferred_date"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm"
+                                       placeholder="Select a date"
+                                       required>
+                                {% if form.preferred_date.errors %}
+                                    <div class="mt-1 text-sm text-red-600">{{ form.preferred_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Time Selection -->
+                        <div class="booking-step" id="step-2">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                                <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full mr-3 text-sm">2</span>
+                                Choose Time
+                            </h2>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-4">Available Time Slots</label>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="timeSlots">
+                                    <!-- Time slots will be populated by JavaScript -->
+                                </div>
+                                <input type="hidden" name="preferred_time" id="selectedTime" required>
+                                {% if form.preferred_time.errors %}
+                                    <div class="mt-1 text-sm text-red-600">{{ form.preferred_time.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Additional Information -->
+                        <div class="booking-step" id="step-3">
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">
+                                <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-600 text-white rounded-full mr-3 text-sm">3</span>
+                                Additional Information
+                            </h2>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Message (Optional)</label>
+                                    <textarea name="message"
+                                              rows="4"
+                                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm resize-none"
+                                              placeholder="Tell us about your specific needs, goals, or any questions you have...">{{ form.message.value|default:'' }}</textarea>
+                                    {% if form.message.errors %}
+                                        <div class="mt-1 text-sm text-red-600">{{ form.message.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Contact Method</label>
+                                    <select name="contact_method" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm">
+                                        <option value="EMAIL">Email</option>
+                                        <option value="PHONE">Phone Call</option>
+                                        <option value="WHATSAPP">WhatsApp</option>
+                                        <option value="IN_PERSON">In Person</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Emergency Contact (Optional)</label>
+                                    <input type="text" 
+                                           name="emergency_contact" 
+                                           class="form-control"
+                                           placeholder="Emergency contact number">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="border-t border-gray-200 pt-6">
+                            <div class="flex items-start">
+                                <input type="checkbox" 
+                                       id="terms" 
+                                       name="terms" 
+                                       required
+                                       class="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="terms" class="ml-3 text-sm text-gray-600">
+                                    I agree to the <a href="{% url 'core:terms' %}" class="text-blue-600 hover:text-blue-700">Terms of Service</a>
+                                    and <a href="{% url 'core:privacy' %}" class="text-blue-600 hover:text-blue-700">Privacy Policy</a>.
+                                    I understand that this booking is subject to confirmation.
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-6">
+                            <button type="submit" 
+                                    class="w-full bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors"
+                                    id="submitButton">
+                                <i class="fas fa-calendar-check mr-2"></i>
+                                Book Service - GHS {{ service.price }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Booking Summary -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow p-6 sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Booking Summary</h3>
+                    
+                    <!-- Service Info -->
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-{{ service.icon|default:'star' }} text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-900">{{ service.name }}</h4>
+                            <p class="text-sm text-gray-600">{{ service.category.name }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Booking Details -->
+                    <div class="space-y-4 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Duration:</span>
+                            <span class="font-medium">{{ service.duration }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Date:</span>
+                            <span class="font-medium" id="summaryDate">Not selected</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Time:</span>
+                            <span class="font-medium" id="summaryTime">Not selected</span>
+                        </div>
+                        <div class="flex justify-between border-t border-gray-200 pt-4">
+                            <span class="text-lg font-semibold">Total:</span>
+                            <span class="text-lg font-bold text-blue-600">GHS {{ service.price }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Service Features -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <h4 class="font-medium text-gray-900 mb-3">What's Included:</h4>
+                        <ul class="space-y-2 text-sm text-gray-600">
+                            {% for feature in service.features_list|slice:":4" %}
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                {{ feature }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="border-t border-gray-200 pt-6 mt-6">
+                        <h4 class="font-medium text-gray-900 mb-3">Need Help?</h4>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <div class="flex items-center">
+                                <i class="fas fa-phone mr-2"></i>
+                                <span>+233 XX XXX XXXX</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-envelope mr-2"></i>
+                                <span>info@Edunox.com</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize date picker
+    const datePicker = flatpickr("#datePicker", {
+        minDate: "today",
+        maxDate: new Date().fp_incr(60), // 60 days from today
+        disable: [
+            function(date) {
+                // Disable Sundays (0 = Sunday)
+                return date.getDay() === 0;
+            }
+        ],
+        onChange: function(selectedDates, dateStr, instance) {
+            if (selectedDates.length > 0) {
+                updateSummaryDate(dateStr);
+                loadTimeSlots(dateStr);
+            }
+        }
+    });
+
+    // Time slots data (in a real app, this would come from the server)
+    const timeSlots = [
+        '09:00', '10:00', '11:00', '12:00', 
+        '14:00', '15:00', '16:00', '17:00'
+    ];
+
+    function loadTimeSlots(date) {
+        const timeSlotsContainer = document.getElementById('timeSlots');
+        timeSlotsContainer.innerHTML = '';
+
+        timeSlots.forEach(time => {
+            const slot = document.createElement('button');
+            slot.type = 'button';
+            slot.className = 'time-slot p-3 border border-gray-300 rounded-lg text-center hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500';
+            slot.textContent = time;
+            slot.onclick = () => selectTimeSlot(slot, time);
+            
+            // Randomly mark some slots as unavailable for demo
+            if (Math.random() < 0.2) {
+                slot.classList.add('unavailable');
+                slot.disabled = true;
+            }
+            
+            timeSlotsContainer.appendChild(slot);
+        });
+    }
+
+    function selectTimeSlot(element, time) {
+        // Remove selection from other slots
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.classList.remove('selected');
+        });
+        
+        // Select current slot
+        element.classList.add('selected');
+        document.getElementById('selectedTime').value = time;
+        updateSummaryTime(time);
+    }
+
+    function updateSummaryDate(date) {
+        document.getElementById('summaryDate').textContent = new Date(date).toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    function updateSummaryTime(time) {
+        document.getElementById('summaryTime').textContent = time;
+    }
+
+    // Form submission
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        const submitButton = document.getElementById('submitButton');
+        const originalText = submitButton.innerHTML;
+        
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing Booking...';
+        
+        // Re-enable button after 3 seconds (in case of validation errors)
+        setTimeout(() => {
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        }, 3000);
+    });
+});
+</script>
+{% endblock %}

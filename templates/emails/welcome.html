@@ -1,0 +1,93 @@
+{% extends 'emails/base.html' %}
+
+{% block title %}Welcome to Edunox GH{% endblock %}
+
+{% block header_title %}Welcome to Edunox GH!{% endblock %}
+{% block header_subtitle %}Your educational journey starts here{% endblock %}
+
+{% block content %}
+<h2>Hello {{ user.get_full_name|default:user.username }}!</h2>
+
+<p>Welcome to <strong>Edunox GH</strong>! We're thrilled to have you join our community of ambitious learners and future leaders.</p>
+
+<div class="success-box">
+    <p><strong>Your account has been successfully created!</strong> You now have access to our comprehensive educational support services and resources.</p>
+</div>
+
+<h3>What You Can Do Now</h3>
+<p>Here are some ways to get started with your Edunox GH account:</p>
+
+<div style="margin: 20px 0;">
+    <a href="{{ site_url }}{% url 'dashboard:profile' %}" class="button">Complete Your Profile</a>
+</div>
+
+<h3>🎯 Explore Our Services</h3>
+<ul>
+    <li><strong>University Application Support:</strong> Get expert guidance on applications to local and international universities</li>
+    <li><strong>Scholarship Guidance:</strong> Discover and apply for scholarships that match your profile</li>
+    <li><strong>Digital Literacy Training:</strong> Develop essential digital skills for the modern world</li>
+    <li><strong>Educational Consultancy:</strong> Receive personalized advice on your educational path</li>
+</ul>
+
+<div style="text-align: center; margin: 20px 0;">
+    <a href="{{ site_url }}{% url 'services:list' %}" class="button">Browse Services</a>
+</div>
+
+<h3>📚 Access Free Resources</h3>
+<p>Take advantage of our extensive library of educational resources:</p>
+<ul>
+    <li>University application guides and templates</li>
+    <li>Scholarship search and application tips</li>
+    <li>Digital literacy tutorials and materials</li>
+    <li>Career guidance and planning resources</li>
+</ul>
+
+<div style="text-align: center; margin: 20px 0;">
+    <a href="{{ site_url }}{% url 'resources:list' %}" class="button button-secondary">Explore Resources</a>
+</div>
+
+<h3>📋 Next Steps</h3>
+<p>To get the most out of your Edunox GH experience, we recommend:</p>
+
+<ol>
+    <li><strong>Complete Your Profile:</strong> Add your educational background and goals</li>
+    <li><strong>Upload Documents:</strong> Securely store your academic documents for easy access</li>
+    <li><strong>Browse Services:</strong> Explore our services and book your first consultation</li>
+    <li><strong>Join Our Community:</strong> Connect with us on social media for updates and tips</li>
+</ol>
+
+<div class="info-box">
+    <h3>🎁 Special Welcome Offer</h3>
+    <p>As a new member, you're eligible for a <strong>FREE 30-minute consultation</strong> with one of our educational advisors. This is a great opportunity to discuss your goals and create a personalized action plan.</p>
+    <div style="text-align: center; margin: 15px 0;">
+        <a href="{{ site_url }}{% url 'services:list' %}" class="button">Claim Your Free Consultation</a>
+    </div>
+</div>
+
+<h3>📞 Need Help?</h3>
+<p>Our support team is here to help you every step of the way:</p>
+<ul>
+    <li><strong>Email:</strong> {% if site_config %}{{ site_config.contact_email }}{% else %}info@Edunox.com{% endif %}</li>
+    <li><strong>Phone:</strong> {% if site_config %}{{ site_config.contact_phone }}{% else %}+233 XX XXX XXXX{% endif %}</li>
+    <li><strong>FAQ:</strong> <a href="{{ site_url }}{% url 'core:faq' %}">Frequently Asked Questions</a></li>
+    <li><strong>Contact Form:</strong> <a href="{{ site_url }}{% url 'contact:contact' %}">Send us a message</a></li>
+</ul>
+
+<h3>🌟 Our Mission</h3>
+<p>At Edunox GH, we believe that education is the link to a brighter future. Our mission is to empower Ghanaian students and professionals with the tools, knowledge, and support they need to achieve their educational and career aspirations.</p>
+
+<p>Whether you're applying to universities, seeking scholarships, or developing digital skills, we're here to guide you every step of the way.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ site_url }}{% url 'dashboard:home' %}" class="button">Go to Dashboard</a>
+</div>
+
+<p>Once again, welcome to the Edunox GH family! We're excited to be part of your educational journey.</p>
+
+<p>Best regards,<br>
+<strong>The Edunox GH Team</strong></p>
+
+<div class="info-box">
+    <p><strong>Stay Connected:</strong> Follow us on social media for educational tips, scholarship opportunities, and success stories from our community.</p>
+</div>
+{% endblock %}

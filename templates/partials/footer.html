@@ -1,0 +1,100 @@
+{% load static %}
+<footer class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Company Info -->
+            <div class="col-span-1 lg:col-span-2">
+                <div class="logo-container mb-4">
+                    {% load seo_tags %}
+                    <img class="site-logo h-9 w-auto" src="{% site_logo %}" alt="{% if site_config %}{{ site_config.site_name }}{% else %}Edunox GH{% endif %}">
+                    <span class="ml-3 text-xl font-bold">{% if site_config %}{{ site_config.site_name }}{% else %}Edunox GH{% endif %}</span>
+                </div>
+                <p class="text-gray-300 mb-4 max-w-md">
+                    {% if site_config %}{{ site_config.site_description }}{% else %}Empowering underserved students in Ghana with access to free and affordable university education through outreach, digital literacy support, and educational consultancy.{% endif %}
+                </p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-linkedin-in text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="{% url 'core:home' %}" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
+                    <li><a href="{% url 'core:about' %}" class="text-gray-300 hover:text-white transition-colors">About Us</a></li>
+                    <li><a href="{% url 'services:list' %}" class="text-gray-300 hover:text-white transition-colors">Our Services</a></li>
+                    <li><a href="{% url 'resources:list' %}" class="text-gray-300 hover:text-white transition-colors">E-Library</a></li>
+                    {% if site_config.jobs_url %}
+                        <li><a href="{{ site_config.jobs_url }}" {% if site_config.jobs_opens_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %} class="text-gray-300 hover:text-white transition-colors">Find Jobs{% if site_config.jobs_opens_new_tab %} <i class="fas fa-external-link-alt ml-1 text-xs"></i>{% endif %}</a></li>
+                    {% else %}
+                        <li><a href="{% url 'resources:list' %}" class="text-gray-300 hover:text-white transition-colors">Find Jobs</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'core:faq' %}" class="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                    <li><a href="{% url 'contact:contact' %}" class="text-gray-300 hover:text-white transition-colors">Contact Us</a></li>
+                    <li><a href="{% url 'core:terms' %}" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a></li>
+                    <li><a href="{% url 'core:privacy' %}" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a></li>
+                </ul>
+            </div>
+            
+            <!-- Services -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Our Services</h3>
+                <ul class="space-y-2">
+                    <li><a href="{% url 'services:uopeople_application' %}" class="text-gray-300 hover:text-white transition-colors">UoPeople Application</a></li>
+                    <li><a href="{% url 'services:ghana_university_application' %}" class="text-gray-300 hover:text-white transition-colors">Ghana Universities</a></li>
+                    <li><a href="{% url 'services:basic_computer_skills' %}" class="text-gray-300 hover:text-white transition-colors">Computer Skills</a></li>
+                    <li><a href="{% url 'services:online_learning_skills' %}" class="text-gray-300 hover:text-white transition-colors">Online Learning</a></li>
+                    <li><a href="{% url 'services:educational_counseling' %}" class="text-gray-300 hover:text-white transition-colors">Educational Counseling</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Contact Info -->
+        <div class="border-t border-gray-800 mt-8 pt-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex items-center">
+                    <i class="fas fa-map-marker-alt text-blue-400 mr-3"></i>
+                    <div>
+                        <p class="text-gray-300">{% if site_config %}{{ site_config.address }}{% else %}Accra, Ghana{% endif %}</p>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-phone text-blue-400 mr-3"></i>
+                    <div>
+                        <p class="text-gray-300">{% if site_config %}{{ site_config.contact_phone }}{% else %}+233 XX XXX XXXX{% endif %}</p>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-envelope text-blue-400 mr-3"></i>
+                    <div>
+                        <p class="text-gray-300">{% if site_config %}{{ site_config.contact_email }}{% else %}info@Edunox.com{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+
+        <!-- Bottom Bar -->
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-400 text-sm">
+                &copy; {% now "Y" %} Edunox GH. All rights reserved.
+            </p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <a href="{% url 'core:privacy' %}" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+                <a href="{% url 'core:terms' %}" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>

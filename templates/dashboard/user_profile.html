@@ -1,0 +1,833 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}My Profile - Edunox GH{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<!-- Include Dashboard Navigation -->
+{% include 'partials/dashboard_nav.html' %}
+
+<div class="lg:pl-64 min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-700 text-white py-6">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold">My Profile</h1>
+                    <p class="text-indigo-100 mt-1 text-sm sm:text-base">Manage your personal information and preferences</p>
+                </div>
+                <a href="{% url 'user_dashboard:home' %}" class="inline-flex items-center px-3 py-1.5 text-indigo-100 hover:text-white hover:bg-indigo-600 rounded-md text-sm font-medium transition-colors border border-indigo-400">
+                    <i class="fas fa-arrow-left text-xs mr-1.5"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Profile Picture & Basic Info -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow p-4">
+                    <div class="text-center">
+                        <div class="relative inline-block">
+                            {% if user.profile.profile_picture %}
+                                <img class="h-24 w-24 rounded-full object-cover mx-auto border-4 border-white shadow-lg" src="{{ user.profile.profile_picture.url }}" alt="{{ user.get_full_name }}">
+                            {% else %}
+                                <div class="h-24 w-24 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mx-auto border-4 border-white shadow-lg">
+                                    <span class="text-white text-2xl font-bold">{{ user.first_name|first|default:user.username|first }}</span>
+                                </div>
+                            {% endif %}
+
+                            <!-- Profile Picture Upload Button -->
+                            <button onclick="document.getElementById('profile-picture-input').click()" class="absolute bottom-0 right-0 bg-blue-600 text-white p-1.5 rounded-full hover:bg-blue-700 transition-colors shadow-md">
+                                <i class="fas fa-camera text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Hidden file input -->
+                        <form id="profile-picture-form" method="post" enctype="multipart/form-data" style="display: none;">
+                            {% csrf_token %}
+                            <input type="file" id="profile-picture-input" name="profile_picture" accept="image/*" onchange="uploadProfilePicture()">
+                        </form>
+
+                        <h3 class="mt-3 text-lg font-semibold text-gray-900">{{ user.get_full_name|default:user.username }}</h3>
+                        <p class="text-sm text-gray-600">{{ user.email }}</p>
+
+                        {% if user.profile.education_level %}
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mt-2">
+                                {{ user.profile.get_education_level_display }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="mt-4 space-y-2">
+                        <div class="flex items-center text-sm text-gray-600">
+                            <i class="fas fa-calendar mr-3 text-gray-400"></i>
+                            <span>Joined {{ user.date_joined|date:"M Y" }}</span>
+                        </div>
+                        
+                        {% if user.profile.phone_number %}
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-phone mr-3 text-gray-400"></i>
+                                <span>{{ user.profile.phone_number }}</span>
+                            </div>
+                        {% endif %}
+                        
+                        {% if user.profile.city %}
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-map-marker-alt mr-3 text-gray-400"></i>
+                                <span>{{ user.profile.city }}{% if user.profile.region %}, {{ user.profile.region }}{% endif %}</span>
+                            </div>
+                        {% endif %}
+                        
+                        {% if user.profile.school_name %}
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-graduation-cap mr-3 text-gray-400"></i>
+                                <span>{{ user.profile.school_name }}</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Email Verification Status -->
+                    {% with email_verification=user.email_verifications.first %}
+                    <div class="mt-6 p-4 rounded-lg {% if email_verification.is_verified %}bg-green-50 border border-green-200{% else %}bg-red-50 border border-red-200{% endif %}">
+                        {% if email_verification.is_verified %}
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                <span class="text-sm font-medium text-green-800">Email Verified</span>
+                            </div>
+                            <p class="text-xs text-green-700 mt-1">Your email address has been verified.</p>
+                        {% else %}
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-red-600 mr-2"></i>
+                                        <span class="text-sm font-medium text-red-800">Email Not Verified</span>
+                                    </div>
+                                    <p class="text-xs text-red-700 mt-1">Please verify your email address to access all features.</p>
+                                </div>
+                                <form method="post" action="{% url 'accounts:send_verification' %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="inline-flex items-center px-2 py-1 bg-red-600 text-white hover:bg-red-700 rounded text-xs font-medium transition-colors">
+                                        <i class="fas fa-envelope text-xs mr-1"></i>Send
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endwith %}
+
+                    <!-- Profile Verification Status -->
+                    <div class="mt-3 p-3 rounded-lg {% if user.profile.is_verified %}bg-green-50 border border-green-200{% else %}bg-yellow-50 border border-yellow-200{% endif %}">
+                        {% if user.profile.is_verified %}
+                            <div class="flex items-center">
+                                <i class="fas fa-check-circle text-green-600 mr-2 text-sm"></i>
+                                <span class="text-sm font-medium text-green-800">Profile Verified</span>
+                            </div>
+                        {% else %}
+                            <div class="flex items-center">
+                                <i class="fas fa-clock text-yellow-600 mr-2 text-sm"></i>
+                                <span class="text-sm font-medium text-yellow-800">Verification Pending</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="bg-white rounded-lg shadow p-6 mt-6">
+                    <h4 class="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Documents</span>
+                            <span class="text-sm font-medium text-gray-900">{{ user.documents.count }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Bookings</span>
+                            <span class="text-sm font-medium text-gray-900">{{ user.bookings.count }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Profile Completion</span>
+                            <span class="text-sm font-medium text-gray-900">85%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Form -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Edit Profile Information</h2>
+
+                    <form method="post" enctype="multipart/form-data" class="space-y-4">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="rounded-md bg-red-50 p-4">
+                                <div class="text-sm text-red-700">
+                                    {{ form.non_field_errors.0 }}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {{ form|crispy }}
+
+                        <div class="pt-3 border-t border-gray-200">
+                            <div class="flex justify-end space-x-2">
+                                <a href="{% url 'user_dashboard:home' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors">
+                                    <i class="fas fa-times text-xs mr-1.5"></i>Cancel
+                                </a>
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md text-sm font-medium transition-colors">
+                                    <i class="fas fa-save text-xs mr-1.5"></i>Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Account Settings -->
+                <div class="bg-white rounded-lg shadow p-4 mt-4">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Account Settings</h2>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Change Password -->
+                        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-lock text-blue-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-900">Password</h3>
+                                    <p class="text-xs text-gray-600">Update security</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="openPasswordModal()" class="inline-flex items-center px-2 py-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded text-xs font-medium transition-colors">
+                                <i class="fas fa-edit text-xs mr-1"></i>Change
+                            </button>
+                        </div>
+
+                        <!-- Email Settings -->
+                        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-envelope text-green-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-900">Notifications</h3>
+                                    <p class="text-xs text-gray-600">Email preferences</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="openEmailSettingsModal()" class="inline-flex items-center px-2 py-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded text-xs font-medium transition-colors">
+                                <i class="fas fa-cog text-xs mr-1"></i>Manage
+                            </button>
+                        </div>
+
+                        <!-- Privacy Settings -->
+                        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-shield-alt text-purple-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-900">Privacy</h3>
+                                    <p class="text-xs text-gray-600">Profile visibility</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="openPrivacySettingsModal()" class="inline-flex items-center px-2 py-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded text-xs font-medium transition-colors">
+                                <i class="fas fa-edit text-xs mr-1"></i>Configure
+                            </button>
+                        </div>
+
+                        <!-- Download Data -->
+                        <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-download text-orange-600 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-900">Export Data</h3>
+                                    <p class="text-xs text-gray-600">Download copy</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="downloadUserData()" class="inline-flex items-center px-2 py-1 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded text-xs font-medium transition-colors">
+                                <i class="fas fa-download text-xs mr-1"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Danger Zone -->
+                <div class="bg-white rounded-lg shadow p-4 mt-4 border border-red-200">
+                    <h2 class="text-lg font-semibold text-red-900 mb-3">Danger Zone</h2>
+
+                    <div class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-trash text-red-600 text-sm"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-medium text-red-900">Delete Account</h3>
+                                <p class="text-xs text-red-700">Permanently delete all data</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="confirmDeleteAccount()" class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 rounded-md text-xs font-medium transition-colors">
+                            <i class="fas fa-trash text-xs mr-1.5"></i>Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Password Change Modal -->
+<div id="passwordModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Change Password</h3>
+            <button type="button" onclick="closePasswordModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="passwordForm" onsubmit="changePassword(event)">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label for="oldpassword" class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                    <input type="password" id="oldpassword" name="oldpassword" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="password1" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                    <input type="password" id="password1" name="password1" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="password2" class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                    <input type="password" id="password2" name="password2" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-4">
+                <button type="button" onclick="closePasswordModal()" class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors">
+                    <i class="fas fa-times text-xs mr-1.5"></i>Cancel
+                </button>
+                <button type="submit" class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md text-sm font-medium transition-colors">
+                    <i class="fas fa-save text-xs mr-1.5"></i>Change Password
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Email Settings Modal -->
+<div id="emailSettingsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Email Notifications</h3>
+            <button type="button" onclick="closeEmailSettingsModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="font-medium text-gray-900">Booking Updates</h4>
+                    <p class="text-sm text-gray-600">Get notified about booking confirmations and updates</p>
+                </div>
+                <div class="flex items-center">
+                    <label for="bookingUpdates" class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="bookingUpdates" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-red-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-2 after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 shadow-lg border-2 border-gray-400"></div>
+                    </label>
+                    <span class="ml-3 text-sm font-medium text-gray-700" id="bookingUpdatesLabel">
+                        <span class="booking-off">OFF</span>
+                        <span class="booking-on hidden">ON</span>
+                    </span>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="font-medium text-gray-900">Service Updates</h4>
+                    <p class="text-sm text-gray-600">Receive updates about new services and features</p>
+                </div>
+                <div class="flex items-center">
+                    <label for="serviceUpdates" class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="serviceUpdates" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-red-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-2 after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 shadow-lg border-2 border-gray-400"></div>
+                    </label>
+                    <span class="ml-3 text-sm font-medium text-gray-700" id="serviceUpdatesLabel">
+                        <span class="service-off">OFF</span>
+                        <span class="service-on hidden">ON</span>
+                    </span>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="font-medium text-gray-900">Marketing Emails</h4>
+                    <p class="text-sm text-gray-600">Receive promotional emails and newsletters</p>
+                </div>
+                <div class="flex items-center">
+                    <label for="marketingEmails" class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="marketingEmails" class="sr-only peer">
+                        <div class="w-11 h-6 bg-red-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-2 after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 shadow-lg border-2 border-gray-400"></div>
+                    </label>
+                    <span class="ml-3 text-sm font-medium text-gray-700" id="marketingEmailsLabel">
+                        <span class="marketing-off">OFF</span>
+                        <span class="marketing-on hidden">ON</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="flex gap-3 mt-4">
+            <button type="button" onclick="closeEmailSettingsModal()" class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors">
+                <i class="fas fa-times text-xs mr-1.5"></i>Cancel
+            </button>
+            <button type="button" onclick="saveEmailSettings()" class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md text-sm font-medium transition-colors">
+                <i class="fas fa-save text-xs mr-1.5"></i>Save Settings
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Settings Modal -->
+<div id="privacySettingsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Privacy Settings</h3>
+            <button type="button" onclick="closePrivacySettingsModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <h4 class="font-medium text-gray-900 mb-2">Profile Visibility</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center">
+                        <input type="radio" name="profile_visibility" value="public" class="mr-2">
+                        <span class="text-sm">Public - Anyone can see your profile</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="radio" name="profile_visibility" value="private" checked class="mr-2">
+                        <span class="text-sm">Private - Only you can see your profile</span>
+                    </label>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="font-medium text-gray-900">Show Email to Staff</h4>
+                    <p class="text-sm text-gray-600">Allow staff members to see your email address</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" checked class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+            </div>
+        </div>
+        <div class="flex gap-3 mt-4">
+            <button type="button" onclick="closePrivacySettingsModal()" class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors">
+                <i class="fas fa-times text-xs mr-1.5"></i>Cancel
+            </button>
+            <button type="button" onclick="savePrivacySettings()" class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-md text-sm font-medium transition-colors">
+                <i class="fas fa-save text-xs mr-1.5"></i>Save Settings
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div id="deleteAccountModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-red-900">Delete Account</h3>
+        </div>
+        <div class="px-6 py-4">
+            <div class="flex items-center mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-2xl mr-3"></i>
+                <div>
+                    <p class="font-medium text-gray-900">Are you absolutely sure?</p>
+                    <p class="text-sm text-gray-600">This action cannot be undone.</p>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 mb-6">
+                This will permanently delete your account, all your documents, bookings, and associated data. 
+                You will not be able to recover this information.
+            </p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeDeleteModal()" class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-md text-sm font-medium transition-colors">
+                    <i class="fas fa-times text-xs mr-1.5"></i>Cancel
+                </button>
+                <button type="button" onclick="deleteAccount()" class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-red-600 text-white hover:bg-red-700 rounded-md text-sm font-medium transition-colors">
+                    <i class="fas fa-trash text-xs mr-1.5"></i>Delete Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmDeleteAccount() {
+    document.getElementById('deleteAccountModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteAccountModal').classList.add('hidden');
+}
+
+function deleteAccount() {
+    // In a real implementation, this would make an API call to delete the account
+    alert('Account deletion is not implemented in this demo. Please contact support to delete your account.');
+    closeDeleteModal();
+}
+
+// Password Modal Functions
+function openPasswordModal() {
+    document.getElementById('passwordModal').classList.remove('hidden');
+}
+
+function closePasswordModal() {
+    document.getElementById('passwordModal').classList.add('hidden');
+    document.getElementById('passwordForm').reset();
+}
+
+function changePassword(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const password1 = formData.get('password1');
+    const password2 = formData.get('password2');
+
+    if (password1 !== password2) {
+        alert('New passwords do not match!');
+        return;
+    }
+
+    // Show loading state
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Changing...';
+    submitBtn.disabled = true;
+
+    // Make API call to change password using AJAX
+    fetch('{% url "account_change_password" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Network response was not ok');
+        }
+    })
+    .then(data => {
+        if (data.location) {
+            // Success - allauth redirects on success
+            alert('Password changed successfully!');
+            closePasswordModal();
+        } else if (data.form && data.form.errors) {
+            // Form validation errors
+            let errorMessage = 'Please fix the following errors:\n';
+            for (const field in data.form.errors) {
+                errorMessage += `${field}: ${data.form.errors[field].join(', ')}\n`;
+            }
+            alert(errorMessage);
+        } else {
+            alert('Failed to change password. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
+}
+
+// Email Settings Modal Functions
+function openEmailSettingsModal() {
+    // Load saved settings from localStorage
+    const savedSettings = localStorage.getItem('emailSettings');
+    if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        document.getElementById('bookingUpdates').checked = settings.bookingUpdates;
+        document.getElementById('serviceUpdates').checked = settings.serviceUpdates;
+        document.getElementById('marketingEmails').checked = settings.marketingEmails;
+    }
+
+    // Update labels based on current state
+    updateToggleLabels();
+
+    // Add click event listeners to make toggles work
+    document.getElementById('bookingUpdates').addEventListener('change', function() {
+        updateToggleLabel('booking', this.checked);
+    });
+
+    document.getElementById('serviceUpdates').addEventListener('change', function() {
+        updateToggleLabel('service', this.checked);
+    });
+
+    document.getElementById('marketingEmails').addEventListener('change', function() {
+        updateToggleLabel('marketing', this.checked);
+    });
+
+    document.getElementById('emailSettingsModal').classList.remove('hidden');
+}
+
+function updateToggleLabel(type, isChecked) {
+    const offElement = document.querySelector(`.${type}-off`);
+    const onElement = document.querySelector(`.${type}-on`);
+
+    if (isChecked) {
+        offElement.classList.add('hidden');
+        onElement.classList.remove('hidden');
+        onElement.classList.add('text-green-600');
+    } else {
+        offElement.classList.remove('hidden');
+        onElement.classList.add('hidden');
+        onElement.classList.remove('text-green-600');
+    }
+}
+
+function updateToggleLabels() {
+    updateToggleLabel('booking', document.getElementById('bookingUpdates').checked);
+    updateToggleLabel('service', document.getElementById('serviceUpdates').checked);
+    updateToggleLabel('marketing', document.getElementById('marketingEmails').checked);
+}
+
+function closeEmailSettingsModal() {
+    document.getElementById('emailSettingsModal').classList.add('hidden');
+}
+
+function saveEmailSettings() {
+    // Get checkbox states
+    const bookingUpdates = document.getElementById('bookingUpdates').checked;
+    const serviceUpdates = document.getElementById('serviceUpdates').checked;
+    const marketingEmails = document.getElementById('marketingEmails').checked;
+
+    // Show loading state
+    const saveButton = document.querySelector('#emailSettingsModal button[onclick="saveEmailSettings()"]');
+    const originalText = saveButton.innerHTML;
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin text-xs mr-1.5"></i>Saving...';
+
+    // Create form data
+    const formData = new FormData();
+    formData.append('booking_updates', bookingUpdates);
+    formData.append('service_updates', serviceUpdates);
+    formData.append('marketing_emails', marketingEmails);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    // Simulate API call (replace with actual endpoint when backend is ready)
+    setTimeout(() => {
+        // Store settings in localStorage for now
+        localStorage.setItem('emailSettings', JSON.stringify({
+            bookingUpdates,
+            serviceUpdates,
+            marketingEmails
+        }));
+
+        alert('Email settings saved successfully!');
+        closeEmailSettingsModal();
+
+        // Restore button state
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalText;
+    }, 1000);
+}
+
+// Privacy Settings Modal Functions
+function openPrivacySettingsModal() {
+    // Load saved settings from localStorage
+    const savedSettings = localStorage.getItem('privacySettings');
+    if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        document.querySelector(`input[name="profile_visibility"][value="${settings.profileVisibility}"]`).checked = true;
+        document.querySelector('#privacySettingsModal input[type="checkbox"]').checked = settings.showEmailToStaff;
+    }
+    document.getElementById('privacySettingsModal').classList.remove('hidden');
+}
+
+function closePrivacySettingsModal() {
+    document.getElementById('privacySettingsModal').classList.add('hidden');
+}
+
+function savePrivacySettings() {
+    // Get form values
+    const profileVisibility = document.querySelector('input[name="profile_visibility"]:checked').value;
+    const showEmailToStaff = document.querySelector('#privacySettingsModal input[type="checkbox"]').checked;
+
+    // Show loading state
+    const saveButton = document.querySelector('#privacySettingsModal button[onclick="savePrivacySettings()"]');
+    const originalText = saveButton.innerHTML;
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin text-xs mr-1.5"></i>Saving...';
+
+    // Simulate API call (replace with actual endpoint when backend is ready)
+    setTimeout(() => {
+        // Store settings in localStorage for now
+        localStorage.setItem('privacySettings', JSON.stringify({
+            profileVisibility,
+            showEmailToStaff
+        }));
+
+        alert('Privacy settings saved successfully!');
+        closePrivacySettingsModal();
+
+        // Restore button state
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalText;
+    }, 1000);
+}
+
+// Download User Data Function
+function downloadUserData() {
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Preparing...';
+    button.disabled = true;
+
+    // Simulate data preparation
+    setTimeout(() => {
+        // In a real implementation, this would generate and download a data export
+        alert('Data export feature is not implemented yet. Please contact support for a copy of your data.');
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }, 2000);
+}
+
+// Close modals when clicking outside
+document.getElementById('deleteAccountModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+
+document.getElementById('passwordModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePasswordModal();
+    }
+});
+
+document.getElementById('emailSettingsModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeEmailSettingsModal();
+    }
+});
+
+document.getElementById('privacySettingsModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePrivacySettingsModal();
+    }
+});
+
+// Form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const submitButton = form.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+            
+            // Re-enable button after form submission (in case of validation errors)
+            setTimeout(() => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalText;
+            }, 3000);
+        });
+    }
+});
+
+// Profile picture upload
+function uploadProfilePicture() {
+    const form = document.getElementById('profile-picture-form');
+    const input = document.getElementById('profile-picture-input');
+    const file = input.files[0];
+
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB.');
+        return;
+    }
+
+    // Create FormData and submit
+    const formData = new FormData();
+    formData.append('profile_picture', file);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    // Show loading state
+    const button = document.querySelector('.fa-camera').parentElement;
+    const originalContent = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i>';
+    button.disabled = true;
+
+    fetch('{% url "dashboard:update_profile_picture" %}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reload page to show new picture
+            window.location.reload();
+        } else {
+            alert(data.error || 'Failed to upload profile picture.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while uploading the profile picture.');
+    })
+    .finally(() => {
+        // Restore button state
+        button.innerHTML = originalContent;
+        button.disabled = false;
+    });
+}
+
+// Email verification status check
+function checkEmailVerification() {
+    const verificationStatus = document.querySelector('.email-verification-status');
+    if (verificationStatus) {
+        // Auto-refresh verification status every 30 seconds
+        setInterval(() => {
+            fetch('{% url "accounts:check_verification_status" %}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_verified) {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error('Error checking verification status:', error));
+        }, 30000);
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    checkEmailVerification();
+});
+</script>
+{% endblock %}

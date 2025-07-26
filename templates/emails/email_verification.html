@@ -1,0 +1,36 @@
+{% extends 'emails/base.html' %}
+
+{% block title %}Verify Your Email - Edunox GH{% endblock %}
+
+{% block header_title %}Email Verification{% endblock %}
+{% block header_subtitle %}Please verify your email address to complete your registration{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ user.get_full_name|default:user.username }}!</h2>
+
+<p>Thank you for registering with Edunox GH. To complete your account setup, please verify your email address by clicking the button below:</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ verification_url }}" class="button">Verify Email Address</a>
+</div>
+
+<p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+<p style="word-break: break-all; background-color: #e5e5e5; padding: 10px; border-radius: 4px; font-family: monospace;">{{ verification_url }}</p>
+
+<div class="info-box">
+    <p><strong>Important:</strong> This verification link will expire in 24 hours for security reasons.</p>
+</div>
+
+<p>Once verified, you'll be able to:</p>
+<ul>
+    <li>✅ Book our educational services</li>
+    <li>✅ Access personalized recommendations</li>
+    <li>✅ Upload and manage your documents</li>
+    <li>✅ Receive important updates about your applications</li>
+</ul>
+
+<p>If you didn't create an account with us, please ignore this email.</p>
+
+<p>Best regards,<br>
+The Edunox GH Team</p>
+{% endblock %}

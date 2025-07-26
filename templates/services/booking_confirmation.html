@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking Confirmation - EduBridge Ghana{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Success Header -->
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check-circle text-green-600 text-4xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Booking Confirmed!</h1>
+            <p class="text-xl text-gray-600">Your service booking has been successfully submitted</p>
+        </div>
+
+        <!-- Booking Details Card -->
+        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <div class="border-b border-gray-200 pb-6 mb-6">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-2">Booking Details</h2>
+                <p class="text-gray-600">Reference Number: <span class="font-mono text-blue-600">#{{ booking.id }}</span></p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Service Information -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Service Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-{{ booking.service.icon|default:'star' }} text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900">{{ booking.service.name }}</h4>
+                                <p class="text-sm text-gray-600">{{ booking.service.category.name }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Duration:</span>
+                                    <p class="font-medium">{{ booking.service.duration }}</p>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Price:</span>
+                                    <p class="font-medium text-blue-600">GHS {{ booking.service.price }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointment Information -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Appointment Information</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-calendar text-blue-600 mr-3"></i>
+                            <div>
+                                <span class="text-gray-500 text-sm">Date:</span>
+                                <p class="font-medium">{{ booking.preferred_date|date:"l, F d, Y" }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-blue-600 mr-3"></i>
+                            <div>
+                                <span class="text-gray-500 text-sm">Time:</span>
+                                <p class="font-medium">{{ booking.preferred_time|time:"g:i A" }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <i class="fas fa-user text-blue-600 mr-3"></i>
+                            <div>
+                                <span class="text-gray-500 text-sm">Booked by:</span>
+                                <p class="font-medium">{{ booking.user.get_full_name|default:booking.user.username }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-blue-600 mr-3"></i>
+                            <div>
+                                <span class="text-gray-500 text-sm">Contact:</span>
+                                <p class="font-medium">{{ booking.user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message -->
+            {% if booking.message %}
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 mb-3">Your Message</h3>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p class="text-gray-700">{{ booking.message }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Status -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Status</h3>
+                        <p class="text-gray-600">Current booking status</p>
+                    </div>
+                    <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                        <i class="fas fa-clock mr-2"></i>
+                        Pending Confirmation
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-blue-900 mb-4">
+                <i class="fas fa-info-circle mr-2"></i>
+                What Happens Next?
+            </h3>
+            <div class="space-y-3 text-blue-800">
+                <div class="flex items-start">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 text-white rounded-full text-sm font-bold mr-3 mt-0.5">1</span>
+                    <p>Our team will review your booking request within 24 hours.</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 text-white rounded-full text-sm font-bold mr-3 mt-0.5">2</span>
+                    <p>We'll contact you via email or phone to confirm the appointment details.</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 text-white rounded-full text-sm font-bold mr-3 mt-0.5">3</span>
+                    <p>You'll receive a confirmation email with all the necessary information.</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-600 text-white rounded-full text-sm font-bold mr-3 mt-0.5">4</span>
+                    <p>Attend your scheduled appointment and receive expert guidance!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'dashboard:bookings' %}" class="bg-blue-600 text-white hover:bg-blue-700 px-8 py-3 rounded-lg font-medium transition-colors text-center">
+                <i class="fas fa-calendar mr-2"></i>
+                View All Bookings
+            </a>
+            <a href="{% url 'services:list' %}" class="border border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-medium transition-colors text-center">
+                <i class="fas fa-plus mr-2"></i>
+                Book Another Service
+            </a>
+            <a href="{% url 'dashboard:home' %}" class="border border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-3 rounded-lg font-medium transition-colors text-center">
+                <i class="fas fa-home mr-2"></i>
+                Go to Dashboard
+            </a>
+        </div>
+
+        <!-- Contact Support -->
+        <div class="mt-12 text-center">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
+                <p class="text-gray-600 mb-4">If you have any questions about your booking, our support team is here to help.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{% url 'contact:contact' %}" class="text-blue-600 hover:text-blue-700 font-medium">
+                        <i class="fas fa-envelope mr-2"></i>
+                        Send Message
+                    </a>
+                    <a href="tel:+233XXXXXXXX" class="text-blue-600 hover:text-blue-700 font-medium">
+                        <i class="fas fa-phone mr-2"></i>
+                        Call Support
+                    </a>
+                    <a href="{% url 'core:faq' %}" class="text-blue-600 hover:text-blue-700 font-medium">
+                        <i class="fas fa-question-circle mr-2"></i>
+                        View FAQ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-refresh booking status every 30 seconds
+setInterval(function() {
+    // In a real implementation, this would check for status updates
+    console.log('Checking booking status...');
+}, 30000);
+
+// Print booking details
+function printBooking() {
+    window.print();
+}
+
+// Share booking details
+function shareBooking() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'EduBridge Ghana - Booking Confirmation',
+            text: 'My booking for {{ booking.service.name }} has been confirmed!',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            alert('Booking link copied to clipboard!');
+        });
+    }
+}
+</script>
+{% endblock %}

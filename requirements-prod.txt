@@ -1,0 +1,271 @@
+# EduBridge Ghana Production Requirements
+# Optimized for production deployment with performance and security packages
+
+# Base requirements
+-r requirements.txt
+
+# Production WSGI server
+gunicorn==21.2.0
+gevent==23.9.1
+
+# Database
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Caching and message broker
+redis==5.0.1
+django-redis==5.4.0
+
+# Celery for background tasks
+celery==5.3.4
+django-celery-beat==2.5.0
+django-celery-results==2.5.1
+
+# Cloud storage
+boto3==1.34.0
+django-storages==1.14.2
+
+# Static file serving
+whitenoise==6.6.0
+
+# Compression and optimization
+django-compressor==4.4
+django-htmlmin==0.11.0
+
+# Security
+django-csp==3.7
+django-security==0.17.0
+
+# Monitoring and error tracking
+sentry-sdk==1.38.0
+
+# Performance monitoring
+django-debug-toolbar==4.2.0  # Only for staging
+django-extensions==3.2.3
+
+# Health checks
+django-health-check==3.17.0
+
+# Backup utilities
+django-dbbackup==4.0.2
+
+# Rate limiting
+django-ratelimit==4.1.0
+
+# API framework (if needed)
+djangorestframework==3.14.0
+django-filter==23.5
+django-cors-headers==4.3.1
+
+# Authentication and permissions
+django-allauth==0.57.0
+django-guardian==2.4.0
+
+# Admin interface enhancements
+django-admin-interface==0.26.0
+django-colorfield==0.10.1
+
+# Form handling
+django-crispy-forms==2.1
+crispy-bootstrap5==0.7
+
+# File handling
+python-magic==0.4.27
+Pillow==10.1.0
+
+# Date and time utilities
+python-dateutil==2.8.2
+
+# Environment variables
+python-decouple==3.8
+
+# Logging
+structlog==23.2.0
+
+# HTTP client
+requests==2.31.0
+
+# Data validation
+marshmallow==3.20.1
+
+# Timezone handling
+pytz==2023.3
+
+# UUID utilities
+shortuuid==1.0.11
+
+# Text processing
+bleach==6.1.0
+markdown==3.5.1
+
+# PDF generation
+reportlab==4.0.7
+weasyprint==60.2
+
+# Excel file handling
+openpyxl==3.1.2
+
+# CSV handling
+unicodecsv==0.14.1
+
+# Phone number validation
+django-phonenumber-field==7.2.0
+phonenumbers==8.13.26
+
+# Country and currency handling
+django-countries==7.5.1
+
+# Social authentication
+social-auth-app-django==5.4.0
+
+# Payment processing (if needed)
+stripe==7.8.0
+
+# WhatsApp integration (if needed)
+twilio==8.11.0
+
+# Google services integration
+google-auth==2.25.2
+google-auth-oauthlib==1.1.0
+google-auth-httplib2==0.1.1
+
+# Analytics
+google-analytics-data==0.18.2
+
+# SEO utilities
+django-meta==2.4.0
+
+# Sitemap generation
+django-sitemap==2.3
+
+# RSS feeds
+feedparser==6.0.10
+
+# Web scraping (if needed)
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# HTTP/2 support
+httpx==0.25.2
+
+# Async support
+asgiref==3.7.2
+channels==4.0.0
+channels-redis==4.1.0
+
+# WebSocket support
+websockets==12.0
+
+# Task scheduling
+django-crontab==0.7.1
+
+# Internationalization
+django-modeltranslation==0.18.11
+
+# Search functionality
+django-haystack==3.2.1
+whoosh==2.7.4
+
+# Tagging
+django-taggit==4.0.0
+
+# Versioning
+django-reversion==5.0.8
+
+# Activity logging
+django-activity-stream==2.0.0
+
+# Notifications
+django-notifications-hq==1.8.3
+
+# File uploads
+django-cleanup==8.0.0
+
+# URL shortening
+django-shorturls==1.1.1
+
+# QR code generation
+qrcode==7.4.2
+
+# Barcode generation
+python-barcode==0.15.1
+
+# Image processing
+Pillow==10.1.0
+pillow-heif==0.13.0
+
+# Video processing (if needed)
+moviepy==1.0.3
+
+# Audio processing (if needed)
+pydub==0.25.1
+
+# Machine learning (if needed for recommendations)
+scikit-learn==1.3.2
+pandas==2.1.4
+numpy==1.25.2
+
+# Natural language processing (if needed)
+nltk==3.8.1
+textblob==0.17.1
+
+# Geolocation
+geopy==2.4.1
+
+# Weather data (if needed)
+pyowm==3.3.0
+
+# Calendar integration
+icalendar==5.0.11
+
+# PDF parsing
+PyPDF2==3.0.1
+
+# Document conversion
+python-docx==1.1.0
+
+# Encryption
+cryptography==41.0.8
+
+# JWT tokens
+PyJWT==2.8.0
+
+# OAuth2
+oauthlib==3.2.2
+
+# LDAP integration (if needed)
+django-auth-ldap==4.6.0
+
+# Single sign-on (if needed)
+python-saml==1.15.0
+
+# Two-factor authentication
+django-otp==1.2.2
+qrcode==7.4.2
+
+# Captcha
+django-recaptcha==4.0.0
+
+# Rate limiting
+django-ratelimit==4.1.0
+
+# IP geolocation
+geoip2==4.7.0
+
+# User agents parsing
+user-agents==2.2.0
+
+# Browser detection
+django-user-agents==0.4.0
+
+# Mobile detection
+pymobiledetect==0.1.3
+
+# Performance profiling
+django-silk==5.0.4
+
+# Memory profiling
+memory-profiler==0.61.0
+
+# Load testing
+locust==2.17.0

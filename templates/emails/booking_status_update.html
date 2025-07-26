@@ -1,0 +1,139 @@
+{% extends 'emails/base.html' %}
+
+{% block title %}Booking Update - EduBridge Ghana{% endblock %}
+
+{% block header_title %}Booking Update{% endblock %}
+{% block header_subtitle %}{{ status_message }}{% endblock %}
+
+{% block content %}
+<h2>Hello {{ booking.user.get_full_name|default:booking.user.username }}!</h2>
+
+<p>We have an update regarding your booking for <strong>{{ booking.service.name }}</strong>.</p>
+
+{% if booking.status == 'CONFIRMED' %}
+    <div class="success-box">
+        <h3>🎉 Your Booking is Confirmed!</h3>
+        <p>Great news! Your booking has been confirmed and we're looking forward to working with you.</p>
+    </div>
+    
+    <h3>Confirmed Appointment Details</h3>
+    <table class="details-table">
+        <tr>
+            <th>Service</th>
+            <td>{{ booking.service.name }}</td>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <td>{{ booking.preferred_date|date:"l, F d, Y" }}</td>
+        </tr>
+        <tr>
+            <th>Time</th>
+            <td>{{ booking.preferred_time|time:"g:i A" }}</td>
+        </tr>
+        <tr>
+            <th>Duration</th>
+            <td>{{ booking.service.duration }}</td>
+        </tr>
+        {% if booking.assigned_to %}
+        <tr>
+            <th>Assigned Consultant</th>
+            <td>{{ booking.assigned_to.get_full_name }}</td>
+        </tr>
+        {% endif %}
+    </table>
+    
+    <h3>What to Expect</h3>
+    <p>Here's what you can expect for your upcoming appointment:</p>
+    <ul>
+        <li>Our consultant will contact you 24 hours before your appointment</li>
+        <li>Please have any relevant documents ready</li>
+        <li>Prepare a list of questions you'd like to discuss</li>
+        <li>For online sessions, ensure you have a stable internet connection</li>
+    </ul>
+
+{% elif booking.status == 'IN_PROGRESS' %}
+    <div class="info-box">
+        <h3>🚀 Your Service is Now in Progress</h3>
+        <p>Your service session has begun. Our team is now working on your request.</p>
+    </div>
+
+{% elif booking.status == 'COMPLETED' %}
+    <div class="success-box">
+        <h3>✅ Service Completed Successfully</h3>
+        <p>Your service has been completed! We hope you found it valuable and helpful.</p>
+    </div>
+    
+    <h3>What's Next?</h3>
+    <p>Now that your service is complete:</p>
+    <ul>
+        <li>Review any materials or recommendations provided</li>
+        <li>Follow up on action items discussed during your session</li>
+        <li>Feel free to book additional services if needed</li>
+        <li>Share your feedback to help us improve</li>
+    </ul>
+    
+    <div style="text-align: center; margin: 20px 0;">
+        <a href="{{ site_url }}{% url 'services:list' %}" class="button">Book Another Service</a>
+        <a href="{{ site_url }}{% url 'contact:contact' %}" class="button button-secondary">Share Feedback</a>
+    </div>
+
+{% elif booking.status == 'CANCELLED' %}
+    <div class="warning-box">
+        <h3>❌ Booking Cancelled</h3>
+        <p>Your booking has been cancelled. If this was unexpected, please contact us immediately.</p>
+    </div>
+    
+    <h3>Need to Reschedule?</h3>
+    <p>If you'd like to book this service again or schedule a different service, we're here to help:</p>
+    
+    <div style="text-align: center; margin: 20px 0;">
+        <a href="{{ site_url }}{% url 'services:detail' booking.service.pk %}" class="button">Rebook This Service</a>
+        <a href="{{ site_url }}{% url 'contact:contact' %}" class="button button-secondary">Contact Support</a>
+    </div>
+
+{% endif %}
+
+<h3>Booking Reference</h3>
+<table class="details-table">
+    <tr>
+        <th>Booking ID</th>
+        <td>#{{ booking.id }}</td>
+    </tr>
+    <tr>
+        <th>Previous Status</th>
+        <td>{{ old_status|title }}</td>
+    </tr>
+    <tr>
+        <th>Current Status</th>
+        <td><strong>{{ booking.get_status_display }}</strong></td>
+    </tr>
+    <tr>
+        <th>Updated</th>
+        <td>{{ booking.updated_at|date:"F d, Y g:i A" }}</td>
+    </tr>
+</table>
+
+{% if booking.admin_notes %}
+<h3>Additional Notes</h3>
+<div class="info-box">
+    <p>{{ booking.admin_notes }}</p>
+</div>
+{% endif %}
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ site_url }}{% url 'dashboard:bookings' %}" class="button">View All Bookings</a>
+</div>
+
+<h3>Need Help?</h3>
+<p>If you have any questions about this update or need assistance, please don't hesitate to contact us:</p>
+<ul>
+    <li>📧 Email: info@Edunox.com</li>
+    <li>📞 Phone: +233 XX XXX XXXX</li>
+    <li>💬 Contact Form: <a href="{{ site_url }}{% url 'contact:contact' %}">Send Message</a></li>
+</ul>
+
+<p>Thank you for choosing Edunox GH!</p>
+
+<p>Best regards,<br>
+<strong>The Edunox GH Team</strong></p>
+{% endblock %}

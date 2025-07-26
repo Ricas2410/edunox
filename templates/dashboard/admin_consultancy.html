@@ -1,0 +1,709 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Consultancy Packages - Admin Dashboard{% endblock %}
+
+{% csrf_token %}
+
+{% block content %}
+<!-- Include Admin Navigation -->
+{% include 'partials/admin_nav.html' %}
+
+<div class="lg:pl-64 bg-gray-50 pb-20">
+    <!-- Top navigation -->
+    <div class="bg-white shadow-sm border-b border-gray-200">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <!-- Mobile menu button -->
+                    <button type="button" class="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100" id="mobile-menu-button">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    
+                    <!-- Page title -->
+                    <h1 class="ml-4 lg:ml-0 text-2xl font-semibold text-gray-900">
+                        Consultancy Packages
+                    </h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- User menu -->
+                    <div class="relative">
+                        <button type="button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" id="user-menu-button">
+                            <span class="sr-only">Open user menu</span>
+                            <div class="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                                <span class="text-sm font-medium text-white">{{ user.first_name.0|default:user.username.0|upper }}</span>
+                            </div>
+                            <span class="ml-3 text-gray-700 text-sm font-medium">{{ user.get_full_name|default:user.username }}</span>
+                            <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="space-y-6">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-package text-purple-600"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Total Packages</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ total_packages }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Active Packages</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ active_packages }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-shopping-cart text-blue-600"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Total Purchases</p>
+                    <p class="text-2xl font-semibold text-gray-900">{{ total_purchases }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-dollar-sign text-yellow-600"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm font-medium text-gray-500">Revenue</p>
+                    <p class="text-2xl font-semibold text-gray-900">$0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Actions -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1 min-w-0">
+                        <form method="get" class="flex items-center space-x-4">
+                            <div class="relative">
+                                <input type="text" name="search" value="{{ request.GET.search }}" 
+                                       placeholder="Search packages..." 
+                                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                            </div>
+                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                Search
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="mt-4 sm:mt-0 flex space-x-3">
+                    <a href="{% url 'admin:services_onetimeconsultancy_add' %}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add Package
+                    </a>
+                    <button onclick="exportPackages()" class="border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-download mr-2"></i>Export
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Packages Table -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Package
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Price
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Purchases
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Created
+                        </th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for package in packages %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                        <i class="fas fa-package text-purple-600"></i>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ package.name }}</div>
+                                    <div class="text-sm text-gray-500">{{ package.description|truncatechars:50 }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">${{ package.price }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if package.is_active %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    Active
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Inactive
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ package.consultancypurchase_set.count }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ package.created_at|date:"M d, Y" }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex items-center justify-end space-x-2">
+                                <button onclick="viewPackage({{ package.id }})" class="text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="openEditPackageModal({{ package.id }})" class="text-green-600 hover:text-green-900">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="togglePackageStatus({{ package.id }})" class="text-yellow-600 hover:text-yellow-900">
+                                    {% if package.is_active %}
+                                        <i class="fas fa-pause"></i>
+                                    {% else %}
+                                        <i class="fas fa-play"></i>
+                                    {% endif %}
+                                </button>
+                                <button onclick="deletePackage({{ package.id }})" class="text-red-600 hover:text-red-900">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            No consultancy packages found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+            <div class="flex items-center justify-between">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Previous
+                        </a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Next
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} results
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                            {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            {% endif %}
+                            
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600">
+                                        {{ num }}
+                                    </span>
+                                {% else %}
+                                    <a href="?page={{ num }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                        {{ num }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Purchases -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Recent Purchases</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Customer
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Package
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Amount
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for purchase in recent_purchases %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-8 w-8">
+                                    <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                        <span class="text-xs font-medium text-gray-600">{{ purchase.user.first_name.0|default:purchase.user.username.0|upper }}</span>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900">{{ purchase.user.get_full_name|default:purchase.user.username }}</div>
+                                    <div class="text-sm text-gray-500">{{ purchase.user.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ purchase.package.name }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            ${{ purchase.package.price }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ purchase.created_at|date:"M d, Y" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                            No recent purchases.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+        </div>
+    </main>
+</div>
+
+<!-- View Package Modal -->
+<div id="packageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h2 class="text-xl font-semibold text-gray-800">Package Details</h2>
+                <button onclick="closePackageModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div id="packageContent">
+                    <div class="text-center py-8">
+                        <i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i>
+                        <p class="text-gray-500 mt-2">Loading package details...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Package Modal -->
+<div id="editPackageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h2 class="text-xl font-semibold text-gray-800">Edit Package</h2>
+                <button onclick="closeEditPackageModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="editPackageForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Package Name</label>
+                            <input type="text" id="editPackageName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Price (GHS)</label>
+                            <input type="number" id="editPackagePrice" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Duration (Months)</label>
+                            <input type="number" id="editPackageDuration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea id="editPackageDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Features (one per line)</label>
+                            <textarea id="editPackageFeatures" rows="5" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="editPackageActive" class="mr-2">
+                                <span class="text-sm font-medium text-gray-700">Package is active</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" onclick="closeEditPackageModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-50">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Update Package</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentPackageId = null;
+
+function viewPackage(packageId) {
+    currentPackageId = packageId;
+    document.getElementById('packageModal').classList.remove('hidden');
+
+    // Load package data
+    fetch(`/dashboard/api/admin/consultancy/${packageId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayPackageDetails(data.package);
+            } else {
+                document.getElementById('packageContent').innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-exclamation-triangle text-2xl text-red-400"></i>
+                        <p class="text-red-500 mt-2">Error loading package: ${data.error}</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('packageContent').innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-exclamation-triangle text-2xl text-red-400"></i>
+                    <p class="text-red-500 mt-2">Error loading package details</p>
+                </div>
+            `;
+        });
+}
+
+function displayPackageDetails(package) {
+    const packageHtml = `
+        <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">${package.name}</h3>
+                        <p class="text-gray-600">${package.description}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-600">GHS ${package.price}</div>
+                            <div class="text-sm text-blue-600">Package Price</div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <div class="text-2xl font-bold text-green-600">${package.duration_months}</div>
+                            <div class="text-sm text-green-600">Months Valid</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="px-2 py-1 text-xs rounded-full ${package.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${package.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-purple-50 p-4 rounded-lg text-center">
+                            <div class="text-xl font-bold text-purple-600">${package.total_purchases}</div>
+                            <div class="text-xs text-purple-600">Total Sales</div>
+                        </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                            <div class="text-xl font-bold text-yellow-600">${package.active_purchases}</div>
+                            <div class="text-xs text-yellow-600">Active</div>
+                        </div>
+                        <div class="bg-indigo-50 p-4 rounded-lg text-center">
+                            <div class="text-xl font-bold text-indigo-600">GHS ${package.total_revenue}</div>
+                            <div class="text-xs text-indigo-600">Revenue</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="font-semibold text-gray-800">Package Features</h4>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <ul class="list-disc list-inside space-y-1">
+                        ${package.features_list.map(feature => `<li class="text-gray-700">${feature}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="font-semibold text-gray-800">Included Services (${package.included_services.length})</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    ${package.included_services.map(service => `
+                        <div class="border border-gray-200 rounded-lg p-3">
+                            <div class="font-medium text-gray-800">${service.name}</div>
+                            <div class="text-sm text-gray-600">Value: ${service.price}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="font-semibold text-gray-800">Recent Purchases</h4>
+                ${package.purchases.length > 0 ? package.purchases.map(purchase => `
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h5 class="font-medium text-gray-800">${purchase.user}</h5>
+                                <p class="text-sm text-gray-600">${purchase.user_email}</p>
+                            </div>
+                            <span class="px-2 py-1 text-xs rounded-full ${purchase.is_valid ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${purchase.is_valid ? 'Valid' : 'Expired'}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm text-gray-600">
+                            <div>
+                                <strong>Purchase:</strong> ${purchase.purchase_date}
+                            </div>
+                            <div>
+                                <strong>Expires:</strong> ${purchase.expiry_date}
+                            </div>
+                            <div>
+                                <strong>Paid:</strong> GHS ${purchase.amount_paid}
+                            </div>
+                        </div>
+                    </div>
+                `).join('') : '<p class="text-gray-500 text-center py-8">No purchases found for this package.</p>'}
+            </div>
+
+            <div class="flex space-x-3 pt-4 border-t">
+                <button onclick="openEditPackageModal(currentPackageId)" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Edit Package</button>
+                <button onclick="togglePackageStatus(currentPackageId)" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
+                    ${package.is_active ? 'Deactivate' : 'Activate'}
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('packageContent').innerHTML = packageHtml;
+}
+
+function closePackageModal() {
+    document.getElementById('packageModal').classList.add('hidden');
+    currentPackageId = null;
+}
+
+// Edit Package Modal Functions
+function openEditPackageModal(packageId) {
+    currentPackageId = packageId;
+
+    // Fetch package data and populate form
+    fetch(`/dashboard/api/admin/consultancy/${packageId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const package = data.package;
+                document.getElementById('editPackageName').value = package.name;
+                document.getElementById('editPackageDescription').value = package.description;
+                document.getElementById('editPackagePrice').value = package.price;
+                document.getElementById('editPackageDuration').value = package.duration_months;
+                document.getElementById('editPackageFeatures').value = package.features;
+                document.getElementById('editPackageActive').checked = package.is_active;
+
+                document.getElementById('editPackageModal').classList.remove('hidden');
+            } else {
+                alert('Error loading package data: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading package data');
+        });
+}
+
+function closeEditPackageModal() {
+    document.getElementById('editPackageModal').classList.add('hidden');
+    currentPackageId = null;
+}
+
+// Handle edit package form submission
+document.getElementById('editPackageForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    if (!currentPackageId) return;
+
+    const formData = {
+        name: document.getElementById('editPackageName').value,
+        description: document.getElementById('editPackageDescription').value,
+        price: document.getElementById('editPackagePrice').value,
+        duration_months: document.getElementById('editPackageDuration').value,
+        features: document.getElementById('editPackageFeatures').value,
+        is_active: document.getElementById('editPackageActive').checked
+    };
+
+    fetch(`/dashboard/api/admin/consultancy/${currentPackageId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Package updated successfully!');
+            closeEditPackageModal();
+            location.reload(); // Refresh the page to show updated data
+        } else {
+            alert('Error updating package: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating package');
+    });
+});
+
+function togglePackageStatus(packageId) {
+    if (confirm('Are you sure you want to toggle this package status?')) {
+        // Get current package data first
+        fetch(`/dashboard/api/admin/consultancy/${packageId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const newStatus = !data.package.is_active;
+
+                    // Update the status
+                    fetch(`/dashboard/api/admin/consultancy/${packageId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify({ is_active: newStatus })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(`Package ${newStatus ? 'activated' : 'deactivated'} successfully!`);
+                            location.reload();
+                        } else {
+                            alert('Error updating package status: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error updating package status');
+                    });
+                }
+            });
+    }
+}
+
+function deletePackage(packageId) {
+    if (confirm('Are you sure you want to delete this package? This action cannot be undone.')) {
+        fetch(`/dashboard/api/admin/consultancy/${packageId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Package deleted successfully!');
+                location.reload();
+            } else {
+                alert('Error deleting package: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting package');
+        });
+    }
+}
+
+function exportPackages() {
+    // Export packages functionality
+    alert('Package export functionality would be implemented here.');
+}
+</script>
+{% endblock %}

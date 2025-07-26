@@ -1,0 +1,260 @@
+{% load seo_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Edunox GH{% endblock %}</title>
+    <style>
+        /* Email-safe CSS */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .email-header {
+            background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .email-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .email-header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .email-content {
+            padding: 30px 20px;
+        }
+        
+        .email-content h2 {
+            color: #1F2937;
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #E5E7EB;
+            padding-bottom: 10px;
+        }
+        
+        .email-content h3 {
+            color: #374151;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .email-content p {
+            margin-bottom: 15px;
+            color: #4B5563;
+        }
+        
+        .button {
+            display: inline-block;
+            background-color: #3B82F6;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .button:hover {
+            background-color: #2563EB;
+        }
+        
+        .button-secondary {
+            background-color: #6B7280;
+        }
+        
+        .button-secondary:hover {
+            background-color: #4B5563;
+        }
+        
+        .info-box {
+            background-color: #EBF8FF;
+            border: 1px solid #BEE3F8;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .success-box {
+            background-color: #F0FDF4;
+            border: 1px solid #BBF7D0;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .warning-box {
+            background-color: #FFFBEB;
+            border: 1px solid #FED7AA;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .details-table th,
+        .details-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .details-table th {
+            background-color: #F9FAFB;
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .email-footer {
+            background-color: #F9FAFB;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 1px solid #E5E7EB;
+        }
+        
+        .email-footer p {
+            margin: 5px 0;
+            color: #6B7280;
+            font-size: 14px;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #6B7280;
+            text-decoration: none;
+        }
+        
+        .unsubscribe {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #9CA3AF;
+        }
+        
+        .unsubscribe a {
+            color: #9CA3AF;
+        }
+        
+        /* Mobile responsiveness */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .email-header,
+            .email-content,
+            .email-footer {
+                padding: 20px 15px;
+            }
+            
+            .email-header h1 {
+                font-size: 24px;
+            }
+            
+            .button {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <!-- Logo -->
+            {% if site_config and site_config.logo %}
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="{{ site_url }}{{ site_config.logo.url }}" alt="{{ site_config.site_name }}" style="max-height: 60px; max-width: 200px; height: auto; width: auto; display: block; margin: 0 auto;">
+                </div>
+            {% else %}
+                <!-- Fallback logo -->
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="background: #ffffff; color: #3B82F6; padding: 10px 20px; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 18px;">
+                        Edunox GH
+                    </div>
+                </div>
+            {% endif %}
+            <h1>{% block header_title %}Edunox GH{% endblock %}</h1>
+            <p>{% block header_subtitle %}Your Educational Journey Partner{% endblock %}</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="email-content">
+            {% block content %}
+            <!-- Email content goes here -->
+            {% endblock %}
+        </div>
+        
+        <!-- Footer -->
+        <div class="email-footer">
+            <p><strong>{% if site_config %}{{ site_config.site_name }}{% else %}Edunox GH{% endif %}</strong></p>
+            <p>{% if site_config %}{{ site_config.site_description }}{% else %}Empowering Education, Linking Futures{% endif %}</p>
+
+            <div class="social-links">
+                {% if site_config.facebook_url %}
+                    <a href="{{ site_config.facebook_url }}" style="color: #3B82F6;">Facebook</a>
+                {% endif %}
+                {% if site_config.twitter_url %}
+                    <a href="{{ site_config.twitter_url }}" style="color: #1DA1F2;">Twitter</a>
+                {% endif %}
+                {% if site_config.linkedin_url %}
+                    <a href="{{ site_config.linkedin_url }}" style="color: #0077B5;">LinkedIn</a>
+                {% endif %}
+                {% if site_config.instagram_url %}
+                    <a href="{{ site_config.instagram_url }}" style="color: #E4405F;">Instagram</a>
+                {% endif %}
+            </div>
+
+            <p>
+                📧 {% if site_config %}{{ site_config.contact_email }}{% else %}info@Edunox.com{% endif %} |
+                📞 {% if site_config %}{{ site_config.contact_phone }}{% else %}+233 XX XXX XXXX{% endif %}
+            </p>
+            <p>📍 {% if site_config %}{{ site_config.address }}{% else %}Accra, Ghana{% endif %}</p>
+
+            <div class="unsubscribe">
+                <p>
+                    You received this email because you have an account with {% if site_config %}{{ site_config.site_name }}{% else %}Edunox GH{% endif %}.
+                    <br>
+                    <a href="#">Unsubscribe</a> | <a href="#">Update Preferences</a> | <a href="#">View in Browser</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

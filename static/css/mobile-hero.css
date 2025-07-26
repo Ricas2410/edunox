@@ -1,0 +1,226 @@
+/* Mobile-Responsive Hero Sections */
+
+/* Base hero section styles */
+.hero-section {
+    position: relative;
+    color: white;
+}
+
+.hero-section h1 {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section p {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.hero-section a {
+    text-decoration: none;
+}
+
+/* Mobile-first responsive design */
+@media (max-width: 640px) {
+    .hero-section {
+        padding: 2rem 0 !important;
+    }
+    
+    .hero-title {
+        font-size: 1.875rem !important; /* 30px */
+        line-height: 1.2 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.875rem !important; /* 14px */
+        margin-bottom: 1rem !important;
+    }
+    
+    .hero-description {
+        font-size: 1rem !important; /* 16px */
+        line-height: 1.5 !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .hero-buttons {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+    }
+    
+    .hero-button {
+        padding: 0.75rem 1.5rem !important;
+        font-size: 1rem !important;
+        width: 100% !important;
+        text-align: center !important;
+        display: block !important;
+    }
+    
+    /* Grid adjustments */
+    .hero-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    /* Stats grid for about page */
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+    
+    .stat-card {
+        padding: 0.75rem !important;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem !important;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem !important;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 641px) and (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 0 !important;
+    }
+    
+    .hero-title {
+        font-size: 2.25rem !important; /* 36px */
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem !important; /* 16px */
+    }
+    
+    .hero-description {
+        font-size: 1.125rem !important; /* 18px */
+    }
+    
+    .hero-grid {
+        gap: 2rem !important;
+    }
+    
+    /* Stats grid for about page */
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+    .hero-section {
+        padding: 5rem 0;
+    }
+    
+    .hero-grid {
+        gap: 3rem;
+    }
+}
+
+/* Specific color schemes for different services */
+.hero-uopeople {
+    background: linear-gradient(135deg, #2563eb 0%, #3730a3 100%) !important;
+}
+
+.hero-uopeople .hero-subtitle,
+.hero-uopeople .hero-description {
+    color: #dbeafe !important;
+}
+
+.hero-ghana-uni {
+    background: linear-gradient(135deg, #059669 0%, #0f766e 100%) !important;
+}
+
+.hero-ghana-uni .hero-subtitle,
+.hero-ghana-uni .hero-description {
+    color: #d1fae5 !important;
+}
+
+.hero-counseling {
+    background: linear-gradient(135deg, #0f766e 0%, #0891b2 100%) !important;
+}
+
+.hero-counseling .hero-subtitle,
+.hero-counseling .hero-description {
+    color: #e6fffa !important;
+}
+
+.hero-computer-skills {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%) !important;
+}
+
+.hero-computer-skills .hero-subtitle,
+.hero-computer-skills .hero-description {
+    color: #e9d5ff !important;
+}
+
+.hero-online-learning {
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+}
+
+.hero-online-learning .hero-subtitle,
+.hero-online-learning .hero-description {
+    color: #fecaca !important;
+}
+
+/* Button styles */
+.hero-button-primary {
+    background-color: #fbbf24;
+    color: #1f2937;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.hero-button-primary:hover {
+    background-color: #f59e0b;
+    transform: scale(1.05);
+}
+
+.hero-button-secondary {
+    border: 2px solid white;
+    color: white;
+    background: transparent;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.hero-button-secondary:hover {
+    background-color: white;
+    color: #1f2937;
+}
+
+/* Image styles */
+.hero-image {
+    border-radius: 0.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    width: 100%;
+    height: 24rem;
+    object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+    .hero-image {
+        display: none;
+    }
+}
+
+/* Background overlay */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+/* Content positioning */
+.hero-content {
+    position: relative;
+    z-index: 10;
+}

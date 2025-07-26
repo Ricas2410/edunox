@@ -1,0 +1,636 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ page_title }} - EduBridge Ghana{% endblock %}
+
+{% block extra_css %}
+<style>
+    .step-indicator {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+    
+    .step {
+        display: flex;
+        align-items: center;
+        margin: 0 1rem;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .step.active .step-number {
+        background-color: #3B82F6;
+        color: white;
+    }
+    
+    .step.completed .step-number {
+        background-color: #10B981;
+        color: white;
+    }
+    
+    .step.inactive .step-number {
+        background-color: #E5E7EB;
+        color: #6B7280;
+    }
+    
+    .step-content {
+        display: none;
+    }
+    
+    .step-content.active {
+        display: block;
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .file-upload-area {
+        border: 2px dashed #D1D5DB;
+        border-radius: 0.5rem;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .file-upload-area:hover {
+        border-color: #3B82F6;
+        background-color: #F3F4F6;
+    }
+    
+    .file-upload-area.dragover {
+        border-color: #3B82F6;
+        background-color: #EBF8FF;
+    }
+    
+    .uploaded-file {
+        display: flex;
+        align-items: center;
+        justify-content: between;
+        padding: 0.75rem;
+        background-color: #F3F4F6;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Fix oversized logo on signup page */
+    .logo-lg {
+        max-width: 120px;
+        max-height: 120px;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            {% load seo_tags %}
+            <img class="site-logo logo-lg mx-auto" src="{% site_logo %}" alt="EduBridge Ghana">
+            <h1 class="mt-6 text-3xl font-bold text-gray-900">{{ page_title }}</h1>
+            <p class="mt-2 text-sm text-gray-600">{{ page_description }}</p>
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active" id="step-indicator-1">
+                <div class="step-number">1</div>
+                <span class="hidden sm:inline">Account</span>
+            </div>
+            <div class="step inactive" id="step-indicator-2">
+                <div class="step-number">2</div>
+                <span class="hidden sm:inline">Profile</span>
+            </div>
+            <div class="step inactive" id="step-indicator-3">
+                <div class="step-number">3</div>
+                <span class="hidden sm:inline">Documents</span>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 rounded-full h-2 mb-8">
+            <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" id="progress-bar" style="width: 33.33%"></div>
+        </div>
+
+        <div class="bg-white shadow-lg rounded-lg p-8">
+            <!-- Step 1: Account Creation -->
+            <div class="step-content active" id="step-1">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Step 1: Create Your Account</h2>
+                <p class="text-gray-600 mb-6">Let's start by creating your account with basic information.</p>
+                
+                <form id="step-1-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="step" value="1">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name *</label>
+                            <input type="text" name="first_name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name *</label>
+                            <input type="text" name="last_name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm">
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                        <input type="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                            <input type="tel" name="phone_number" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Education Level</label>
+                            <select name="education_level" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm">
+                                <option value="">Select your level</option>
+                                <option value="SHS">Senior High School</option>
+                                <option value="DIPLOMA">Diploma</option>
+                                <option value="BACHELOR">Bachelor's Degree</option>
+                                <option value="MASTER">Master's Degree</option>
+                                <option value="PHD">PhD</option>
+                                <option value="OTHER">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+                            <input type="password" name="password1" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
+                            <input type="password" name="password2" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white shadow-sm">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <button type="submit" class="w-full bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors">
+                            Create Account & Continue
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 2: Profile Completion -->
+            <div class="step-content" id="step-2">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Step 2: Complete Your Profile</h2>
+                <p class="text-gray-600 mb-6">Help us understand your background and educational goals.</p>
+                
+                <form id="step-2-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="step" value="2">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                            <input type="date" name="date_of_birth" class="form-control">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                            <select name="gender" class="form-control">
+                                <option value="">Select gender</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                                <option value="O">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                        <textarea name="address" rows="3" class="form-control" placeholder="Your current address"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                            <input type="text" name="city" class="form-control">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Region</label>
+                            <input type="text" name="region" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">School/Institution Name</label>
+                            <input type="text" name="school_name" class="form-control">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Graduation Year</label>
+                            <input type="number" name="graduation_year" min="1990" max="2030" class="form-control">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tell us about yourself</label>
+                        <textarea name="bio" rows="4" class="form-control" placeholder="Share your educational goals and aspirations..."></textarea>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Profile Picture (Optional)</label>
+                        <input type="file" name="profile_picture" accept="image/*" class="form-control">
+                    </div>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <button type="button" onclick="previousStep()" class="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition-colors">
+                            Previous
+                        </button>
+                        <button type="submit" class="flex-1 bg-blue-600 text-white hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-colors">
+                            Continue to Documents
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 3: Document Upload -->
+            <div class="step-content" id="step-3">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Step 3: Upload Your Documents</h2>
+                <p class="text-gray-600 mb-6">Upload your identification and academic documents for verification.</p>
+                
+                <form id="step-3-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="step" value="3">
+                    
+                    <!-- ID Document -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            <i class="fas fa-id-card text-blue-600 mr-2"></i>
+                            Identity Document (Required)
+                        </h3>
+                        <div class="file-upload-area" onclick="document.getElementById('id_document').click()">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600 mb-2">Click to upload your National ID or Passport</p>
+                            <p class="text-sm text-gray-500">PDF, JPG, PNG up to 5MB</p>
+                        </div>
+                        <input type="file" id="id_document" name="id_document" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" required>
+                        <div id="id_document_preview" class="mt-4"></div>
+                    </div>
+                    
+                    <!-- Academic Results -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            <i class="fas fa-certificate text-green-600 mr-2"></i>
+                            Academic Results (Required)
+                        </h3>
+                        <div class="file-upload-area" onclick="document.getElementById('academic_results').click()">
+                            <i class="fas fa-graduation-cap text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600 mb-2">Upload your WASSCE, BECE, or other academic results</p>
+                            <p class="text-sm text-gray-500">PDF, JPG, PNG up to 5MB</p>
+                        </div>
+                        <input type="file" id="academic_results" name="academic_results" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" required>
+                        <div id="academic_results_preview" class="mt-4"></div>
+                    </div>
+                    
+                    <!-- Additional Documents -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+                            <i class="fas fa-file-alt text-purple-600 mr-2"></i>
+                            Additional Documents (Optional)
+                        </h3>
+                        <div class="file-upload-area" onclick="document.getElementById('additional_documents').click()">
+                            <i class="fas fa-files text-4xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600 mb-2">Upload any additional supporting documents</p>
+                            <p class="text-sm text-gray-500">Birth certificate, recommendation letters, etc. (up to 3 files)</p>
+                        </div>
+                        <input type="file" id="additional_documents" name="additional_documents" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="display: none;">
+                        <div id="additional_documents_preview" class="mt-4"></div>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <button type="button" onclick="previousStep()" class="flex-1 border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition-colors">
+                            Previous
+                        </button>
+                        <button type="submit" class="flex-1 bg-green-600 text-white hover:bg-green-700 px-6 py-3 rounded-lg font-medium transition-colors">
+                            Complete Registration
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Benefits Section -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shield-alt text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Secure & Private</h3>
+                <p class="text-sm text-gray-600">Your documents are encrypted and stored securely</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-clock text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Quick Verification</h3>
+                <p class="text-sm text-gray-600">Documents are typically verified within 24-48 hours</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-headset text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Expert Support</h3>
+                <p class="text-sm text-gray-600">Our team is here to help throughout the process</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentStep = 1;
+const totalSteps = 3;
+
+// Initialize file upload handlers
+document.addEventListener('DOMContentLoaded', function() {
+    initializeFileUploads();
+    initializeFormHandlers();
+});
+
+function initializeFileUploads() {
+    // Handle file input changes
+    document.getElementById('id_document').addEventListener('change', function() {
+        handleFilePreview(this, 'id_document_preview');
+    });
+
+    document.getElementById('academic_results').addEventListener('change', function() {
+        handleFilePreview(this, 'academic_results_preview');
+    });
+
+    document.getElementById('additional_documents').addEventListener('change', function() {
+        handleMultipleFilePreview(this, 'additional_documents_preview');
+    });
+}
+
+function handleFilePreview(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            input.value = '';
+            return;
+        }
+
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'uploaded-file';
+        fileDiv.innerHTML = `
+            <div class="flex items-center flex-1">
+                <i class="fas fa-file text-blue-500 mr-3"></i>
+                <div>
+                    <p class="font-medium text-gray-900">${file.name}</p>
+                    <p class="text-sm text-gray-500">${formatFileSize(file.size)}</p>
+                </div>
+            </div>
+            <button type="button" onclick="removeFile('${input.id}')" class="text-red-500 hover:text-red-700">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        preview.appendChild(fileDiv);
+    }
+}
+
+function handleMultipleFilePreview(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+
+    if (input.files) {
+        Array.from(input.files).forEach((file, index) => {
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert(`File "${file.name}" is too large. Maximum size is 5MB.`);
+                return;
+            }
+
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'uploaded-file';
+            fileDiv.innerHTML = `
+                <div class="flex items-center flex-1">
+                    <i class="fas fa-file text-purple-500 mr-3"></i>
+                    <div>
+                        <p class="font-medium text-gray-900">${file.name}</p>
+                        <p class="text-sm text-gray-500">${formatFileSize(file.size)}</p>
+                    </div>
+                </div>
+                <button type="button" onclick="removeFileFromMultiple('${input.id}', ${index})" class="text-red-500 hover:text-red-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            preview.appendChild(fileDiv);
+        });
+    }
+}
+
+function removeFile(inputId) {
+    const input = document.getElementById(inputId);
+    input.value = '';
+    const previewId = inputId + '_preview';
+    document.getElementById(previewId).innerHTML = '';
+}
+
+function removeFileFromMultiple(inputId, index) {
+    const input = document.getElementById(inputId);
+    const dt = new DataTransfer();
+    const files = Array.from(input.files);
+
+    files.splice(index, 1);
+    files.forEach(file => dt.items.add(file));
+
+    input.files = dt.files;
+    handleMultipleFilePreview(input, inputId + '_preview');
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function initializeFormHandlers() {
+    // Step 1 form handler
+    document.getElementById('step-1-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitStep(1, this);
+    });
+
+    // Step 2 form handler
+    document.getElementById('step-2-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitStep(2, this);
+    });
+
+    // Step 3 form handler
+    document.getElementById('step-3-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitStep(3, this);
+    });
+}
+
+function submitStep(step, form) {
+    const formData = new FormData(form);
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+
+    // Show loading state
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+
+    fetch('{% url "accounts:register_steps" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+            } else if (data.next_step) {
+                nextStep();
+            }
+            showNotification(data.message, 'success');
+        } else {
+            if (data.errors) {
+                displayFormErrors(form, data.errors);
+            }
+            showNotification(data.message || 'Please correct the errors below.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('An error occurred. Please try again.', 'error');
+    })
+    .finally(() => {
+        // Restore button state
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalText;
+    });
+}
+
+function displayFormErrors(form, errors) {
+    // Clear previous errors
+    form.querySelectorAll('.error-message').forEach(el => el.remove());
+    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+    // Display new errors
+    Object.keys(errors).forEach(fieldName => {
+        const field = form.querySelector(`[name="${fieldName}"]`);
+        if (field) {
+            field.classList.add('is-invalid');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message text-red-600 text-sm mt-1';
+            errorDiv.textContent = errors[fieldName][0];
+            field.parentNode.appendChild(errorDiv);
+        }
+    });
+}
+
+function nextStep() {
+    if (currentStep < totalSteps) {
+        // Hide current step
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        document.getElementById(`step-indicator-${currentStep}`).classList.remove('active');
+        document.getElementById(`step-indicator-${currentStep}`).classList.add('completed');
+
+        // Show next step
+        currentStep++;
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        document.getElementById(`step-indicator-${currentStep}`).classList.remove('inactive');
+        document.getElementById(`step-indicator-${currentStep}`).classList.add('active');
+
+        // Update progress bar
+        const progress = (currentStep / totalSteps) * 100;
+        document.getElementById('progress-bar').style.width = progress + '%';
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function previousStep() {
+    if (currentStep > 1) {
+        // Hide current step
+        document.getElementById(`step-${currentStep}`).classList.remove('active');
+        document.getElementById(`step-indicator-${currentStep}`).classList.remove('active');
+        document.getElementById(`step-indicator-${currentStep}`).classList.add('inactive');
+
+        // Show previous step
+        currentStep--;
+        document.getElementById(`step-${currentStep}`).classList.add('active');
+        document.getElementById(`step-indicator-${currentStep}`).classList.remove('completed');
+        document.getElementById(`step-indicator-${currentStep}`).classList.add('active');
+
+        // Update progress bar
+        const progress = (currentStep / totalSteps) * 100;
+        document.getElementById('progress-bar').style.width = progress + '%';
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm alert alert-${type}`;
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <span>${message}</span>
+            <button type="button" class="ml-auto" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+</script>
+{% endblock %}

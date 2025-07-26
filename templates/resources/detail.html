@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ resource.title }} - Educational Resources{% endblock %}
+
+{% block meta_description %}{{ resource.description|truncatechars:150 }}{% endblock %}
+
+{% block content %}
+<!-- Resource Hero Section -->
+<section class="bg-gradient-to-br from-green-600 to-teal-800 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="flex items-center mb-4">
+                    <a href="{% url 'resources:list' %}" class="text-green-200 hover:text-white mr-4">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Resources
+                    </a>
+                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
+                        {{ resource.category.name }}
+                    </span>
+                </div>
+                
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">{{ resource.title }}</h1>
+                <p class="text-xl text-green-100 mb-8">{{ resource.description }}</p>
+                
+                <div class="flex items-center space-x-6 mb-8">
+                    <div class="flex items-center">
+                        <i class="fas fa-eye text-green-300 mr-2"></i>
+                        <span>{{ resource.views }} views</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-download text-green-300 mr-2"></i>
+                        <span>{{ resource.downloads }} downloads</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-calendar text-green-300 mr-2"></i>
+                        <span>{{ resource.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4">
+                    {% if resource.file or resource.external_url %}
+                        <a href="{% url 'resources:download' resource.pk %}" class="bg-yellow-400 text-green-900 hover:bg-yellow-300 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105 text-center">
+                            <i class="fas fa-download mr-2"></i>
+                            Access Resource
+                        </a>
+                    {% endif %}
+                    <button type="button" onclick="shareResource()" class="border-2 border-white text-white hover:bg-white hover:text-green-700 px-8 py-4 rounded-lg text-lg font-semibold transition-all text-center">
+                        <i class="fas fa-share mr-2"></i>
+                        Share Resource
+                    </button>
+                </div>
+            </div>
+            
+            <div class="hidden lg:block">
+                {% if resource.image %}
+                    <img src="{{ resource.image.url }}" alt="{{ resource.title }}" class="rounded-lg shadow-2xl">
+                {% else %}
+                    <div class="w-full h-96 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg shadow-2xl flex items-center justify-center">
+                        <i class="fas fa-{{ resource.get_icon }} text-white text-8xl"></i>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Resource Content -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <!-- Main Content -->
+            <div class="lg:col-span-2">
+                <!-- Content -->
+                {% if resource.content %}
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Content</h2>
+                    <div class="prose prose-lg text-gray-600 max-w-none">
+                        {{ resource.content|linebreaks }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Key Points -->
+                {% if resource.key_points %}
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Key Points</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for point in resource.key_points_list %}
+                        <div class="flex items-start p-4 bg-green-50 rounded-lg">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span class="text-gray-700">{{ point }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Prerequisites -->
+                {% if resource.prerequisites %}
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Prerequisites</h2>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <ul class="space-y-3">
+                            {% for prerequisite in resource.prerequisites_list %}
+                            <li class="flex items-start">
+                                <i class="fas fa-info-circle text-blue-500 mr-3 mt-1"></i>
+                                <span class="text-gray-700">{{ prerequisite }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Learning Outcomes -->
+                {% if resource.learning_outcomes %}
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">What You'll Learn</h2>
+                    <div class="space-y-4">
+                        {% for outcome in resource.learning_outcomes_list %}
+                        <div class="flex items-start p-4 border border-gray-200 rounded-lg">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-3 mt-1"></i>
+                            <span class="text-gray-700">{{ outcome }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Additional Resources -->
+                {% if resource.additional_links %}
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Additional Resources</h2>
+                    <div class="space-y-3">
+                        {% for link in resource.additional_links_list %}
+                        <a href="{{ link.url }}" target="_blank" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <i class="fas fa-external-link-alt text-blue-500 mr-3"></i>
+                            <div>
+                                <div class="font-medium text-gray-900">{{ link.title }}</div>
+                                {% if link.description %}
+                                    <div class="text-sm text-gray-600">{{ link.description }}</div>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Comments Section -->
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6">Comments & Feedback</h2>
+                    
+                    {% if user.is_authenticated %}
+                        <form class="mb-8 p-6 bg-gray-50 rounded-lg">
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Leave a comment</label>
+                                <textarea rows="4" class="form-control" placeholder="Share your thoughts about this resource..."></textarea>
+                            </div>
+                            <button type="submit" class="bg-green-600 text-white hover:bg-green-700 px-6 py-2 rounded-lg font-medium transition-colors">
+                                Post Comment
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg text-center">
+                            <p class="text-blue-700 mb-4">Please log in to leave comments and feedback.</p>
+                            <a href="{% url 'account_login' %}" class="bg-blue-600 text-white hover:bg-blue-700 px-6 py-2 rounded-lg font-medium transition-colors">
+                                Log In
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Sample Comments -->
+                    <div class="space-y-6">
+                        <div class="border border-gray-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-medium">JD</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900">John Doe</div>
+                                    <div class="text-sm text-gray-500">2 days ago</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">This resource was incredibly helpful for my university application. The step-by-step guide made the process much clearer!</p>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                    <span class="text-white font-medium">SA</span>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900">Sarah Asante</div>
+                                    <div class="text-sm text-gray-500">1 week ago</div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700">Excellent resource! I wish I had found this earlier in my application process. Thank you EduBridge!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1">
+                <!-- Download Card -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6 sticky top-8 mb-6">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-4" style="background-color: {{ resource.category.color }}20;">
+                            <i class="fas fa-{{ resource.get_icon }} text-3xl" style="color: {{ resource.category.color }};"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ resource.get_resource_type_display }}</h3>
+                        <p class="text-gray-600">{{ resource.category.name }}</p>
+                    </div>
+                    
+                    {% if resource.file or resource.external_url %}
+                        <a href="{% url 'resources:download' resource.pk %}" class="w-full bg-green-600 text-white hover:bg-green-700 px-6 py-3 rounded-lg font-medium transition-colors text-center block mb-4">
+                            <i class="fas fa-download mr-2"></i>
+                            Access Resource
+                        </a>
+                    {% endif %}
+                    
+                    <button type="button" onclick="shareResource()" class="w-full border border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition-colors text-center block">
+                        <i class="fas fa-share mr-2"></i>
+                        Share Resource
+                    </button>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <h4 class="font-semibold text-gray-900 mb-3">Resource Stats</h4>
+                        <div class="space-y-2 text-sm text-gray-600">
+                            <div class="flex justify-between">
+                                <span>Views:</span>
+                                <span class="font-medium">{{ resource.views }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Downloads:</span>
+                                <span class="font-medium">{{ resource.downloads }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Published:</span>
+                                <span class="font-medium">{{ resource.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            {% if resource.updated_at != resource.created_at %}
+                            <div class="flex justify-between">
+                                <span>Updated:</span>
+                                <span class="font-medium">{{ resource.updated_at|date:"M d, Y" }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Resources -->
+                {% if related_resources %}
+                <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-6">
+                    <h4 class="font-semibold text-gray-900 mb-4">Related Resources</h4>
+                    <div class="space-y-4">
+                        {% for related in related_resources %}
+                        <a href="{% url 'resources:detail' related.pk %}" class="block p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded flex items-center justify-center mr-3" style="background-color: {{ related.category.color }}20;">
+                                    <i class="fas fa-{{ related.get_icon }} text-sm" style="color: {{ related.category.color }};"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-medium text-gray-900 truncate">{{ related.title }}</div>
+                                    <div class="text-xs text-gray-500">{{ related.category.name }}</div>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function shareResource() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ resource.title }}',
+            text: '{{ resource.description|truncatechars:100 }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            alert('Resource link copied to clipboard!');
+        });
+    }
+}
+
+// Track resource view
+document.addEventListener('DOMContentLoaded', function() {
+    // In a real implementation, this would make an API call to track the view
+    console.log('Resource viewed: {{ resource.id }}');
+});
+</script>
+{% endblock %}

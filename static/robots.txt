@@ -1,0 +1,50 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /my-admin/
+Disallow: /accounts/login/
+Disallow: /accounts/logout/
+Disallow: /accounts/password/
+Disallow: /dashboard/
+Disallow: /media/user_documents/
+Disallow: /media/contact_attachments/
+Disallow: /media/branding/
+
+# Allow public registration
+Allow: /accounts/signup/
+Allow: /accounts/register/
+
+# Allow public media
+Allow: /media/service_images/
+Allow: /media/resource_images/
+Allow: /media/profile_pictures/
+Allow: /static/
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
+
+# Specific rules for search engines
+User-agent: Googlebot
+Crawl-delay: 0
+Allow: /
+
+User-agent: Bingbot
+Crawl-delay: 1
+Allow: /
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Sitemap
+Sitemap: https://edubridge.com/sitemap.xml
+Sitemap: https://edubridge.com/sitemap-services.xml
+Sitemap: https://edubridge.com/sitemap-resources.xml

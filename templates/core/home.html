@@ -1,0 +1,516 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ site_config.site_name }} - {{ site_config.site_description }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Mobile hero section improvements */
+@media (max-width: 640px) {
+    .hero-section {
+        min-height: 70vh;
+    }
+
+    .hero-content {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .hero-buttons {
+        gap: 0.5rem;
+    }
+
+    .hero-button {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+        min-height: 2.5rem;
+    }
+
+    .hero-image {
+        margin-top: 1rem;
+        height: 12rem; /* 48 * 0.25rem = 12rem */
+    }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+    .hero-image {
+        height: 16rem; /* 64 * 0.25rem = 16rem */
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
+    <div class="absolute inset-0 bg-black opacity-20"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent"></div>
+
+    <div class="hero-content relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-32">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
+            <div class="text-center lg:text-left">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold leading-tight mb-3 sm:mb-4 lg:mb-6">
+                    Your Gateway to
+                    <span class="text-yellow-400">Free</span>
+                    Higher Education
+                </h1>
+                <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-blue-100 mb-3 sm:mb-4 lg:mb-6 leading-relaxed">
+                    Helping students in Ghana access tuition-free universities like University of the People through independent educational consultancy and digital literacy support.
+                </p>
+                <!-- Hide disclaimer on mobile to save space -->
+                <div class="hidden sm:block bg-blue-500/20 backdrop-blur-sm rounded-lg p-4 mb-6 lg:mb-8">
+                    <p class="text-blue-100 text-sm">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <strong>Independent Service:</strong> We are not affiliated with any university. We provide consultancy services to help you navigate applications to free and affordable universities.
+                    </p>
+                </div>
+                <!-- Mobile disclaimer - shorter version -->
+                <div class="sm:hidden bg-blue-500/20 backdrop-blur-sm rounded-lg p-2 mb-4 text-center">
+                    <p class="text-blue-100 text-xs">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <strong>Independent consultancy service</strong> - Not affiliated with any university
+                    </p>
+                </div>
+                <div class="hero-buttons flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4 justify-center lg:justify-start">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'accounts:register' %}" class="hero-button bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-lg text-sm sm:text-base lg:text-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
+                            Get Started Today
+                        </a>
+                        <a href="{% url 'services:list' %}" class="hero-button border-2 border-white text-white hover:bg-white hover:text-blue-700 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-lg text-sm sm:text-base lg:text-lg font-semibold transition-all">
+                            Explore Services
+                        </a>
+                    {% else %}
+                        <a href="{% url 'user_dashboard:home' %}" class="hero-button bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-lg text-sm sm:text-base lg:text-lg font-semibold transition-all transform hover:scale-105 shadow-lg">
+                            Go to Dashboard
+                        </a>
+                        <a href="{% url 'services:list' %}" class="hero-button border-2 border-white text-white hover:bg-white hover:text-blue-700 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-lg text-sm sm:text-base lg:text-lg font-semibold transition-all">
+                            Book Services
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Hero Image - Show smaller version on mobile and tablets -->
+            <div class="order-first lg:order-last">
+                {% load seo_tags %}
+                <img src="{% site_hero_image %}" alt="Students learning" class="hero-image rounded-lg shadow-xl w-full h-48 sm:h-64 lg:h-96 object-cover mx-auto">
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Elements - hide on mobile -->
+    <div class="hidden sm:block absolute top-20 right-10 w-20 h-20 bg-yellow-400 rounded-full opacity-20 animate-pulse"></div>
+    <div class="hidden sm:block absolute bottom-20 left-10 w-16 h-16 bg-blue-300 rounded-full opacity-30 animate-bounce"></div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-12 sm:py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
+            <div class="p-3 sm:p-6">
+                <div class="text-2xl sm:text-4xl font-bold text-blue-600 mb-1 sm:mb-2">500+</div>
+                <div class="text-xs sm:text-base text-gray-600">Students Helped</div>
+            </div>
+            <div class="p-3 sm:p-6">
+                <div class="text-2xl sm:text-4xl font-bold text-green-600 mb-1 sm:mb-2">95%</div>
+                <div class="text-xs sm:text-base text-gray-600">Success Rate</div>
+            </div>
+            <div class="p-3 sm:p-6">
+                <div class="text-2xl sm:text-4xl font-bold text-purple-600 mb-1 sm:mb-2">50+</div>
+                <div class="text-xs sm:text-base text-gray-600 hidden sm:block">Partner Universities</div>
+                <div class="text-xs text-gray-600 sm:hidden">Universities</div>
+            </div>
+            <div class="p-3 sm:p-6">
+                <div class="text-2xl sm:text-4xl font-bold text-orange-600 mb-1 sm:mb-2">24/7</div>
+                <div class="text-xs sm:text-base text-gray-600 hidden sm:block">Support Available</div>
+                <div class="text-xs text-gray-600 sm:hidden">Support</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-12 sm:py-16 lg:py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8 sm:mb-12 lg:mb-16">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">What We Do</h2>
+            <p class="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
+                We specialize in helping aspiring students navigate the application process and transition into online or traditional universities with confidence.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <!-- Service 1 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-4 sm:mb-6">
+                    <i class="fas fa-graduation-cap text-xl sm:text-2xl text-blue-600"></i>
+                </div>
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">University Application Support</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">We help you apply to institutions like University of the People (UoPeople), as well as public and private universities in Ghana and abroad.</p>
+                <a href="{% url 'services:list' %}" class="text-blue-600 hover:text-blue-700 font-medium text-sm sm:text-base">Learn More →</a>
+            </div>
+
+            <!-- Service 2 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-lg flex items-center justify-center mb-4 sm:mb-6">
+                    <i class="fas fa-award text-xl sm:text-2xl text-green-600"></i>
+                </div>
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Scholarship Guidance</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">We assist with applying for available scholarships to reduce or eliminate exam/application fees.</p>
+                <a href="{% url 'services:list' %}" class="text-blue-600 hover:text-blue-700 font-medium text-sm sm:text-base">Learn More →</a>
+            </div>
+
+            <!-- Service 3 -->
+            <div class="bg-white rounded-xl shadow-lg p-6 sm:p-8 hover:shadow-xl transition-shadow">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-purple-100 rounded-lg flex items-center justify-center mb-4 sm:mb-6">
+                    <i class="fas fa-laptop text-xl sm:text-2xl text-purple-600"></i>
+                </div>
+                <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">Digital Literacy Training</h3>
+                <p class="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">Learn how to study online, attend virtual classes, and access learning materials effectively.</p>
+                <a href="{% url 'services:list' %}" class="text-blue-600 hover:text-blue-700 font-medium text-sm sm:text-base">Learn More →</a>
+            </div>
+            
+            <!-- Service 4 -->
+            <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mb-6">
+                    <i class="fas fa-user-tie text-2xl text-orange-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Personal Application Service</h3>
+                <p class="text-gray-600 mb-6">Not computer literate? We'll collect your particulars and apply on your behalf.</p>
+                <a href="{% url 'services:list' %}" class="text-blue-600 hover:text-blue-700 font-medium">Learn More →</a>
+            </div>
+            
+            <!-- Service 5 -->
+            <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mb-6">
+                    <i class="fas fa-comments text-2xl text-red-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Educational Consultancy</h3>
+                <p class="text-gray-600 mb-6">We offer guidance to help you choose the best program, school, or career path that fits your dreams.</p>
+                <a href="{% url 'services:list' %}" class="text-blue-600 hover:text-blue-700 font-medium">Learn More →</a>
+            </div>
+            
+            <!-- Service 6 -->
+            <div class="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                    <i class="fas fa-book text-2xl text-indigo-600"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Free Resources</h3>
+                <p class="text-gray-600 mb-6">Access our library of free educational resources, guides, and materials to support your learning journey.</p>
+                <a href="{% url 'resources:list' %}" class="text-blue-600 hover:text-blue-700 font-medium">Learn More →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- University Information Section - Hide on mobile to reduce clutter -->
+<section class="hidden sm:block py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-green-50 to-blue-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8 sm:mb-12 lg:mb-16">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">About University of the People & Other Universities</h2>
+            <p class="text-base sm:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto">
+                We help you access tuition-free and affordable universities worldwide. Here's what you need to know:
+            </p>
+        </div>
+
+        <!-- UoPeople Information -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <img src="https://www.uopeople.edu/wp-content/uploads/2019/11/UoPeople-Logo-Horizontal-RGB-1.png" alt="University of the People" class="h-12 mr-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">University of the People</h3>
+                            <p class="text-green-600 font-semibold">100% Tuition-Free</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <div>
+                                <p class="font-semibold text-gray-900">Tuition is Completely FREE</p>
+                                <p class="text-gray-600 text-sm">No tuition fees for any degree program</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <i class="fas fa-dollar-sign text-yellow-500 mt-1 mr-3"></i>
+                            <div>
+                                <p class="font-semibold text-gray-900">Assessment Fees Apply</p>
+                                <p class="text-gray-600 text-sm">$5,460 total for Bachelor's degree (can be waived with scholarships)</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <i class="fas fa-graduation-cap text-blue-500 mt-1 mr-3"></i>
+                            <div>
+                                <p class="font-semibold text-gray-900">Accredited Degrees</p>
+                                <p class="text-gray-600 text-sm">Fully accredited by DEAC and recognized worldwide</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <a href="https://www.uopeople.edu/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                            Visit UoPeople Website
+                            <i class="fas fa-external-link-alt ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-green-50 rounded-xl p-6">
+                    <h4 class="text-lg font-bold text-gray-900 mb-4">Important Requirements</h4>
+                    <ul class="space-y-3 text-sm text-gray-700">
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-500 mt-1 mr-2 text-xs"></i>
+                            <span>Complete Foundation Courses (if required)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-500 mt-1 mr-2 text-xs"></i>
+                            <span>Pass English Proficiency Assessment</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-500 mt-1 mr-2 text-xs"></i>
+                            <span>Submit Required Documents</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-500 mt-1 mr-2 text-xs"></i>
+                            <span>Maintain Academic Standards</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-arrow-right text-blue-500 mt-1 mr-2 text-xs"></i>
+                            <span>Complete Degree Requirements</span>
+                        </li>
+                    </ul>
+
+                    <div class="mt-4 p-3 bg-yellow-100 rounded-lg">
+                        <p class="text-xs text-yellow-800 font-medium">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            You are NOT automatically enrolled in degree programs until all requirements are met.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other Universities -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h4 class="text-lg font-bold text-gray-900 mb-3">Public Universities in Ghana</h4>
+                <p class="text-gray-600 text-sm mb-4">Affordable local options with government subsidies</p>
+                <ul class="text-sm text-gray-700 space-y-1">
+                    <li>• University of Ghana</li>
+                    <li>• KNUST</li>
+                    <li>• University of Cape Coast</li>
+                    <li>• And many more...</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h4 class="text-lg font-bold text-gray-900 mb-3">International Free Universities</h4>
+                <p class="text-gray-600 text-sm mb-4">Tuition-free options worldwide</p>
+                <ul class="text-sm text-gray-700 space-y-1">
+                    <li>• University of the People (USA)</li>
+                    <li>• German Public Universities</li>
+                    <li>• Norwegian Universities</li>
+                    <li>• And others...</li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h4 class="text-lg font-bold text-gray-900 mb-3">Scholarship Opportunities</h4>
+                <p class="text-gray-600 text-sm mb-4">Financial aid for qualified students</p>
+                <ul class="text-sm text-gray-700 space-y-1">
+                    <li>• Merit-based scholarships</li>
+                    <li>• Need-based financial aid</li>
+                    <li>• Government scholarships</li>
+                    <li>• Private foundations</li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+</section>
+
+<!-- Transparency Section - Simplified on mobile -->
+<section class="py-12 sm:py-16 lg:py-20 bg-blue-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 sm:mb-6">About Our Service Fees</h2>
+            <p class="text-base sm:text-lg lg:text-xl text-gray-600 mb-6 sm:mb-8">
+                We believe in transparency. Here's what our modest consultancy fees cover:
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <div class="bg-white rounded-lg p-4 sm:p-6 shadow-md">
+                    <i class="fas fa-wifi text-blue-600 text-lg sm:text-2xl mb-2 sm:mb-4"></i>
+                    <h3 class="font-semibold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Internet Data</h3>
+                    <p class="text-xs sm:text-sm text-gray-600">Data bundles for research and applications</p>
+                </div>
+
+                <div class="bg-white rounded-lg p-4 sm:p-6 shadow-md">
+                    <i class="fas fa-car text-green-600 text-lg sm:text-2xl mb-2 sm:mb-4"></i>
+                    <h3 class="font-semibold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Travel Costs</h3>
+                    <p class="text-xs sm:text-sm text-gray-600">Transportation to remote areas</p>
+                </div>
+
+                <div class="bg-white rounded-lg p-4 sm:p-6 shadow-md">
+                    <i class="fas fa-user-tie text-purple-600 text-lg sm:text-2xl mb-2 sm:mb-4"></i>
+                    <h3 class="font-semibold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Personal Support</h3>
+                    <p class="text-xs sm:text-sm text-gray-600">One-on-one application assistance</p>
+                </div>
+
+                <div class="bg-white rounded-lg p-4 sm:p-6 shadow-md">
+                    <i class="fas fa-book-open text-orange-600 text-lg sm:text-2xl mb-2 sm:mb-4"></i>
+                    <h3 class="font-semibold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Training Materials</h3>
+                    <p class="text-xs sm:text-sm text-gray-600">Educational resources and session materials</p>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+                <p class="text-lg font-medium text-yellow-800 mb-3">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Universities like University of the People are tuition-free. Our fees are for consultancy services only.
+                </p>
+                <p class="text-sm text-yellow-700">
+                    We are NOT affiliated with any university. We do NOT charge for university tuition or fees.
+                    Our service fees cover our operational costs to help you navigate the application process.
+                </p>
+            </div>
+
+            <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                <h3 class="text-lg font-bold text-green-800 mb-3">What We Do vs. What Universities Do</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                        <h4 class="font-semibold text-green-700 mb-2">EduBridge Ghana (Us)</h4>
+                        <ul class="space-y-1 text-green-600">
+                            <li>• Application guidance and support</li>
+                            <li>• Document preparation assistance</li>
+                            <li>• Scholarship application help</li>
+                            <li>• Digital literacy training</li>
+                            <li>• Travel to remote communities</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-green-700 mb-2">Universities (Them)</h4>
+                        <ul class="space-y-1 text-green-600">
+                            <li>• Provide the actual education</li>
+                            <li>• Set admission requirements</li>
+                            <li>• Make admission decisions</li>
+                            <li>• Award degrees and certificates</li>
+                            <li>• Charge their own fees (if any)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <p class="text-xl text-gray-600">Simple steps to start your educational journey</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-2xl font-bold text-white">1</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Register</h3>
+                <p class="text-gray-600">Create your account and upload your basic documents (ID, exam results, etc.)</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-2xl font-bold text-white">2</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Choose Services</h3>
+                <p class="text-gray-600">Select from our range of services including scholarship help and training</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-20 h-20 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-2xl font-bold text-white">3</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Get Support</h3>
+                <p class="text-gray-600">Receive personalized guidance and support throughout your application process</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-20 h-20 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-2xl font-bold text-white">4</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Succeed</h3>
+                <p class="text-gray-600">Get accepted to your dream university and start your educational journey</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+{% if faqs %}
+<section class="py-20 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <p class="text-xl text-gray-600">Get answers to common questions about our services</p>
+        </div>
+        
+        <div class="space-y-6" x-data="{ openFaq: null }">
+            {% for faq in faqs %}
+            <div class="bg-white rounded-lg shadow-md">
+                <button @click="openFaq = openFaq === {{ forloop.counter }} ? null : {{ forloop.counter }}" 
+                        class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 focus:outline-none">
+                    <span class="text-lg font-medium text-gray-900">{{ faq.question }}</span>
+                    <i class="fas fa-chevron-down transition-transform" 
+                       :class="{ 'rotate-180': openFaq === {{ forloop.counter }} }"></i>
+                </button>
+                <div x-show="openFaq === {{ forloop.counter }}" 
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 transform scale-95"
+                     x-transition:enter-end="opacity-100 transform scale-100"
+                     class="px-6 pb-4">
+                    <p class="text-gray-600">{{ faq.answer|linebreaks }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'core:faq' %}" class="text-blue-600 hover:text-blue-700 font-medium">
+                View All FAQs →
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-20 bg-blue-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl font-bold text-white mb-6">Ready to Start Your Educational Journey?</h2>
+        <p class="text-xl text-blue-100 mb-8">
+            Join hundreds of students who have successfully accessed higher education through our support.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'accounts:register' %}" class="bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
+                    Get Started Now
+                </a>
+            {% else %}
+                <a href="{% url 'services:list' %}" class="bg-yellow-400 text-blue-900 hover:bg-yellow-300 px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
+                    Book a Service
+                </a>
+            {% endif %}
+            <a href="{% url 'contact:contact' %}" class="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold transition-all">
+                Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
