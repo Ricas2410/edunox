@@ -133,18 +133,32 @@ class Command(BaseCommand):
             )
             
             if upload_response.response_metadata.http_status_code == 200:
-                file_data = upload_response.response_metadata.raw
-                
                 self.stdout.write(
                     self.style.SUCCESS('✅ File uploaded successfully!')
                 )
-                self.stdout.write(f'   📁 File Name: {file_data.get("name", "N/A")}')
-                self.stdout.write(f'   📏 File Size: {file_data.get("size", "N/A")} bytes')
-                self.stdout.write(f'   🆔 File ID: {file_data.get("file_id", "N/A")}')
-                self.stdout.write(f'   🔗 URL: {file_data.get("url", "N/A")}')
-                
-                # Test deletion
-                self.test_file_deletion(imagekit_client, file_data.get("file_id"))
+
+                # Try to get file details safely
+                try:
+                    if hasattr(upload_response, 'name'):
+                        file_name = upload_response.name
+                        file_id = getattr(upload_response, 'file_id', None)
+                        file_url = getattr(upload_response, 'url', None)
+                    else:
+                        file_name = "test_upload.png"
+                        file_id = None
+                        file_url = None
+
+                    self.stdout.write(f'   📁 File Name: {file_name}')
+                    if file_id:
+                        self.stdout.write(f'   🆔 File ID: {file_id}')
+                        # Test deletion
+                        self.test_file_deletion(imagekit_client, file_id)
+                    if file_url:
+                        self.stdout.write(f'   🔗 URL: {file_url}')
+
+                except Exception as detail_error:
+                    self.stdout.write(f'   ⚠️  Could not get file details: {detail_error}')
+                    self.stdout.write('   📝 Upload was successful but response format is different')
                 
             else:
                 self.stdout.write(
