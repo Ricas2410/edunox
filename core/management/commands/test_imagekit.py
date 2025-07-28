@@ -122,17 +122,31 @@ class Command(BaseCommand):
             img_bytes.seek(0)
             
             # Upload to ImageKit
-            upload_response = imagekit_client.upload_file(
-                file=img_bytes.getvalue(),
-                file_name='test_upload.png',
-                options={
-                    "folder": "/edunox/test/",
-                    "use_unique_file_name": True,
-                    "response_fields": ["name", "size", "file_id", "url"]
-                }
-            )
-            
-            if upload_response.response_metadata.http_status_code == 200:
+            try:
+                upload_response = imagekit_client.upload_file(
+                    file=img_bytes.getvalue(),
+                    file_name='test_upload.png',
+                    options={
+                        "folder": "/edunox/test/",
+                        "use_unique_file_name": True,
+                        "response_fields": ["name", "size", "file_id", "url"]
+                    }
+                )
+            except Exception as upload_error:
+                # Try simpler upload format for different SDK versions
+                upload_response = imagekit_client.upload_file(
+                    file=img_bytes.getvalue(),
+                    file_name='test_upload.png'
+                )
+
+            # Check if upload was successful
+            try:
+                status_code = upload_response.response_metadata.http_status_code
+            except AttributeError:
+                # Handle different response formats
+                status_code = 200 if hasattr(upload_response, 'file_id') or hasattr(upload_response, 'name') else 400
+
+            if status_code == 200:
                 self.stdout.write(
                     self.style.SUCCESS('✅ File uploaded successfully!')
                 )
