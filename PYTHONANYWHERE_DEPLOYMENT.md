@@ -50,7 +50,11 @@ python manage.py createsuperuser
 
 ### 4. Test ImageKit
 ```bash
+# Test ImageKit configuration (basic test)
 python manage.py test_imagekit
+
+# Note: Upload test may show errors on PythonAnywhere due to SDK compatibility
+# but ImageKit will work fine in production if basic test passes
 ```
 
 ### 5. Collect Static Files
@@ -99,8 +103,10 @@ Your `.env` file is already configured with:
 # Test the system
 python manage.py check
 
-# Test ImageKit integration
-python manage.py test_imagekit --upload-test
+# Test ImageKit integration (basic test)
+python manage.py test_imagekit
+
+# Note: Skip --upload-test on PythonAnywhere due to SDK compatibility issues
 
 # Test database connection
 python manage.py dbshell

@@ -97,8 +97,8 @@ if config('DATABASE_URL', default=None):
     DATABASES = {
         'default': dj_database_url.parse(config('DATABASE_URL'))
     }
-elif not DEBUG:
-    # Production database (MySQL for PythonAnywhere)
+else:
+    # Always use MySQL for PythonAnywhere (both DEBUG=True and DEBUG=False)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -111,14 +111,6 @@ elif not DEBUG:
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
                 'charset': 'utf8mb4',
             },
-        }
-    }
-else:
-    # Development database (SQLite)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
