@@ -29,7 +29,7 @@ db.sqlite3-journal
 media/
 
 # Environment variables
-.env
+# .env - keeping for PythonAnywhere deployment
 .venv
 env/
 venv/
