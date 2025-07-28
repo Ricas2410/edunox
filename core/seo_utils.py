@@ -172,7 +172,7 @@ class SEOManager:
             "description": self.site_description,
             "logo": {
                 "@type": "ImageObject",
-                "url": f"{self.site_url}/static/images/logo.png"
+                "url": f"{self.site_url}/static/images/logo.png" if hasattr(self, 'site_url') else "https://ik.imagekit.io/edunox/default-logo.png"
             },
             "address": {
                 "@type": "PostalAddress",
@@ -270,7 +270,7 @@ class SEOManager:
                 "name": self.site_name,
                 "logo": {
                     "@type": "ImageObject",
-                    "url": f"{self.site_url}/static/images/logo.png"
+                    "url": f"{self.site_url}/static/images/logo.png" if hasattr(self, 'site_url') else "https://ik.imagekit.io/edunox/default-logo.png"
                 }
             },
             "datePublished": resource.created_at.isoformat(),
@@ -483,7 +483,7 @@ class AdvancedSEOManager(SEOManager):
             "name": self.site_name,
             "description": self.site_description,
             "url": self.site_url,
-            "logo": f"{self.site_url}/static/images/Edunox-logo.png",
+            "logo": "https://ik.imagekit.io/edunox/default-logo.png",
             "address": {
                 "@type": "PostalAddress",
                 "addressCountry": "Ghana",

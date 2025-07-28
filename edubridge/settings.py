@@ -91,28 +91,13 @@ WSGI_APPLICATION = 'edubridge.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if config('DATABASE_URL', default=None):
-    # Production database (PostgreSQL/MySQL via DATABASE_URL)
-    import dj_database_url
-    DATABASES = {
-        'default': dj_database_url.parse(config('DATABASE_URL'))
+# Always use SQLite for simplicity (both DEBUG=True and DEBUG=False)
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    # Always use MySQL for PythonAnywhere (both DEBUG=True and DEBUG=False)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('DB_NAME', default='edunox$edunox_db'),
-            'USER': config('DB_USER', default='edunox'),
-            'PASSWORD': config('DB_PASSWORD'),
-            'HOST': config('DB_HOST', default='edunox.mysql.pythonanywhere-services.com'),
-            'PORT': config('DB_PORT', default='3306'),
-            'OPTIONS': {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-                'charset': 'utf8mb4',
-            },
-        }
-    }
+}
 
 
 # Cache configuration
@@ -182,8 +167,8 @@ IMAGEKIT_PUBLIC_KEY = config('IMAGEKIT_PUBLIC_KEY', default='public_/xl3626TiK+x
 IMAGEKIT_URL_ENDPOINT = config('IMAGEKIT_URL_ENDPOINT', default='https://ik.imagekit.io/edunox')
 
 # Media files configuration
-if config('USE_IMAGEKIT', default=True, cast=bool) and not DEBUG:
-    # Use ImageKit for media storage in production only
+if config('USE_IMAGEKIT', default=True, cast=bool):
+    # Use ImageKit for media storage
     DEFAULT_FILE_STORAGE = 'core.storage.ImageKitStorage'
     MEDIA_URL = IMAGEKIT_URL_ENDPOINT + '/'
 else:
@@ -278,7 +263,16 @@ SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
 
 # WhiteNoise settings
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+if DEBUG:
+    # In development, use regular static files storage to avoid manifest issues
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+else:
+    # In production, use manifest storage for better caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# WhiteNoise configuration
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = DEBUG  # Only auto-refresh in development
 
 # Logging configuration
 if DEBUG:
@@ -334,6 +328,11 @@ else:
             'django': {
                 'handlers': ['console', 'file'],
                 'level': 'INFO',
+                'propagate': False,
+            },
+            'django.request': {
+                'handlers': ['console', 'file'],
+                'level': 'ERROR',
                 'propagate': False,
             },
             'core': {

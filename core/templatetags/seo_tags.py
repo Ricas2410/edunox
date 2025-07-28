@@ -352,10 +352,18 @@ def site_logo():
     {% site_logo %}
     """
     from ..models import SiteConfiguration
+    from django.conf import settings
+
     config = SiteConfiguration.get_config()
     if config and config.logo:
         return config.logo.url
-    return '/static/images/edubridge-logo.png'  # Fallback
+
+    # Use ImageKit URL as fallback if available
+    if hasattr(settings, 'IMAGEKIT_URL_ENDPOINT'):
+        return f"{settings.IMAGEKIT_URL_ENDPOINT}/default-logo.png"
+
+    # Safe fallback - use a data URL for a simple logo
+    return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzM5ODNGNiIvPgo8dGV4dCB4PSIyMCIgeT0iMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPHN2Zz4K"
 
 
 @register.simple_tag
@@ -367,10 +375,18 @@ def site_favicon():
     {% site_favicon %}
     """
     from ..models import SiteConfiguration
+    from django.conf import settings
+
     config = SiteConfiguration.get_config()
     if config and config.favicon:
         return config.favicon.url
-    return '/static/images/favicon.ico'  # Fallback
+
+    # Use ImageKit URL as fallback if available
+    if hasattr(settings, 'IMAGEKIT_URL_ENDPOINT'):
+        return f"{settings.IMAGEKIT_URL_ENDPOINT}/favicon.ico"
+
+    # Safe fallback - use a data URL for a simple favicon
+    return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzM5ODNGNiIvPgo8dGV4dCB4PSIxNiIgeT0iMjEiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPHN2Zz4K"
 
 
 @register.simple_tag
