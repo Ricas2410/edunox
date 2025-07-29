@@ -28,8 +28,12 @@ db.sqlite3
 db.sqlite3-journal
 media/
 
-# Environment variables
-# .env - keeping for PythonAnywhere deployment
+# Environment variables - NEVER commit these!
+.env
+.env.local
+.env.production
+.env.staging
+.env.backup
 .venv
 env/
 venv/
