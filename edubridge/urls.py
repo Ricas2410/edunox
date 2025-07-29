@@ -18,12 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.sitemaps.views import sitemap
-from core.sitemaps import StaticViewSitemap
-
-sitemaps = {
-    'static': StaticViewSitemap,
-}
+from django.contrib.sitemaps.views import sitemap, index
+from core.sitemaps import sitemaps
+from core.views import robots_txt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,7 +32,10 @@ urlpatterns = [
     path('resources/', include('resources.urls')),
     path('dashboard/', include(('dashboard.urls', 'dashboard'), namespace='user_dashboard')),
     path('contact/', include('contact.urls')),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    # SEO URLs
+    path('sitemap.xml', index, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.index'),
+    path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', robots_txt, name='robots_txt'),
 ]
 
 if settings.DEBUG:

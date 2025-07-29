@@ -353,17 +353,29 @@ def site_logo():
     """
     from ..models import SiteConfiguration
     from django.conf import settings
+    import logging
 
-    config = SiteConfiguration.get_config()
-    if config and config.logo:
-        return config.logo.url
+    logger = logging.getLogger(__name__)
 
-    # Use ImageKit URL as fallback if available
-    if hasattr(settings, 'IMAGEKIT_URL_ENDPOINT'):
-        return f"{settings.IMAGEKIT_URL_ENDPOINT}/default-logo.png"
+    try:
+        config = SiteConfiguration.get_config()
+        if config and config.logo:
+            logger.debug(f"Using admin uploaded logo: {config.logo.url}")
+            return config.logo.url
 
-    # Safe fallback - use a data URL for a simple logo
-    return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzM5ODNGNiIvPgo8dGV4dCB4PSIyMCIgeT0iMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPHN2Zz4K"
+        # Use ImageKit URL as fallback if available
+        if hasattr(settings, 'IMAGEKIT_URL_ENDPOINT'):
+            fallback_url = f"{settings.IMAGEKIT_URL_ENDPOINT}/default-logo.png"
+            logger.debug(f"Using ImageKit fallback: {fallback_url}")
+            return fallback_url
+
+        # Safe fallback - use a data URL for a simple logo
+        logger.debug("Using SVG data URL fallback")
+        return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzM5ODNGNiIvPgo8dGV4dCB4PSIyMCIgeT0iMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPHN2Zz4K"
+    except Exception as e:
+        logger.error(f"Error in site_logo template tag: {e}")
+        # Return a safe fallback even if there's an error
+        return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzM5ODNGNiIvPgo8dGV4dCB4PSIyMCIgeT0iMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPHN2Zz4K"
 
 
 @register.simple_tag
@@ -376,17 +388,119 @@ def site_favicon():
     """
     from ..models import SiteConfiguration
     from django.conf import settings
+    import logging
 
+    logger = logging.getLogger(__name__)
+
+    try:
+        config = SiteConfiguration.get_config()
+        if config and config.favicon:
+            logger.debug(f"Using admin uploaded favicon: {config.favicon.url}")
+            return config.favicon.url
+
+        # Use ImageKit URL as fallback if available
+        if hasattr(settings, 'IMAGEKIT_URL_ENDPOINT'):
+            fallback_url = f"{settings.IMAGEKIT_URL_ENDPOINT}/favicon.ico"
+            logger.debug(f"Using ImageKit favicon fallback: {fallback_url}")
+            return fallback_url
+
+        # Safe fallback - use a data URL for a simple favicon
+        logger.debug("Using SVG data URL favicon fallback")
+        return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzM5ODNGNiIvPgo8dGV4dCB4PSIxNiIgeT0iMjEiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPHN2Zz4K"
+    except Exception as e:
+        logger.error(f"Error in site_favicon template tag: {e}")
+        # Return a safe fallback even if there's an error
+        return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzM5ODNGNiIvPgo8dGV4dCB4PSIxNiIgeT0iMjEiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPHN2Zz4K"
+
+
+@register.simple_tag(takes_context=True)
+def comprehensive_seo_tags(context, title=None, description=None, keywords=None, image=None, **kwargs):
+    """
+    Generate comprehensive SEO meta tags for any page
+
+    Usage:
+    {% comprehensive_seo_tags title="Page Title" description="Page description" keywords="keyword1,keyword2" %}
+    """
+    from django.conf import settings
+    from ..models import SiteConfiguration
+
+    request = context.get('request')
     config = SiteConfiguration.get_config()
-    if config and config.favicon:
-        return config.favicon.url
 
-    # Use ImageKit URL as fallback if available
-    if hasattr(settings, 'IMAGEKIT_URL_ENDPOINT'):
-        return f"{settings.IMAGEKIT_URL_ENDPOINT}/favicon.ico"
+    # Build title
+    if not title:
+        title = getattr(settings, 'SITE_NAME', 'EduLink GH')
+    else:
+        site_name = config.site_name if config else getattr(settings, 'SITE_NAME', 'EduLink GH')
+        title = f"{title} | {site_name}"
 
-    # Safe fallback - use a data URL for a simple favicon
-    return "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iIzM5ODNGNiIvPgo8dGV4dCB4PSIxNiIgeT0iMjEiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5FRzwvdGV4dD4KPHN2Zz4K"
+    # Build description
+    if not description:
+        description = config.site_description if config else getattr(settings, 'DEFAULT_META_DESCRIPTION', '')
+
+    # Build keywords
+    if not keywords:
+        keywords = getattr(settings, 'DEFAULT_META_KEYWORDS', '')
+
+    # Build image
+    if not image:
+        if config and config.logo:
+            image = config.logo.url
+        else:
+            image = site_logo()
+
+    # Build canonical URL
+    canonical_url = request.build_absolute_uri() if request else ''
+
+    # Generate meta tags
+    meta_tags = []
+
+    # Basic meta tags
+    meta_tags.append(f'<title>{title}</title>')
+    meta_tags.append(f'<meta name="description" content="{description}">')
+    if keywords:
+        meta_tags.append(f'<meta name="keywords" content="{keywords}">')
+
+    # Open Graph tags
+    meta_tags.append(f'<meta property="og:title" content="{title}">')
+    meta_tags.append(f'<meta property="og:description" content="{description}">')
+    meta_tags.append(f'<meta property="og:type" content="website">')
+    if canonical_url:
+        meta_tags.append(f'<meta property="og:url" content="{canonical_url}">')
+    if image:
+        meta_tags.append(f'<meta property="og:image" content="{image}">')
+
+    # Twitter Card tags
+    meta_tags.append(f'<meta name="twitter:card" content="summary_large_image">')
+    meta_tags.append(f'<meta name="twitter:title" content="{title}">')
+    meta_tags.append(f'<meta name="twitter:description" content="{description}">')
+    if image:
+        meta_tags.append(f'<meta name="twitter:image" content="{image}">')
+
+    # Canonical URL
+    if canonical_url:
+        meta_tags.append(f'<link rel="canonical" href="{canonical_url}">')
+
+    return mark_safe('\n'.join(meta_tags))
+
+
+@register.filter
+def first_name_only(user):
+    """
+    Extract only the first name from user, handling cases where first_name might contain multiple words
+
+    Usage:
+    {{ user|first_name_only }}
+    """
+    if hasattr(user, 'first_name') and user.first_name:
+        # Split by space and take only the first word
+        first_word = user.first_name.split()[0] if user.first_name.split() else user.first_name
+        return first_word
+    elif hasattr(user, 'username') and user.username:
+        # If no first name, use first word of username
+        return user.username.split()[0] if user.username.split() else user.username
+    else:
+        return "User"
 
 
 @register.simple_tag

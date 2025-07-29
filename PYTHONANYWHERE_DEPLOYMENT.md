@@ -57,9 +57,18 @@ python manage.py test_imagekit
 # but ImageKit will work fine in production if basic test passes
 ```
 
-### 5. Collect Static Files
+### 5. Deploy and Fix Issues
 ```bash
+# Run the deployment script
+python deploy_to_pythonanywhere.py
+
+# Or run commands manually:
 python manage.py collectstatic --noinput
+python manage.py migrate
+python manage.py clear_cache
+
+# Fix logo/favicon issues
+python fix_logo_production.py
 ```
 
 ### 6. Configure Web App

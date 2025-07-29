@@ -272,7 +272,7 @@ nav .logo-container span {
                                     <span class="text-white text-sm font-medium">{{ user.first_name|first|default:user.username|first }}</span>
                                 </div>
                             {% endif %}
-                            <span class="ml-2 text-gray-700">{{ user.first_name|default:user.username }}</span>
+                            <span class="ml-2 text-gray-700">{{ user|first_name_only }}</span>
                             <i class="fas fa-chevron-down ml-1 text-gray-400"></i>
                         </button>
                         

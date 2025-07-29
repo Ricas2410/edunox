@@ -15,7 +15,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,edunox.pythonanywhere.com', cast=lambda v: [s.strip() for s in v.split(',')])
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,edunox.pythonanywhere.com,testserver', cast=lambda v: [s.strip() for s in v.split(',')])
 
 
 # Application definition
@@ -51,6 +51,9 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+# Site ID for Django sites framework (required for sitemaps)
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -290,6 +293,22 @@ else:
 # WhiteNoise configuration
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = DEBUG  # Only auto-refresh in development
+
+# SEO Settings
+SITE_NAME = config('SITE_NAME', default='EduLink GH')
+SITE_URL = config('SITE_URL', default='https://edunox.pythonanywhere.com')
+SITE_DESCRIPTION = 'Empowering underserved students in Ghana with access to free and affordable university education through outreach, digital literacy support, and educational consultancy.'
+
+# Meta tags defaults
+DEFAULT_META_DESCRIPTION = SITE_DESCRIPTION
+DEFAULT_META_KEYWORDS = 'education Ghana, university application Ghana, University of the People Ghana, scholarship Ghana, digital literacy training, free university education, educational consultancy Ghana, UoPeople application help, online education Ghana, affordable higher education'
+
+# Open Graph defaults
+DEFAULT_OG_IMAGE = '/static/images/og-default.jpg'
+DEFAULT_OG_TYPE = 'website'
+
+# Twitter Card defaults
+DEFAULT_TWITTER_CARD = 'summary_large_image'
 
 # Logging configuration
 if DEBUG:

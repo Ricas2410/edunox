@@ -2,13 +2,14 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db import connection
 from .models import SiteConfiguration, FAQ
 from services.models import Service
 
 
-@method_decorator(cache_page(60 * 15), name='dispatch')  # Cache for 15 minutes
+# Cache for 5 minutes instead of 15 to allow faster updates
+@method_decorator(cache_page(60 * 5), name='dispatch')  # Cache for 5 minutes
 class HomeView(TemplateView):
     """Home page view"""
     template_name = 'core/home.html'
@@ -63,3 +64,32 @@ def health_check(request):
             'error': str(e),
             'timestamp': '2024-01-15T10:30:00Z'
         }, status=500)
+
+
+def robots_txt(request):
+    """Generate robots.txt file"""
+    from django.conf import settings
+
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "",
+        "# Sitemaps",
+        f"Sitemap: {request.build_absolute_uri('/sitemap.xml')}",
+        "",
+        "# Disallow admin areas",
+        "Disallow: /admin/",
+        "Disallow: /my-admin/",
+        "Disallow: /dashboard/",
+        "",
+        "# Allow important pages",
+        "Allow: /services/",
+        "Allow: /resources/",
+        "Allow: /about/",
+        "Allow: /contact/",
+        "",
+        "# Crawl delay",
+        "Crawl-delay: 1",
+    ]
+
+    return HttpResponse('\n'.join(lines), content_type='text/plain')
