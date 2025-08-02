@@ -7,21 +7,27 @@ Professional SEO settings for global market competition
 SEO_SETTINGS = {
     # Site Information
     'SITE_NAME': 'Edunox GH',
-    'SITE_TAGLINE': 'Your Gateway to Affordable Higher Education',
-    'SITE_DESCRIPTION': 'Empowering underserved students in Ghana with access to free and affordable university education through outreach, digital literacy support, and educational consultancy.',
+    'SITE_TAGLINE': 'Your Gateway to Affordable Higher Education in Ghana',
+    'SITE_DESCRIPTION': 'Edunox Ghana empowers underserved students in Ghana with access to free and affordable university education through outreach, digital literacy support, and educational consultancy in Ghana. We help students in Ghana apply to University of the People and other affordable higher education institutions. Edunox GH is dedicated to supporting students in Ghana.',
     
     # Primary Keywords (for global competition)
     'PRIMARY_KEYWORDS': [
+        'Edunox Ghana',
+        'Edunox GH',
+        'Edunox',
+        'Edunix',
         'university application Ghana',
         'University of the People Ghana',
-        'free university education',
+        'free university education Ghana',
         'scholarship application Ghana',
         'digital literacy training Ghana',
         'educational consultancy Ghana',
-        'UoPeople application help',
+        'UoPeople application help Ghana',
         'online education Ghana',
         'affordable higher education Ghana',
-        'Ghana education support'
+        'Ghana education support',
+        'study in Ghana',
+        'Ghanaian education'
     ],
     
     # Long-tail Keywords
@@ -30,12 +36,18 @@ SEO_SETTINGS = {
         'free university education opportunities in Ghana',
         'scholarship opportunities for Ghanaian students',
         'digital literacy training programs Ghana',
-        'educational consultancy services Accra',
+        'educational consultancy services Accra Ghana',
         'online university application help Ghana',
         'affordable higher education options Ghana',
         'university application assistance Ghana',
         'free online degree programs Ghana',
-        'educational support services Ghana'
+        'educational support services Ghana',
+        'Edunox Ghana reviews',
+        'Edunox GH reviews',
+        'Edunox contact',
+        'Edunox GH contact',
+        'Edunox services',
+        'Edunox GH services'
     ],
     
     # Geographic Targeting
@@ -200,19 +212,19 @@ SEO_URL_PATTERNS = {
 # Meta Templates for Dynamic Pages
 META_TEMPLATES = {
     'service_detail': {
-        'title': '{service_name} - Educational Services | Edunox GH',
-        'description': 'Get professional help with {service_name}. {service_description} Contact Edunox GH for expert educational support.',
-        'keywords': '{service_keywords}, educational services Ghana, {service_category}'
+        'title': '{service_name} - Educational Services | Edunox Ghana | Edunox GH',
+        'description': 'Get professional help with {service_name}. {service_description} Contact Edunox Ghana or Edunox GH for expert educational support.',
+        'keywords': '{service_keywords}, educational services Ghana, {service_category}, Edunox, Edunox Ghana, Edunox GH'
     },
     'resource_detail': {
-        'title': '{resource_title} | Educational Resources - Edunox GH',
-        'description': '{resource_description} Free educational resource from Edunox GH.',
-        'keywords': '{resource_keywords}, educational resources, Ghana education'
+        'title': '{resource_title} | Educational Resources - Edunox Ghana | Edunox GH',
+        'description': '{resource_description} Free educational resource from Edunox Ghana and Edunox GH.',
+        'keywords': '{resource_keywords}, educational resources, Ghana education, Edunox, Edunox Ghana, Edunox GH'
     },
     'category_page': {
-        'title': '{category_name} Services & Resources | Edunox GH',
+        'title': '{category_name} Services & Resources | Edunox Ghana | Edunox GH',
         'description': 'Explore our {category_name} services and resources. {category_description}',
-        'keywords': '{category_keywords}, {category_name} Ghana, educational services'
+        'keywords': '{category_keywords}, {category_name} Ghana, educational services, Edunox, Edunox Ghana, Edunox GH'
     }
 }
 

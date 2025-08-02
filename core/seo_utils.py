@@ -183,7 +183,7 @@ class SEOManager:
                 "@type": "ContactPoint",
                 "telephone": "+233-XX-XXX-XXXX",
                 "contactType": "customer service",
-                "email": "info@edubridge.com"
+                "email": "info@ededunoxgh.com"
             },
             "sameAs": [
                 "https://facebook.com/edubridgeghana",
@@ -499,7 +499,7 @@ class AdvancedSEOManager(SEOManager):
                 "@type": "ContactPoint",
                 "telephone": "+233-XX-XXX-XXXX",
                 "contactType": "customer service",
-                "email": "info@Edunox.com",
+                "email": "info@edunoxgh.com",
                 "availableLanguage": ["English", "Twi"]
             },
             "areaServed": {

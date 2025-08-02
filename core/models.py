@@ -75,7 +75,7 @@ class SiteConfiguration(BaseModel):
     """Site-wide configuration settings"""
     site_name = models.CharField(max_length=100, default="Edunox GH")
     site_description = models.TextField(default="Your gateway to affordable higher education and digital empowerment.")
-    contact_email = models.EmailField(default="info@edubridge.com")
+    contact_email = models.EmailField(default="info@edunoxgh.com")
     contact_phone = models.CharField(max_length=20, default="+233 XX XXX XXXX")
     address = models.TextField(default="Accra, Ghana")
 

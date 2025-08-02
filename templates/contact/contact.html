@@ -2,9 +2,9 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}Contact Us - EduBridge Ghana{% endblock %}
-
-{% block meta_description %}Get in touch with EduBridge Ghana for educational consultancy, university applications, and digital literacy support. We're here to help you achieve your educational goals.{% endblock %}
+{% block title %}Contact Us - Edunox Ghana{% endblock %}
+ 
+{% block meta_description %}Get in touch with Edunox Ghana for educational consultancy, university applications, and digital literacy support. We're here to help you achieve your educational goals. Contact Edunox GH today!{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -83,7 +83,7 @@
                             </div>
                             <div>
                                 <h3 class="font-semibold text-gray-900 mb-1">Email</h3>
-                                <p class="text-gray-600">{{ site_config.contact_email }}</p>
+                                <a href="mailto:{{ site_config.contact_email }}" class="text-gray-600">{{ site_config.contact_email }}</a>
                             </div>
                         </div>
                         
