@@ -1663,10 +1663,131 @@ function deleteBackup(backupPath) {
     });
 }
 
+// File Upload Handler with Enhanced Progress Indicators
+function handleFileUpload(fieldName, input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (fieldName === 'favicon') {
+        allowedTypes.push('image/x-icon', 'image/vnd.microsoft.icon');
+    }
+    
+    if (!allowedTypes.includes(file.type)) {
+        showNotification('Please select a valid image file (JPEG, PNG, GIF, WebP' + (fieldName === 'favicon' ? ', ICO' : '') + ')', 'error');
+        input.value = '';
+        return;
+    }
+    
+    // Validate file size (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+        showNotification('File size must be less than 5MB', 'error');
+        input.value = '';
+        return;
+    }
+    
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+    
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append(fieldName, file);
+    
+    // Show enhanced loading state with progress
+    const uploadArea = input.closest('.border-2');
+    const originalContent = uploadArea.innerHTML;
+    const fieldLabel = fieldName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    
+    uploadArea.innerHTML = `
+        <div class="flex flex-col items-center justify-center p-6 space-y-4">
+            <div class="relative">
+                <div class="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i class="fas fa-upload text-blue-600 text-lg"></i>
+                </div>
+            </div>
+            <div class="text-center">
+                <p class="text-sm font-medium text-gray-900">Uploading ${fieldLabel}</p>
+                <p class="text-xs text-gray-500">${(file.size / 1024).toFixed(1)} KB</p>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300 upload-progress" style="width: 0%"></div>
+            </div>
+            <p class="text-xs text-gray-500">Please wait...</p>
+        </div>
+    `;
+    
+    // Simulate progress for better UX
+    const progressBar = uploadArea.querySelector('.upload-progress');
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 90) progress = 90;
+        progressBar.style.width = progress + '%';
+    }, 200);
+    
+    // Upload the file
+    fetch('/dashboard/api/admin/settings/upload/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    })
+    .then(response => {
+        clearInterval(progressInterval);
+        progressBar.style.width = '100%';
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        setTimeout(() => {
+            if (data.success) {
+                showNotification(`${fieldLabel} uploaded successfully!`, 'success');
+                // Update the preview with success animation
+                if (data[fieldName + '_url']) {
+                    const imageUrl = data[fieldName + '_url'];
+                    uploadArea.innerHTML = `
+                        <div class="relative group">
+                            <img src="${imageUrl}?t=${Date.now()}" alt="Current ${fieldLabel}" class="max-h-20 mx-auto mb-2 rounded-lg shadow-sm transition-transform group-hover:scale-105">
+                            <div class="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs animate-bounce">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">Current ${fieldLabel}</p>
+                        <input type="file" id="${fieldName}File" name="${fieldName}" class="hidden" accept="image/*" onchange="handleFileUpload('${fieldName}', this)">
+                        <button type="button" onclick="document.getElementById('${fieldName}File').click()" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center mx-auto">
+                            <i class="fas fa-upload mr-2"></i>Change File
+                        </button>
+                        ${fieldName === 'logo' ? '<p class="text-xs text-gray-500 mt-2">Recommended: 500x500px or larger, PNG/JPG format</p>' : ''}
+                        ${fieldName === 'favicon' ? '<p class="text-xs text-gray-500 mt-2">Recommended: 32x32px or 64x64px, ICO/PNG format</p>' : ''}
+                    `;
+                }
+            } else {
+                showNotification(`Error uploading ${fieldLabel}: ` + (data.error || 'Unknown error'), 'error');
+                uploadArea.innerHTML = originalContent;
+            }
+        }, 500); // Small delay to show 100% progress
+    })
+    .catch(error => {
+        clearInterval(progressInterval);
+        console.error('Error:', error);
+        showNotification(`Error uploading ${fieldLabel}: ` + error.message, 'error');
+        uploadArea.innerHTML = originalContent;
+    });
+}
+
 // Initialize first tab as active
 document.addEventListener('DOMContentLoaded', function() {
     showTab('general');
     toggleEmailFields(); // Initialize email fields visibility
+    refreshBackupHistory();
 });
+
 </script>
 {% endblock %}
