@@ -1021,6 +1021,274 @@ class AdminSettingsFileUploadAPIView(UserPassesTestMixin, View):
             return JsonResponse({'success': False, 'error': str(e)})
 
 
+class AdminBackupAPIView(UserPassesTestMixin, View):
+    """API view to trigger data backup"""
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def post(self, request):
+        try:
+            from django.core.management import call_command
+            from django.http import JsonResponse
+            import io
+            import sys
+
+            # Capture output
+            old_stdout = sys.stdout
+            redirect_output = io.StringIO()
+            sys.stdout = redirect_output
+
+            try:
+                # Get options from request or use defaults
+                import json
+                try:
+                    data = json.loads(request.body) if request.body else {}
+                except:
+                    data = {}
+                
+                include_media = data.get('include_media', True)  # Default to True
+                compress = data.get('compress', True)  # Default to True
+                
+                # Build command arguments
+                args = ['backup_data']
+                if include_media:
+                    args.append('--include-media')
+                if compress:
+                    args.append('--compress')
+                
+                call_command(*args)
+                output = redirect_output.getvalue()
+                sys.stdout = old_stdout # Restore stdout
+                return JsonResponse({'success': True, 'message': 'Backup created successfully with media files included!', 'output': output})
+            except Exception as e:
+                sys.stdout = old_stdout # Restore stdout
+                return JsonResponse({'success': False, 'error': f'Backup failed: {str(e)}'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Server error: {str(e)}'})
+
+
+class AdminRestoreAPIView(UserPassesTestMixin, View):
+    """API view to trigger data restore"""
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def post(self, request):
+        try:
+            from django.core.management import call_command
+            from django.http import JsonResponse
+            from django.core.files.storage import default_storage
+            import io
+            import sys
+            import os
+            import tempfile
+
+            # Check if backup file was uploaded
+            if 'backup_file' not in request.FILES:
+                return JsonResponse({'success': False, 'error': 'No backup file uploaded. Please select a backup file.'})
+            
+            backup_file = request.FILES['backup_file']
+            
+            # Validate file type
+            if not (backup_file.name.endswith('.zip') or backup_file.name.endswith('.json')):
+                return JsonResponse({'success': False, 'error': 'Invalid file type. Please upload a .zip or .json backup file.'})
+            
+            # Save uploaded file to temporary location
+            temp_dir = tempfile.mkdtemp()
+            temp_file_path = os.path.join(temp_dir, backup_file.name)
+            
+            try:
+                with open(temp_file_path, 'wb+') as destination:
+                    for chunk in backup_file.chunks():
+                        destination.write(chunk)
+                
+                # Capture output
+                old_stdout = sys.stdout
+                redirect_output = io.StringIO()
+                sys.stdout = redirect_output
+
+                try:
+                    # Call restore command with the backup file path
+                    call_command('restore_data', temp_file_path, '--include-media', '--clear-existing', '--force')
+                    output = redirect_output.getvalue()
+                    sys.stdout = old_stdout # Restore stdout
+                    return JsonResponse({
+                        'success': True, 
+                        'message': 'Backup restored successfully! The page will reload to reflect changes.', 
+                        'output': output
+                    })
+                except Exception as e:
+                    sys.stdout = old_stdout # Restore stdout
+                    return JsonResponse({'success': False, 'error': f'Restore failed: {str(e)}'})
+                    
+            finally:
+                # Clean up temporary file
+                try:
+                    import shutil
+                    shutil.rmtree(temp_dir)
+                except:
+                    pass
+                    
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Server error: {str(e)}'})
+
+
+class AdminBackupHistoryAPIView(UserPassesTestMixin, View):
+    """API view to get backup history"""
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get(self, request):
+        try:
+            import os
+            from datetime import datetime
+            from django.conf import settings
+            
+            # Get backup directory
+            backup_dir = os.path.join(settings.BASE_DIR, 'backups')
+            backups = []
+            
+            if os.path.exists(backup_dir):
+                for item in os.listdir(backup_dir):
+                    item_path = os.path.join(backup_dir, item)
+                    if os.path.isfile(item_path) and (item.endswith('.zip') or item.endswith('.json')):
+                        # Get file stats
+                        stat = os.stat(item_path)
+                        size = self.format_file_size(stat.st_size)
+                        date = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+                        
+                        backups.append({
+                            'name': item,
+                            'path': item_path,
+                            'size': size,
+                            'date': date,
+                            'timestamp': stat.st_mtime
+                        })
+                    elif os.path.isdir(item_path) and item.startswith('Edunox_backup_'):
+                        # Directory backup
+                        stat = os.stat(item_path)
+                        size = self.get_directory_size(item_path)
+                        date = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+                        
+                        backups.append({
+                            'name': item,
+                            'path': item_path,
+                            'size': self.format_file_size(size),
+                            'date': date,
+                            'timestamp': stat.st_mtime
+                        })
+            
+            # Sort by timestamp (newest first)
+            backups.sort(key=lambda x: x['timestamp'], reverse=True)
+            
+            return JsonResponse({'success': True, 'backups': backups})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Error loading backup history: {str(e)}'})
+    
+    def format_file_size(self, size_bytes):
+        """Format file size in human readable format"""
+        if size_bytes == 0:
+            return "0 B"
+        size_names = ["B", "KB", "MB", "GB"]
+        import math
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        p = math.pow(1024, i)
+        s = round(size_bytes / p, 2)
+        return f"{s} {size_names[i]}"
+    
+    def get_directory_size(self, path):
+        """Get total size of directory"""
+        total_size = 0
+        for dirpath, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                filepath = os.path.join(dirpath, filename)
+                if os.path.exists(filepath):
+                    total_size += os.path.getsize(filepath)
+        return total_size
+
+
+class AdminDownloadBackupAPIView(UserPassesTestMixin, View):
+    """API view to download backup files"""
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get(self, request):
+        try:
+            from django.http import FileResponse, Http404
+            import os
+            from urllib.parse import unquote
+            
+            backup_path = request.GET.get('path')
+            if not backup_path:
+                return JsonResponse({'success': False, 'error': 'No backup path specified'})
+            
+            # Decode URL-encoded path
+            backup_path = unquote(backup_path)
+            
+            # Security check - ensure path is within backup directory
+            from django.conf import settings
+            backup_dir = os.path.join(settings.BASE_DIR, 'backups')
+            if not backup_path.startswith(backup_dir):
+                return JsonResponse({'success': False, 'error': 'Invalid backup path'})
+            
+            if not os.path.exists(backup_path):
+                raise Http404("Backup file not found")
+            
+            if os.path.isfile(backup_path):
+                response = FileResponse(
+                    open(backup_path, 'rb'),
+                    as_attachment=True,
+                    filename=os.path.basename(backup_path)
+                )
+                return response
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Download failed: {str(e)}'})
+
+
+class AdminDeleteBackupAPIView(UserPassesTestMixin, View):
+    """API view to delete backup files"""
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def post(self, request):
+        try:
+            import json
+            import os
+            import shutil
+            from django.conf import settings
+            
+            data = json.loads(request.body)
+            backup_path = data.get('path')
+            
+            if not backup_path:
+                return JsonResponse({'success': False, 'error': 'No backup path specified'})
+            
+            # Security check - ensure path is within backup directory
+            backup_dir = os.path.join(settings.BASE_DIR, 'backups')
+            if not backup_path.startswith(backup_dir):
+                return JsonResponse({'success': False, 'error': 'Invalid backup path'})
+            
+            if not os.path.exists(backup_path):
+                return JsonResponse({'success': False, 'error': 'Backup file not found'})
+            
+            # Delete file or directory
+            if os.path.isfile(backup_path):
+                os.remove(backup_path)
+            elif os.path.isdir(backup_path):
+                shutil.rmtree(backup_path)
+            
+            return JsonResponse({'success': True, 'message': 'Backup deleted successfully'})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f'Delete failed: {str(e)}'})
+
+
 class AdminEmailTestAPIView(UserPassesTestMixin, View):
     """API view for testing email configuration"""
 

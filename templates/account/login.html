@@ -7,216 +7,538 @@
 
 {% block extra_css %}
 <style>
-/* Mobile-first responsive design */
-@media (max-width: 640px) {
-    .login-container {
-        min-height: 100vh;
-        padding: 1rem;
-    }
+/* Modern Login Page Styles */
+.login-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
 
-    .login-header {
-        margin-bottom: 1.5rem;
-    }
+.login-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+    animation: float 20s ease-in-out infinite;
+}
 
-    .login-logo {
-        width: 3rem;
-        height: 3rem;
-    }
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
 
-    .login-title {
-        font-size: 1.5rem;
-        margin-top: 1rem;
-        margin-bottom: 0.5rem;
-    }
+.login-card {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    border-radius: 24px;
+    position: relative;
+    z-index: 10;
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+}
 
-    .login-subtitle {
-        font-size: 0.875rem;
-        margin-bottom: 1rem;
-    }
+.login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+    background-size: 400% 400%;
+    animation: gradient 3s ease infinite;
+}
 
-    .login-form {
-        padding: 1.5rem;
-    }
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 
-    .form-group {
-        margin-bottom: 1rem;
-    }
+.form-input {
+    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 16px;
+    background: rgba(249, 250, 251, 0.8);
+    backdrop-filter: blur(10px);
+}
 
-    .form-input {
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
-    }
+.form-input:focus {
+    border-color: #667eea;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
 
-    .login-button {
-        padding: 0.875rem 1rem;
-        font-size: 1rem;
-    }
+.form-input.valid {
+    border-color: #10b981;
+    background: rgba(236, 253, 245, 0.8);
+}
 
-    .login-footer {
-        margin-top: 1.5rem;
-        padding-top: 1rem;
-    }
+.form-input.invalid {
+    border-color: #ef4444;
+    background: rgba(254, 242, 242, 0.8);
+}
 
-    .signup-link {
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
+.login-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 16px 24px;
+    font-weight: 600;
+    font-size: 16px;
+    color: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.login-btn:active {
+    transform: translateY(0);
+}
+
+.login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.login-btn:hover::before {
+    left: 100%;
+}
+
+.signup-btn {
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #667eea;
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.signup-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.shape {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: float-shapes 15s infinite ease-in-out;
+}
+
+.shape:nth-child(1) {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.shape:nth-child(2) {
+    width: 120px;
+    height: 120px;
+    top: 60%;
+    right: 10%;
+    animation-delay: 5s;
+}
+
+.shape:nth-child(3) {
+    width: 60px;
+    height: 60px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 10s;
+}
+
+@keyframes float-shapes {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translateY(-30px) rotate(180deg);
+        opacity: 0.8;
     }
 }
 
-@media (min-width: 641px) {
-    .login-container {
-        min-height: 100vh;
-        padding: 3rem 1.5rem;
+.password-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+.logo-container {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shine 3s infinite;
+}
+
+@keyframes shine {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.divider {
+    position: relative;
+    text-align: center;
+    margin: 24px 0;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+}
+
+.divider span {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0 16px;
+    color: #6b7280;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+    .login-card {
+        margin: 20px;
+        border-radius: 20px;
+    }
+    
+    .form-input {
+        padding: 14px 16px;
+        font-size: 16px;
+    }
+    
+    .login-btn, .signup-btn {
+        padding: 14px 20px;
+    }
+}
+
+/* Animation for form elements */
+.form-group {
+    animation: slideUp 0.6s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.2s; }
+.form-group:nth-child(3) { animation-delay: 0.3s; }
+.form-group:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="login-container bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex flex-col justify-center">
-    <!-- Background Pattern -->
-    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-
-    <div class="relative z-10 w-full max-w-md mx-auto">
-        <div class="login-header text-center">
-            <div class="login-logo mx-auto bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
-                <img class="site-logo w-8 h-8 sm:w-12 sm:h-12" src="{% site_logo %}" alt="Edunox GH">
+<div class="login-bg">
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="text-center pt-6 pb-4 px-8">
+                <div class="logo-container">
+                    <img src="{% site_logo %}" alt="Edunox GH" class="w-10 h-10 object-contain relative z-10">
+                </div>
+                <h1 class="text-2xl font-bold text-gray-900 mb-1">Welcome Back</h1>
+                <p class="text-gray-600 text-sm">Sign in to continue your learning journey</p>
             </div>
-            <h2 class="login-title font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                Welcome Back
-            </h2>
-            <p class="login-subtitle text-gray-600">
-                Sign in to continue your journey
-            </p>
-        </div>
-
-        <div class="login-form bg-white shadow-xl rounded-2xl border border-gray-100 backdrop-blur-sm">
-            <form method="post">
-                {% csrf_token %}
-
-                <div class="form-group">
-                    <label for="{{ form.login.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
-                        <i class="fas fa-envelope mr-2 text-blue-500"></i>Email Address
-                    </label>
-                    <div class="relative">
-                        {{ form.login|add_class:"form-input w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white" }}
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                            <i class="fas fa-user text-gray-400"></i>
-                        </div>
-                    </div>
-                    {% if form.login.errors %}
-                        <div class="mt-1 text-sm text-red-600 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-1"></i>
-                            {{ form.login.errors.0 }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="form-group">
-                    <label for="{{ form.password.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
-                        <i class="fas fa-lock mr-2 text-blue-500"></i>Password
-                    </label>
-                    <div class="relative">
-                        {{ form.password|add_class:"form-input w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-gray-50 focus:bg-white" }}
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                            <i class="fas fa-eye text-gray-400 cursor-pointer" onclick="togglePassword()"></i>
-                        </div>
-                    </div>
-                    {% if form.password.errors %}
-                        <div class="mt-1 text-sm text-red-600 flex items-center">
-                            <i class="fas fa-exclamation-circle mr-1"></i>
-                            {{ form.password.errors.0 }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <div class="flex items-center justify-between text-sm">
-                    <div class="flex items-center">
-                        {{ form.remember|add_class:"h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" }}
-                        <label for="{{ form.remember.id_for_label }}" class="ml-2 text-gray-700 font-medium">
-                            Remember me
+            
+            <!-- Login Form -->
+            <div class="px-8 pb-6">
+                <form method="post" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="{{ form.login.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-envelope mr-2 text-indigo-500"></i>Email Address
                         </label>
-                    </div>
-                    <a href="{% url 'account_reset_password' %}" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">
-                        Forgot password?
-                    </a>
-                </div>
-
-                {% if form.non_field_errors %}
-                    <div class="rounded-lg bg-red-50 border border-red-200 p-3 mt-4">
-                        <div class="flex items-center text-sm text-red-700">
-                            <i class="fas fa-exclamation-triangle mr-2"></i>
-                            {{ form.non_field_errors.0 }}
+                        <div class="relative">
+                            {{ form.login|add_class:"form-input w-full" }}
+                            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
                         </div>
+                        {% if form.login.errors %}
+                            <div class="mt-2 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                {{ form.login.errors.0 }}
+                            </div>
+                        {% endif %}
                     </div>
-                {% endif %}
-
-                <button type="submit" class="login-button group relative w-full flex justify-center border border-transparent font-semibold rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-200 hover:scale-105 shadow-lg mt-6">
-                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                        <i class="fas fa-sign-in-alt text-blue-300 group-hover:text-blue-200"></i>
-                    </span>
-                    Sign In
-                </button>
-            </form>
-
-            <div class="login-footer">
-                <div class="relative">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-200"></div>
+                    
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-lock mr-2 text-indigo-500"></i>Password
+                        </label>
+                        <div class="relative">
+                            {{ form.password|add_class:"form-input w-full pr-12" }}
+                            <button type="button" onclick="togglePassword()" class="password-toggle">
+                                <i id="passwordToggleIcon" class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="mt-2 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-2"></i>
+                                {{ form.password.errors.0 }}
+                            </div>
+                        {% endif %}
                     </div>
-                    <div class="relative flex justify-center text-sm">
-                        <span class="px-4 bg-white text-gray-500 font-medium">New to Edunox GH?</span>
+                    
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="form-group flex items-center justify-between">
+                        <div class="flex items-center">
+                            {{ form.remember|add_class:"h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" }}
+                            <label for="{{ form.remember.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="{% url 'account_reset_password' %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                            Forgot password?
+                        </a>
                     </div>
+                    
+                    <!-- Error Messages -->
+                    {% if form.non_field_errors %}
+                        <div class="form-group">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <div class="flex items-center text-sm text-red-700">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    {{ form.non_field_errors.0 }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Login Button -->
+                    <div class="form-group">
+                        <button type="submit" class="login-btn w-full flex items-center justify-center">
+                            <i class="fas fa-sign-in-alt mr-2"></i>
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Divider -->
+                <div class="divider">
+                    <span>New to Edunox GH?</span>
                 </div>
-
-                <div class="mt-4">
-                    <a href="{% url 'accounts:register' %}" class="signup-link group w-full flex justify-center border-2 border-blue-600 rounded-lg font-semibold text-blue-600 bg-white hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
-                        <span class="flex items-center">
-                            <i class="fas fa-user-plus mr-2 group-hover:text-white"></i>
-                            Create Free Account
-                        </span>
-                    </a>
-                </div>
-
-                <!-- Simplified footer for mobile -->
-                <div class="mt-4 text-center">
+                
+                <!-- Sign Up Button -->
+                <a href="{% url 'accounts:register' %}" class="signup-btn w-full flex items-center justify-center">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Create Free Account
+                </a>
+                
+                <!-- Footer -->
+                <div class="mt-6 text-center">
                     <p class="text-xs text-gray-500">
                         By signing in, you agree to our
-                        <a href="{% url 'core:terms' %}" class="text-blue-600 hover:text-blue-500">Terms of Service</a> and
-                        <a href="{% url 'core:privacy' %}" class="text-blue-600 hover:text-blue-500">Privacy Policy</a>
+                        <a href="{% url 'core:terms' %}" class="text-indigo-600 hover:text-indigo-500 font-medium">Terms of Service</a>
+                        and
+                        <a href="{% url 'core:privacy' %}" class="text-indigo-600 hover:text-indigo-500 font-medium">Privacy Policy</a>
                     </p>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Simplified floating elements for mobile -->
-    <div class="hidden sm:block absolute top-10 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
-    <div class="hidden sm:block absolute bottom-10 right-10 w-16 h-16 bg-indigo-200 rounded-full opacity-20 animate-pulse" style="animation-delay: 1s;"></div>
 </div>
 
-<style>
-.bg-grid-pattern {
-    background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
-    background-size: 20px 20px;
-}
 
-/* Password toggle functionality */
-</style>
 
 <script>
 function togglePassword() {
-    const passwordField = document.querySelector('input[type="password"]');
-    const toggleIcon = document.querySelector('.fa-eye');
+    const passwordField = document.querySelector('input[name="password"]');
+    const toggleIcon = document.getElementById('passwordToggleIcon');
 
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        toggleIcon.classList.remove('fa-eye');
-        toggleIcon.classList.add('fa-eye-slash');
+    if (passwordField && toggleIcon) {
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+}
+
+// Enhanced form validation and UX
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const loginField = document.querySelector('input[name="login"]');
+    const passwordField = document.querySelector('input[name="password"]');
+    const submitButton = document.querySelector('button[type="submit"]');
+    
+    // Add real-time validation feedback
+    if (loginField) {
+        loginField.addEventListener('input', function() {
+            validateEmail(this);
+        });
+        
+        loginField.addEventListener('blur', function() {
+            validateEmail(this);
+        });
+    }
+    
+    if (passwordField) {
+        passwordField.addEventListener('input', function() {
+            validatePassword(this);
+        });
+    }
+    
+    // Enhanced form submission
+    if (form && submitButton) {
+        form.addEventListener('submit', function(e) {
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing In...';
+            submitButton.disabled = true;
+            
+            // Re-enable button after 10 seconds as fallback
+            setTimeout(() => {
+                if (submitButton.disabled) {
+                    submitButton.innerHTML = originalText;
+                    submitButton.disabled = false;
+                }
+            }, 10000);
+        });
+    }
+});
+
+function validateEmail(field) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const value = field.value.trim();
+    
+    // Remove existing validation classes
+    field.classList.remove('border-red-500', 'border-green-500');
+    
+    if (value && !emailRegex.test(value)) {
+        field.classList.add('border-red-500');
+        showFieldError(field, 'Please enter a valid email address');
+    } else if (value) {
+        field.classList.add('border-green-500');
+        hideFieldError(field);
     } else {
-        passwordField.type = 'password';
-        toggleIcon.classList.remove('fa-eye-slash');
-        toggleIcon.classList.add('fa-eye');
+        hideFieldError(field);
+    }
+}
+
+function validatePassword(field) {
+    const value = field.value;
+    
+    // Remove existing validation classes
+    field.classList.remove('border-red-500', 'border-green-500');
+    
+    if (value.length > 0 && value.length < 6) {
+        field.classList.add('border-red-500');
+        showFieldError(field, 'Password must be at least 6 characters');
+    } else if (value.length >= 6) {
+        field.classList.add('border-green-500');
+        hideFieldError(field);
+    } else {
+        hideFieldError(field);
+    }
+}
+
+function showFieldError(field, message) {
+    hideFieldError(field); // Remove existing error first
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'mt-1 text-sm text-red-600 flex items-center validation-error';
+    errorDiv.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i>${message}`;
+    
+    field.parentNode.appendChild(errorDiv);
+}
+
+function hideFieldError(field) {
+    const existingError = field.parentNode.querySelector('.validation-error');
+    if (existingError) {
+        existingError.remove();
     }
 }
 </script>

@@ -1,0 +1,112 @@
+{
+  "resourcecategory": [
+    {
+      "model": "resources.resourcecategory",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-22T20:50:09.520Z",
+        "updated_at": "2025-07-22T20:50:09.520Z",
+        "name": "University Applications",
+        "description": "Resources for university applications",
+        "icon": "fas fa-graduation-cap",
+        "color": "#3B82F6",
+        "order": 0,
+        "is_active": true
+      }
+    },
+    {
+      "model": "resources.resourcecategory",
+      "pk": 1,
+      "fields": {
+        "created_at": "2025-07-22T15:20:08.757Z",
+        "updated_at": "2025-07-22T15:20:08.757Z",
+        "name": "University Guides",
+        "description": "Comprehensive guides for university applications",
+        "icon": "fas fa-book",
+        "color": "#3B82F6",
+        "order": 1,
+        "is_active": true
+      }
+    }
+  ],
+  "resource": [
+    {
+      "model": "resources.resource",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-22T20:50:09.708Z",
+        "updated_at": "2025-07-22T20:50:09.708Z",
+        "title": "How to Apply to University of the People",
+        "slug": "how-to-apply-to-university-of-the-people",
+        "category": 2,
+        "resource_type": "GUIDE",
+        "description": "Complete guide on applying to University of the People from Ghana",
+        "content": "This comprehensive guide will walk you through the entire application process for University of the People...",
+        "featured_image": "",
+        "video_url": "",
+        "external_url": "",
+        "document_file": "",
+        "tags": "university, application, UoPeople, Ghana",
+        "author": 1,
+        "is_featured": false,
+        "is_published": true,
+        "views_count": 1,
+        "published_at": "2025-07-22T20:50:09.708Z",
+        "meta_title": "How to Apply to University of the People",
+        "meta_description": "Complete guide on applying to University of the People from Ghana"
+      }
+    },
+    {
+      "model": "resources.resource",
+      "pk": 1,
+      "fields": {
+        "created_at": "2025-07-22T15:20:51.330Z",
+        "updated_at": "2025-07-22T15:20:51.330Z",
+        "title": "Complete University Application Guide",
+        "slug": "complete-university-application-guide",
+        "category": 1,
+        "resource_type": "GUIDE",
+        "description": "A comprehensive guide covering everything you need to know about applying to universities in Ghana and abroad.",
+        "content": "This guide covers application requirements, essay writing tips, document preparation, and interview preparation.",
+        "featured_image": "",
+        "video_url": "",
+        "external_url": "",
+        "document_file": "",
+        "tags": "",
+        "author": 1,
+        "is_featured": true,
+        "is_published": true,
+        "views_count": 1,
+        "published_at": "2025-07-22T15:20:51.330Z",
+        "meta_title": "Complete University Application Guide",
+        "meta_description": "A comprehensive guide covering everything you need to know about applying to universities in Ghana and abroad."
+      }
+    }
+  ],
+  "resourceview": [
+    {
+      "model": "resources.resourceview",
+      "pk": 1,
+      "fields": {
+        "created_at": "2025-07-22T20:51:12.498Z",
+        "updated_at": "2025-07-22T20:51:12.498Z",
+        "resource": 2,
+        "user": 3,
+        "ip_address": "127.0.0.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0"
+      }
+    },
+    {
+      "model": "resources.resourceview",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-22T21:05:04.405Z",
+        "updated_at": "2025-07-22T21:05:04.405Z",
+        "resource": 1,
+        "user": 3,
+        "ip_address": "127.0.0.1",
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,348 @@
+{
+  "servicecategory": [
+    {
+      "model": "services.servicecategory",
+      "pk": 8,
+      "fields": {
+        "created_at": "2025-07-22T20:59:27.029Z",
+        "updated_at": "2025-07-22T20:59:27.029Z",
+        "name": "Consultancy",
+        "description": "One-time consultancy services",
+        "icon": "fas fa-user-tie",
+        "order": 0,
+        "is_active": true
+      }
+    },
+    {
+      "model": "services.servicecategory",
+      "pk": 7,
+      "fields": {
+        "created_at": "2025-07-22T20:59:26.872Z",
+        "updated_at": "2025-07-22T20:59:26.872Z",
+        "name": "Digital Training",
+        "description": "Digital literacy training",
+        "icon": "fas fa-laptop",
+        "order": 0,
+        "is_active": true
+      }
+    },
+    {
+      "model": "services.servicecategory",
+      "pk": 6,
+      "fields": {
+        "created_at": "2025-07-22T20:59:26.652Z",
+        "updated_at": "2025-07-22T20:59:26.652Z",
+        "name": "Scholarship Support",
+        "description": "Scholarship application assistance",
+        "icon": "fas fa-award",
+        "order": 0,
+        "is_active": true
+      }
+    },
+    {
+      "model": "services.servicecategory",
+      "pk": 5,
+      "fields": {
+        "created_at": "2025-07-22T20:59:26.432Z",
+        "updated_at": "2025-07-22T20:59:26.432Z",
+        "name": "University Applications",
+        "description": "Help with university applications",
+        "icon": "fas fa-graduation-cap",
+        "order": 0,
+        "is_active": true
+      }
+    },
+    {
+      "model": "services.servicecategory",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-22T15:17:32.753Z",
+        "updated_at": "2025-07-22T15:17:32.753Z",
+        "name": "Digital Literacy",
+        "description": "Digital skills training",
+        "icon": "fas fa-laptop",
+        "order": 2,
+        "is_active": true
+      }
+    },
+    {
+      "model": "services.servicecategory",
+      "pk": 3,
+      "fields": {
+        "created_at": "2025-07-22T15:17:32.845Z",
+        "updated_at": "2025-07-22T15:17:32.845Z",
+        "name": "Scholarship Guidance",
+        "description": "Scholarship search and applications",
+        "icon": "fas fa-award",
+        "order": 3,
+        "is_active": true
+      }
+    }
+  ],
+  "service": [
+    {
+      "model": "services.service",
+      "pk": 7,
+      "fields": {
+        "created_at": "2025-07-22T21:19:55.281Z",
+        "updated_at": "2025-07-22T21:19:55.282Z",
+        "category": 8,
+        "name": "Free Educational Consultation",
+        "description": "Get a free 30-minute consultation to discuss your educational goals and learn about our services.",
+        "short_description": "Free 30-minute educational consultation",
+        "pricing_type": "FREE",
+        "price": null,
+        "admin_price": null,
+        "is_one_time_consultancy": false,
+        "duration": "30 minutes",
+        "icon": "user-tie",
+        "image": "",
+        "features": "Educational goal assessment\nService overview\nPersonalized recommendations\nNext steps planning",
+        "requirements": "",
+        "external_url": "",
+        "opens_in_new_tab": false,
+        "is_featured": false,
+        "is_active": true,
+        "order": 0
+      }
+    },
+    {
+      "model": "services.service",
+      "pk": 6,
+      "fields": {
+        "created_at": "2025-07-22T21:19:55.055Z",
+        "updated_at": "2025-07-22T21:19:55.055Z",
+        "category": 7,
+        "name": "Basic Computer Skills Training",
+        "description": "Learn essential digital skills needed for online education including basic computer operations, internet navigation, and online learning platforms.",
+        "short_description": "Essential computer and internet skills for online education",
+        "pricing_type": "FIXED",
+        "price": "200.00",
+        "admin_price": null,
+        "is_one_time_consultancy": false,
+        "duration": "4 weeks",
+        "icon": "laptop",
+        "image": "",
+        "features": "Basic computer skills\nInternet navigation\nEmail management\nOnline learning platforms\nDigital literacy",
+        "requirements": "",
+        "external_url": "",
+        "opens_in_new_tab": false,
+        "is_featured": true,
+        "is_active": true,
+        "order": 0
+      }
+    },
+    {
+      "model": "services.service",
+      "pk": 5,
+      "fields": {
+        "created_at": "2025-07-22T21:19:54.693Z",
+        "updated_at": "2025-07-22T21:19:54.693Z",
+        "category": 6,
+        "name": "KNUST Scholarship Application",
+        "description": "Expert assistance with KNUST scholarship applications including essay writing, document preparation, and application strategy.",
+        "short_description": "Professional scholarship application support for KNUST",
+        "pricing_type": "FIXED",
+        "price": "150.00",
+        "admin_price": null,
+        "is_one_time_consultancy": false,
+        "duration": "1-2 weeks",
+        "icon": "award",
+        "image": "",
+        "features": "Essay writing support\nApplication review\nDocument preparation\nSubmission guidance",
+        "requirements": "",
+        "external_url": "",
+        "opens_in_new_tab": false,
+        "is_featured": false,
+        "is_active": true,
+        "order": 0
+      }
+    },
+    {
+      "model": "services.service",
+      "pk": 8,
+      "fields": {
+        "created_at": "2025-07-22T21:19:55.462Z",
+        "updated_at": "2025-07-22T21:19:55.462Z",
+        "category": 5,
+        "name": "Custom University Application Package",
+        "description": "Complete university application support included in our one-time consultancy package.",
+        "short_description": "Comprehensive university application support",
+        "pricing_type": "ONE_TIME_CONSULTANCY",
+        "price": null,
+        "admin_price": null,
+        "is_one_time_consultancy": true,
+        "duration": "Varies",
+        "icon": "university",
+        "image": "",
+        "features": "Multiple university applications\nDocument preparation\nInterview coaching\nOngoing support",
+        "requirements": "",
+        "external_url": "",
+        "opens_in_new_tab": false,
+        "is_featured": false,
+        "is_active": true,
+        "order": 0
+      }
+    },
+    {
+      "model": "services.service",
+      "pk": 4,
+      "fields": {
+        "created_at": "2025-07-22T21:19:54.537Z",
+        "updated_at": "2025-07-22T21:19:54.537Z",
+        "category": 5,
+        "name": "University of the People Application Support",
+        "description": "Get comprehensive support for your University of the People application. We help with document preparation, application review, and interview preparation.",
+        "short_description": "Complete application assistance for University of the People",
+        "pricing_type": "ADMIN_SET",
+        "price": null,
+        "admin_price": "300.00",
+        "is_one_time_consultancy": true,
+        "duration": "2-3 weeks",
+        "icon": "graduation-cap",
+        "image": "",
+        "features": "Application review\nDocument preparation\nInterview preparation\nFollow-up support\nAdmission guidance",
+        "requirements": "",
+        "external_url": "",
+        "opens_in_new_tab": false,
+        "is_featured": true,
+        "is_active": true,
+        "order": 0
+      }
+    },
+    {
+      "model": "services.service",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-22T15:19:33.703Z",
+        "updated_at": "2025-07-22T15:19:33.703Z",
+        "category": 2,
+        "name": "Computer Basics Training",
+        "description": "Comprehensive training on basic computer skills including Microsoft Office, internet usage, and email management.",
+        "short_description": "Learn essential computer skills",
+        "pricing_type": "FIXED",
+        "price": "75.00",
+        "admin_price": null,
+        "is_one_time_consultancy": false,
+        "duration": "3 hours",
+        "icon": "",
+        "image": "",
+        "features": "",
+        "requirements": "",
+        "external_url": "",
+        "opens_in_new_tab": false,
+        "is_featured": false,
+        "is_active": true,
+        "order": 0
+      }
+    },
+    {
+      "model": "services.service",
+      "pk": 3,
+      "fields": {
+        "created_at": "2025-07-22T15:19:51.445Z",
+        "updated_at": "2025-07-22T15:19:51.445Z",
+        "category": 3,
+        "name": "Scholarship Search & Application",
+        "description": "Get help finding relevant scholarships and assistance with application processes to increase your chances of success.",
+        "short_description": "Find and apply for scholarships",
+        "pricing_type": "FIXED",
+        "price": "100.00",
+        "admin_price": null,
+        "is_one_time_consultancy": false,
+        "duration": "1.5 hours",
+        "icon": "",
+        "image": "",
+        "features": "",
+        "requirements": "",
+        "external_url": "",
+        "opens_in_new_tab": false,
+        "is_featured": true,
+        "is_active": true,
+        "order": 0
+      }
+    }
+  ],
+  "onetimeconsultancy": [
+    {
+      "model": "services.onetimeconsultancy",
+      "pk": 1,
+      "fields": {
+        "created_at": "2025-07-22T20:59:27.264Z",
+        "updated_at": "2025-07-22T21:02:18.815Z",
+        "name": "Complete Educational Consultancy Package",
+        "description": "Get access to all our educational services with one payment",
+        "price": "500.00",
+        "duration_months": 6,
+        "is_active": true,
+        "features": "University application support\r\nScholarship guidance\r\nDigital training\r\nOngoing consultation\r\nDocument review\r\nInterview preparation\r\nProfessional CV preparation",
+        "included_services": [
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "model": "services.onetimeconsultancy",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-22T21:04:34.328Z",
+        "updated_at": "2025-07-22T21:04:34.328Z",
+        "name": "Complete Educational Consultancy Package",
+        "description": "Get access to all our services with one payment",
+        "price": "900.00",
+        "duration_months": 12,
+        "is_active": true,
+        "features": "University application support\r\nScholarship guidance\r\nDigital training\r\nOngoing consultation\r\nDocument review\r\nInterview preparation\r\nProfessional CV preparation\r\nUS Lottery Registration\r\nGeneral Educational Consultancy",
+        "included_services": [
+          2,
+          3
+        ]
+      }
+    }
+  ],
+  "booking": [
+    {
+      "model": "services.booking",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-25T19:14:12.012Z",
+        "updated_at": "2025-07-25T19:14:12.012Z",
+        "user": 3,
+        "service": 6,
+        "preferred_date": "2025-07-31",
+        "preferred_time": "10:00:00",
+        "message": "",
+        "status": "PENDING",
+        "admin_notes": "",
+        "confirmed_date": null,
+        "completed_date": null,
+        "assigned_to": null,
+        "quoted_price": null,
+        "is_consultancy_booking": false,
+        "consultancy_purchase": null
+      }
+    },
+    {
+      "model": "services.booking",
+      "pk": 1,
+      "fields": {
+        "created_at": "2025-07-25T18:11:21.996Z",
+        "updated_at": "2025-07-25T18:11:21.997Z",
+        "user": 3,
+        "service": 6,
+        "preferred_date": "2025-07-31",
+        "preferred_time": "10:00:00",
+        "message": "",
+        "status": "PENDING",
+        "admin_notes": "",
+        "confirmed_date": null,
+        "completed_date": null,
+        "assigned_to": null,
+        "quoted_price": null,
+        "is_consultancy_booking": false,
+        "consultancy_purchase": null
+      }
+    }
+  ]
+}

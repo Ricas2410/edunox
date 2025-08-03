@@ -98,6 +98,9 @@
                 <button onclick="showTab('social')" id="social-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                     <i class="fas fa-share-alt mr-2"></i>Social Media
                 </button>
+                <button onclick="showTab('backup')" id="backup-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    <i class="fas fa-database mr-2"></i>Backup & Restore
+                </button>
                 <button onclick="showTab('advanced')" id="advanced-tab" class="tab-button border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                     <i class="fas fa-tools mr-2"></i>Advanced
                 </button>
@@ -626,6 +629,140 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Backup & Restore Settings -->
+    <div id="backup-content" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-6">Backup & Restore</h3>
+            
+            <div class="space-y-6">
+                <!-- Backup Section -->
+                <div class="border border-gray-200 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-download text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-900">Create Backup</h4>
+                            <p class="text-sm text-gray-600">Download a complete backup of your site data, settings, and media files</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="includeMedia" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="includeMedia" class="ml-2 text-sm text-gray-700">Include media files</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="compressBackup" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="compressBackup" class="ml-2 text-sm text-gray-700">Compress backup</label>
+                        </div>
+                    </div>
+                    
+                    <button onclick="createBackup()" id="backupBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                        <i class="fas fa-download mr-2"></i>
+                        Create Backup
+                    </button>
+                    
+                    <div id="backupStatus" class="mt-4 hidden">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
+                                <span class="text-blue-800">Creating backup... This may take a few minutes.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Restore Section -->
+                <div class="border border-gray-200 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-upload text-green-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-900">Restore from Backup</h4>
+                            <p class="text-sm text-gray-600">Upload and restore from a previous backup file</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                            <input type="file" id="restoreFile" accept=".zip,.json" class="hidden" onchange="handleRestoreFile(this)">
+                            <div id="dropZone" onclick="document.getElementById('restoreFile').click()" class="cursor-pointer">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-600">Click to select backup file or drag and drop</p>
+                                <p class="text-sm text-gray-500 mt-1">Supports .zip and .json files</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="restoreFileInfo" class="hidden mb-4">
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <i class="fas fa-file-archive text-gray-600 mr-2"></i>
+                                    <span id="fileName" class="text-sm text-gray-700"></span>
+                                </div>
+                                <button onclick="clearRestoreFile()" class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 mr-2 mt-0.5"></i>
+                            <div class="text-sm text-yellow-800">
+                                <strong>Warning:</strong> Restoring from backup will overwrite all current data. This action cannot be undone. Please ensure you have a current backup before proceeding.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="restoreBackup()" id="restoreBtn" disabled class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center disabled:bg-gray-400 disabled:cursor-not-allowed">
+                        <i class="fas fa-upload mr-2"></i>
+                        Restore Backup
+                    </button>
+                    
+                    <div id="restoreStatus" class="mt-4 hidden">
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <div class="flex items-center">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-3"></div>
+                                <span class="text-green-800">Restoring backup... Please do not refresh the page.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Backup History -->
+                <div class="border border-gray-200 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-history text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-900">Recent Backups</h4>
+                                <p class="text-sm text-gray-600">View and manage recent backup files</p>
+                            </div>
+                        </div>
+                        <button onclick="refreshBackupHistory()" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="backupHistory" class="space-y-2">
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-database text-2xl mb-2"></i>
+                            <p>No recent backups found</p>
+                            <p class="text-sm">Create your first backup above</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1290,6 +1427,239 @@ function saveSocialSettings(event) {
     .catch(error => {
         console.error('Error:', error);
         showNotification('Error saving social media settings. Please try again.', 'error');
+    });
+}
+
+// Backup & Restore Functions
+function createBackup() {
+    const backupBtn = document.getElementById('backupBtn');
+    const backupStatus = document.getElementById('backupStatus');
+    const includeMedia = document.getElementById('includeMedia').checked;
+    const compressBackup = document.getElementById('compressBackup').checked;
+    
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+    
+    // Show loading state
+    backupBtn.disabled = true;
+    backupBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating...';
+    backupStatus.classList.remove('hidden');
+    
+    const backupData = {
+        include_media: includeMedia,
+        compress: compressBackup
+    };
+    
+    fetch('/dashboard/api/admin/backup/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(backupData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Backup created successfully!', 'success');
+            refreshBackupHistory();
+        } else {
+            showNotification('Backup failed: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error creating backup: ' + error.message, 'error');
+    })
+    .finally(() => {
+        // Reset button state
+        backupBtn.disabled = false;
+        backupBtn.innerHTML = '<i class="fas fa-download mr-2"></i>Create Backup';
+        backupStatus.classList.add('hidden');
+    });
+}
+
+function handleRestoreFile(input) {
+    const file = input.files[0];
+    const restoreFileInfo = document.getElementById('restoreFileInfo');
+    const fileName = document.getElementById('fileName');
+    const restoreBtn = document.getElementById('restoreBtn');
+    
+    if (file) {
+        fileName.textContent = file.name;
+        restoreFileInfo.classList.remove('hidden');
+        restoreBtn.disabled = false;
+    } else {
+        clearRestoreFile();
+    }
+}
+
+function clearRestoreFile() {
+    const restoreFile = document.getElementById('restoreFile');
+    const restoreFileInfo = document.getElementById('restoreFileInfo');
+    const restoreBtn = document.getElementById('restoreBtn');
+    
+    restoreFile.value = '';
+    restoreFileInfo.classList.add('hidden');
+    restoreBtn.disabled = true;
+}
+
+function restoreBackup() {
+    const restoreFile = document.getElementById('restoreFile');
+    const restoreBtn = document.getElementById('restoreBtn');
+    const restoreStatus = document.getElementById('restoreStatus');
+    
+    if (!restoreFile.files[0]) {
+        showNotification('Please select a backup file first', 'error');
+        return;
+    }
+    
+    // Confirm action
+    if (!confirm('Are you sure you want to restore from this backup? This will overwrite all current data and cannot be undone.')) {
+        return;
+    }
+    
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+    
+    // Show loading state
+    restoreBtn.disabled = true;
+    restoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Restoring...';
+    restoreStatus.classList.remove('hidden');
+    
+    const formData = new FormData();
+    formData.append('backup_file', restoreFile.files[0]);
+    
+    fetch('/dashboard/api/admin/restore/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Backup restored successfully! The page will reload.', 'success');
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            showNotification('Restore failed: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error restoring backup: ' + error.message, 'error');
+    })
+    .finally(() => {
+        // Reset button state
+        restoreBtn.disabled = false;
+        restoreBtn.innerHTML = '<i class="fas fa-upload mr-2"></i>Restore Backup';
+        restoreStatus.classList.add('hidden');
+    });
+}
+
+function refreshBackupHistory() {
+    const backupHistory = document.getElementById('backupHistory');
+    
+    // Show loading state
+    backupHistory.innerHTML = `
+        <div class="text-center py-8 text-gray-500">
+            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+            <p>Loading backup history...</p>
+        </div>
+    `;
+    
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+    
+    fetch('/dashboard/api/admin/backup-history/', {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': csrfToken
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success && data.backups.length > 0) {
+            let historyHtml = '';
+            data.backups.forEach(backup => {
+                historyHtml += `
+                    <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-file-archive text-blue-600 mr-3"></i>
+                            <div>
+                                <p class="font-medium text-gray-900">${backup.name}</p>
+                                <p class="text-sm text-gray-500">${backup.date} • ${backup.size}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="downloadBackup('${backup.path}')" class="text-blue-600 hover:text-blue-800" title="Download">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button onclick="deleteBackup('${backup.path}')" class="text-red-600 hover:text-red-800" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            backupHistory.innerHTML = historyHtml;
+        } else {
+            backupHistory.innerHTML = `
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-database text-2xl mb-2"></i>
+                    <p>No recent backups found</p>
+                    <p class="text-sm">Create your first backup above</p>
+                </div>
+            `;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        backupHistory.innerHTML = `
+            <div class="text-center py-8 text-red-500">
+                <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                <p>Error loading backup history</p>
+                <p class="text-sm">${error.message}</p>
+            </div>
+        `;
+    });
+}
+
+function downloadBackup(backupPath) {
+    window.open(`/dashboard/api/admin/download-backup/?path=${encodeURIComponent(backupPath)}`, '_blank');
+}
+
+function deleteBackup(backupPath) {
+    if (!confirm('Are you sure you want to delete this backup? This action cannot be undone.')) {
+        return;
+    }
+    
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) return;
+    
+    fetch('/dashboard/api/admin/delete-backup/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({ path: backupPath })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification('Backup deleted successfully', 'success');
+            refreshBackupHistory();
+        } else {
+            showNotification('Error deleting backup: ' + data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error deleting backup: ' + error.message, 'error');
     });
 }
 

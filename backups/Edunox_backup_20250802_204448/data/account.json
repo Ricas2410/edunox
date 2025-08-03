@@ -1,0 +1,24 @@
+{
+  "emailaddress": [
+    {
+      "model": "account.emailaddress",
+      "pk": 1,
+      "fields": {
+        "user": 2,
+        "email": "admin@edubridge.com",
+        "verified": false,
+        "primary": false
+      }
+    },
+    {
+      "model": "account.emailaddress",
+      "pk": 2,
+      "fields": {
+        "user": 3,
+        "email": "admin1@mail.com",
+        "verified": false,
+        "primary": false
+      }
+    }
+  ]
+}

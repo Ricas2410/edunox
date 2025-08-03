@@ -35,6 +35,11 @@ class Command(BaseCommand):
             action='store_true',
             help='Show what would be restored without actually doing it',
         )
+        parser.add_argument(
+            '--force',
+            action='store_true',
+            help='Skip confirmation prompts (for API usage)',
+        )
 
     def handle(self, *args, **options):
         backup_path = options['backup_path']
@@ -65,17 +70,18 @@ class Command(BaseCommand):
                 self.show_restore_plan(backup_path)
                 return
             
-            # Confirm restore
-            if not options['clear_existing']:
-                confirm = input('This will add data to your database. Continue? (y/N): ')
-                if confirm.lower() != 'y':
-                    self.stdout.write('Restore cancelled')
-                    return
-            else:
-                confirm = input('WARNING: This will CLEAR ALL EXISTING DATA and restore from backup. Are you sure? (type "yes" to confirm): ')
-                if confirm != 'yes':
-                    self.stdout.write('Restore cancelled')
-                    return
+            # Confirm restore (skip if force flag is used)
+            if not options['force']:
+                if not options['clear_existing']:
+                    confirm = input('This will add data to your database. Continue? (y/N): ')
+                    if confirm.lower() != 'y':
+                        self.stdout.write('Restore cancelled')
+                        return
+                else:
+                    confirm = input('WARNING: This will CLEAR ALL EXISTING DATA and restore from backup. Are you sure? (type "yes" to confirm): ')
+                    if confirm != 'yes':
+                        self.stdout.write('Restore cancelled')
+                        return
             
             # Perform restore
             with transaction.atomic():

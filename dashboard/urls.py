@@ -5,7 +5,8 @@ from .views import (
     AdminDocumentsView, AdminServicesView, AdminConsultancyView, AdminSettingsView,
     AdminUserAPIView, AdminServiceAPIView, AdminUserCreateAPIView, AdminConsultancyAPIView,
     AdminSettingsAPIView, AdminSettingsFileUploadAPIView, AdminEmailTestAPIView,
-    update_profile_picture
+    AdminBackupAPIView, AdminRestoreAPIView, AdminBackupHistoryAPIView, 
+    AdminDownloadBackupAPIView, AdminDeleteBackupAPIView, update_profile_picture
 )
 
 # app_name removed to use explicit namespaces in main urls.py
@@ -36,4 +37,9 @@ urlpatterns = [
     path('api/admin/settings/', AdminSettingsAPIView.as_view(), name='admin_settings_api'),
     path('api/admin/settings/upload/', AdminSettingsFileUploadAPIView.as_view(), name='admin_settings_upload_api'),
     path('api/admin/settings/test-email/', AdminEmailTestAPIView.as_view(), name='admin_email_test_api'),
+    path('api/admin/backup/', AdminBackupAPIView.as_view(), name='admin_backup_api'),
+    path('api/admin/restore/', AdminRestoreAPIView.as_view(), name='admin_restore_api'),
+    path('api/admin/backup-history/', AdminBackupHistoryAPIView.as_view(), name='admin_backup_history_api'),
+    path('api/admin/download-backup/', AdminDownloadBackupAPIView.as_view(), name='admin_download_backup_api'),
+    path('api/admin/delete-backup/', AdminDeleteBackupAPIView.as_view(), name='admin_delete_backup_api'),
 ]

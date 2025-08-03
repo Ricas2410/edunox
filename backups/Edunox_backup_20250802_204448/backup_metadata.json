@@ -1,0 +1,22 @@
+{
+  "backup_date": "2025-08-02T20:44:48.524740",
+  "django_version": "unknown",
+  "database_engine": "django.db.backends.sqlite3",
+  "python_version": "3.12",
+  "backup_version": "1.0",
+  "apps_included": [
+    "rest_framework",
+    "crispy_forms",
+    "crispy_tailwind",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "django_extensions",
+    "core",
+    "accounts",
+    "services",
+    "resources",
+    "dashboard",
+    "contact"
+  ]
+}

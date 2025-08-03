@@ -1,0 +1,177 @@
+{
+  "userprofile": [
+    {
+      "model": "accounts.userprofile",
+      "pk": 1,
+      "fields": {
+        "created_at": "2025-07-22T20:07:40.567Z",
+        "updated_at": "2025-07-22T20:07:40.819Z",
+        "user": 2,
+        "phone_number": "",
+        "date_of_birth": null,
+        "gender": "",
+        "address": "",
+        "city": "",
+        "region": "",
+        "education_level": "",
+        "school_name": "",
+        "graduation_year": null,
+        "bio": "",
+        "profile_picture": "",
+        "is_verified": false,
+        "verification_date": null
+      }
+    },
+    {
+      "model": "accounts.userprofile",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-22T20:17:02.773Z",
+        "updated_at": "2025-08-02T14:09:37.483Z",
+        "user": 3,
+        "phone_number": "0541889697",
+        "date_of_birth": "1995-05-22",
+        "gender": "M",
+        "address": "Madina Ecowas Road",
+        "city": "Accra",
+        "region": "Accra",
+        "education_level": "BACHELOR",
+        "school_name": "OSH",
+        "graduation_year": 2016,
+        "bio": "",
+        "profile_picture": "profile_pictures/Edulink_Logo.png",
+        "is_verified": false,
+        "verification_date": null
+      }
+    },
+    {
+      "model": "accounts.userprofile",
+      "pk": 3,
+      "fields": {
+        "created_at": "2025-07-23T20:20:47.009Z",
+        "updated_at": "2025-07-23T20:20:47.009Z",
+        "user": 4,
+        "phone_number": "",
+        "date_of_birth": null,
+        "gender": "",
+        "address": "",
+        "city": "",
+        "region": "",
+        "education_level": "",
+        "school_name": "",
+        "graduation_year": null,
+        "bio": "",
+        "profile_picture": "",
+        "is_verified": false,
+        "verification_date": null
+      }
+    },
+    {
+      "model": "accounts.userprofile",
+      "pk": 8,
+      "fields": {
+        "created_at": "2025-07-23T22:29:54.147Z",
+        "updated_at": "2025-07-23T22:29:54.555Z",
+        "user": 9,
+        "phone_number": "",
+        "date_of_birth": null,
+        "gender": "",
+        "address": "",
+        "city": "",
+        "region": "",
+        "education_level": "",
+        "school_name": "",
+        "graduation_year": null,
+        "bio": "",
+        "profile_picture": "",
+        "is_verified": false,
+        "verification_date": null
+      }
+    },
+    {
+      "model": "accounts.userprofile",
+      "pk": 9,
+      "fields": {
+        "created_at": "2025-07-24T03:23:20.254Z",
+        "updated_at": "2025-07-24T12:57:39.988Z",
+        "user": 10,
+        "phone_number": "",
+        "date_of_birth": null,
+        "gender": "",
+        "address": "",
+        "city": "",
+        "region": "",
+        "education_level": "",
+        "school_name": "",
+        "graduation_year": null,
+        "bio": "",
+        "profile_picture": "",
+        "is_verified": false,
+        "verification_date": null
+      }
+    }
+  ],
+  "userdocument": [
+    {
+      "model": "accounts.userdocument",
+      "pk": 1,
+      "fields": {
+        "created_at": "2025-07-25T23:16:15.704Z",
+        "updated_at": "2025-07-25T23:16:15.704Z",
+        "user": 3,
+        "document_type": "ID",
+        "title": "Exams manual",
+        "document_file": "user_documents/3/uopeople-final-exam-manual.pdf",
+        "description": "",
+        "is_verified": false,
+        "verified_by": null,
+        "verification_date": null,
+        "verification_notes": ""
+      }
+    }
+  ],
+  "emailverification": [
+    {
+      "model": "accounts.emailverification",
+      "pk": 7,
+      "fields": {
+        "created_at": "2025-07-24T03:23:20.864Z",
+        "updated_at": "2025-07-24T03:23:20.864Z",
+        "user": 10,
+        "token": "88183569-df3f-4e23-9800-42c7407a043f",
+        "email": "asareappiah014@gmail.com",
+        "is_verified": false,
+        "verified_at": null,
+        "expires_at": "2025-07-25T03:23:20.863Z"
+      }
+    },
+    {
+      "model": "accounts.emailverification",
+      "pk": 2,
+      "fields": {
+        "created_at": "2025-07-23T21:46:16.345Z",
+        "updated_at": "2025-07-23T21:46:21.609Z",
+        "user": 4,
+        "token": "90915893-e96b-4c14-b16f-46bd14e8a441",
+        "email": "test@example.com",
+        "is_verified": true,
+        "verified_at": "2025-07-23T21:46:21.609Z",
+        "expires_at": "2025-07-24T21:46:16.344Z"
+      }
+    },
+    {
+      "model": "accounts.emailverification",
+      "pk": 1,
+      "fields": {
+        "created_at": "2025-07-23T20:20:47.330Z",
+        "updated_at": "2025-07-23T20:20:47.330Z",
+        "user": 4,
+        "token": "c5540b59-5a9e-4edb-81b1-4466f280cdf6",
+        "email": "test@example.com",
+        "is_verified": false,
+        "verified_at": null,
+        "expires_at": "2025-07-24T20:20:47.330Z"
+      }
+    }
+  ]
+}
