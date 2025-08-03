@@ -475,7 +475,15 @@ class AdminServiceAPIView(UserPassesTestMixin, View):
             return JsonResponse({'success': False, 'error': str(e)})
 
     def post(self, request, service_id):
-        """Update service"""
+        """Update service (POST method)"""
+        return self._update_service(request, service_id)
+    
+    def put(self, request, service_id):
+        """Update service (PUT method)"""
+        return self._update_service(request, service_id)
+    
+    def _update_service(self, request, service_id):
+        """Common method to handle service updates"""
         try:
             from services.models import Service
             service = get_object_or_404(Service, id=service_id)

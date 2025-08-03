@@ -3,9 +3,12 @@
 
 {% block title %}Services Management - Admin Dashboard{% endblock %}
 
-{% csrf_token %}
-
 {% block content %}
+<!-- CSRF Token for JavaScript -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+<form style="display: none;">
+    {% csrf_token %}
+</form>
 <!-- Include Admin Navigation -->
 {% include 'partials/admin_nav.html' %}
 
@@ -182,13 +185,13 @@
                 </div>
                 
                 <div class="flex space-x-2">
-                    <button type="button" onclick="viewService({{ service.id }})" class="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors">
+                    <button type="button" data-service-id="{{ service.id }}" data-action="view" class="service-action-btn flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors">
                         <i class="fas fa-eye mr-1"></i>View
                     </button>
-                    <button type="button" onclick="editService({{ service.id }})" class="flex-1 bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition-colors">
+                    <button type="button" data-service-id="{{ service.id }}" data-action="edit" class="service-action-btn flex-1 bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition-colors">
                         <i class="fas fa-edit mr-1"></i>Edit
                     </button>
-                    <button type="button" onclick="deleteService({{ service.id }})" class="bg-red-600 text-white px-3 py-2 rounded text-sm hover:bg-red-700 transition-colors">
+                    <button type="button" data-service-id="{{ service.id }}" data-action="delete" class="service-action-btn bg-red-600 text-white px-3 py-2 rounded text-sm hover:bg-red-700 transition-colors">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -431,42 +434,229 @@ function closeEditServiceModal() {
 }
 
 // Handle edit service form submission
-document.getElementById('editServiceForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+document.addEventListener('DOMContentLoaded', function() {
+    const editServiceForm = document.getElementById('editServiceForm');
+    if (editServiceForm) {
+        editServiceForm.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-    if (!currentServiceId) return;
+            if (!currentServiceId) {
+                showNotification('No service selected for editing', 'error');
+                return;
+            }
 
-    const formData = {
-        name: document.getElementById('editServiceName').value,
-        description: document.getElementById('editServiceDescription').value,
-        price: document.getElementById('editServicePrice').value,
-        duration: document.getElementById('editServiceDuration').value,
-        is_active: document.getElementById('editServiceActive').checked
-    };
+            // Show loading state on submit button
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+            submitButton.disabled = true;
 
-    fetch(`/dashboard/api/admin/services/${currentServiceId}/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Service updated successfully!');
-            closeEditServiceModal();
-            location.reload(); // Refresh the page to show updated data
-        } else {
-            alert('Error updating service: ' + data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error updating service');
-    });
+            // Get form elements with enhanced error handling
+            const nameElement = document.getElementById('editServiceName');
+            const descriptionElement = document.getElementById('editServiceDescription');
+            const priceElement = document.getElementById('editServicePrice');
+            const durationElement = document.getElementById('editServiceDuration');
+            const activeElement = document.getElementById('editServiceActive');
+
+            // Validate that all required elements exist
+            if (!nameElement || !descriptionElement || !priceElement || !durationElement || !activeElement) {
+                showNotification('Error: Some form fields are missing. Please refresh the page and try again.', 'error');
+                // Restore button state
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Get values safely
+            const formData = {
+                name: nameElement.value ? nameElement.value.trim() : '',
+                description: descriptionElement.value ? descriptionElement.value.trim() : '',
+                price: priceElement.value ? parseFloat(priceElement.value) : 0,
+                duration: durationElement.value ? durationElement.value.trim() : '',
+                is_active: activeElement.checked || false
+            };
+
+            // Enhanced validation
+            if (!formData.name) {
+                showNotification('Service name is required', 'error');
+                nameElement.focus();
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (!formData.description) {
+                showNotification('Service description is required', 'error');
+                descriptionElement.focus();
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (!formData.price || formData.price <= 0) {
+                showNotification('Valid price is required', 'error');
+                priceElement.focus();
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+            if (!formData.duration) {
+                showNotification('Service duration is required', 'error');
+                durationElement.focus();
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Get CSRF token with multiple fallback methods
+            let csrfToken = null;
+            
+            // Method 1: Look for CSRF token in forms
+            const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (csrfInput) {
+                csrfToken = csrfInput.value;
+            }
+            
+            // Method 2: Look for CSRF token in meta tag
+            if (!csrfToken) {
+                const csrfMeta = document.querySelector('meta[name=csrf-token]');
+                if (csrfMeta) {
+                    csrfToken = csrfMeta.getAttribute('content');
+                }
+            }
+            
+            // Method 3: Look for CSRF token in cookies
+            if (!csrfToken) {
+                const cookieValue = document.cookie
+                    .split('; ')
+                    .find(row => row.startsWith('csrftoken='))
+                    ?.split('=')[1];
+                if (cookieValue) {
+                    csrfToken = cookieValue;
+                }
+            }
+            
+            if (!csrfToken) {
+                showNotification('CSRF token not found. Please refresh the page.', 'error');
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+                return;
+            }
+
+            // Make API call
+            fetch(`/dashboard/api/admin/services/${currentServiceId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`HTTP ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                
+                if (data.success) {
+                    showNotification('Service updated successfully!', 'success');
+                    
+                    // Update the service card in the DOM instead of reloading
+                    updateServiceCard(currentServiceId, formData);
+                    
+                    closeEditServiceModal();
+                } else {
+                    showNotification(`Error updating service: ${data.error || 'Unknown error'}`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                showNotification(`Error updating service: ${error.message}`, 'error');
+            })
+            .finally(() => {
+                // Restore button state
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+            });
+        });
+    }
 });
+
+// Function to update service card in DOM without page reload
+function updateServiceCard(serviceId, formData) {
+    // Find the service card by looking for buttons with the correct data attribute
+    const editButton = document.querySelector(`button[data-service-id="${serviceId}"][data-action="edit"]`);
+    if (!editButton) {
+        console.warn(`Edit button not found for service ${serviceId}`);
+        return;
+    }
+    
+    const serviceCard = editButton.closest('.bg-white');
+    if (!serviceCard) {
+        console.warn(`Service card not found for service ${serviceId}`);
+        return;
+    }
+    
+    // Update service name (h3 element)
+    const nameElement = serviceCard.querySelector('h3');
+    if (nameElement) {
+        nameElement.textContent = formData.name;
+    }
+    
+    // Update service description (p element with text-gray-600 class)
+    const descriptionElement = serviceCard.querySelector('p.text-gray-600');
+    if (descriptionElement) {
+        // Truncate description to match the original template logic
+        const truncatedDescription = formData.description.length > 100 ? 
+            formData.description.substring(0, 97) + '...' : 
+            formData.description;
+        descriptionElement.textContent = truncatedDescription;
+    }
+    
+    // Update price - find the span that contains the price
+    const priceElements = serviceCard.querySelectorAll('.flex.justify-between .font-semibold');
+    priceElements.forEach(element => {
+        if (element.textContent.includes('GH₵') || element.parentElement.previousElementSibling?.textContent.includes('Price:')) {
+            element.textContent = `GH₵${parseFloat(formData.price).toFixed(0)}`;
+        }
+    });
+    
+    // Update duration - find the span in the duration row
+    const durationRows = serviceCard.querySelectorAll('.flex.justify-between');
+    durationRows.forEach(row => {
+        const label = row.querySelector('.text-gray-500');
+        if (label && label.textContent.includes('Duration:')) {
+            const valueSpan = row.querySelector('.text-gray-700');
+            if (valueSpan) {
+                valueSpan.textContent = formData.duration;
+            }
+        }
+    });
+    
+    // Update active status badge
+    const statusBadge = serviceCard.querySelector('.inline-flex.items-center.px-2\\.5.py-0\\.5.rounded-full, .bg-green-100, .bg-red-100');
+    if (statusBadge) {
+        if (formData.is_active) {
+            statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800';
+            statusBadge.textContent = 'Active';
+        } else {
+            statusBadge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800';
+            statusBadge.textContent = 'Inactive';
+        }
+    }
+    
+    // Add a subtle animation to indicate the update
+    serviceCard.style.transition = 'all 0.3s ease';
+    serviceCard.style.transform = 'scale(1.02)';
+    serviceCard.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+    
+    setTimeout(() => {
+        serviceCard.style.transform = 'scale(1)';
+        serviceCard.style.boxShadow = '';
+    }, 300);
+}
 
 // Bookings Modal Functions
 function openBookingsModal(serviceId) {
@@ -569,9 +759,133 @@ function getStatusColor(status) {
 }
 
 function deleteService(serviceId) {
-    if (confirm('Are you sure you want to delete this service?')) {
-        alert('Delete service functionality would be implemented here');
+    // Enhanced confirmation dialog
+    const serviceName = getServiceNameById(serviceId);
+    const confirmMessage = `Are you sure you want to delete the service "${serviceName}"?\n\nThis action cannot be undone and will:\n• Remove the service permanently\n• Cancel any pending bookings\n• Remove all service data\n\nType "DELETE" to confirm:`;
+    
+    const userInput = prompt(confirmMessage);
+    
+    if (userInput === 'DELETE') {
+        // Show loading state
+        const deleteButton = document.querySelector(`button[data-service-id="${serviceId}"][data-action="delete"]`);
+        if (deleteButton) {
+            const originalContent = deleteButton.innerHTML;
+            deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            deleteButton.disabled = true;
+        }
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        // Make API call to delete service
+        fetch(`/dashboard/api/admin/services/${serviceId}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                showNotification(`Service "${serviceName}" deleted successfully!`, 'success');
+                
+                // Remove the service card from the DOM with animation
+                const serviceCard = deleteButton.closest('.bg-white');
+                if (serviceCard) {
+                    serviceCard.style.transition = 'all 0.3s ease';
+                    serviceCard.style.transform = 'scale(0.8)';
+                    serviceCard.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        serviceCard.remove();
+                        
+                        // Check if there are no more services
+                        const remainingServices = document.querySelectorAll('.bg-white.rounded-lg.shadow-lg');
+                        if (remainingServices.length === 0) {
+                            location.reload(); // Reload to show empty state
+                        }
+                    }, 300);
+                }
+            } else {
+                showNotification(`Error deleting service: ${data.error || 'Unknown error'}`, 'error');
+                
+                // Restore button state
+                if (deleteButton) {
+                    deleteButton.innerHTML = originalContent;
+                    deleteButton.disabled = false;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification(`Error deleting service: ${error.message}`, 'error');
+            
+            // Restore button state
+            if (deleteButton) {
+                deleteButton.innerHTML = originalContent;
+                deleteButton.disabled = false;
+            }
+        });
+    } else if (userInput !== null) {
+        // User typed something other than "DELETE"
+        alert('Deletion cancelled. You must type "DELETE" exactly to confirm.');
     }
+    // If userInput is null, user clicked cancel - do nothing
+}
+
+// Helper function to get service name by ID
+function getServiceNameById(serviceId) {
+    const serviceCard = document.querySelector(`button[data-service-id="${serviceId}"][data-action="delete"]`)?.closest('.bg-white');
+    const serviceNameElement = serviceCard?.querySelector('h3');
+    return serviceNameElement?.textContent || 'this service';
+}
+
+// Notification function (if not already defined)
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white transition-all duration-300 transform translate-x-full`;
+    
+    // Set color based on type
+    switch(type) {
+        case 'success':
+            notification.className += ' bg-green-500';
+            break;
+        case 'error':
+            notification.className += ' bg-red-500';
+            break;
+        case 'warning':
+            notification.className += ' bg-yellow-500';
+            break;
+        default:
+            notification.className += ' bg-blue-500';
+    }
+    
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : type === 'warning' ? 'exclamation' : 'info'}-circle mr-2"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 5000);
 }
 
 function closeServiceModal() {
@@ -590,6 +904,27 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Filter changed:', this.value);
         });
     });
+});
+
+// Service action button event delegation
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.service-action-btn')) {
+        const button = e.target.closest('.service-action-btn');
+        const serviceId = parseInt(button.getAttribute('data-service-id'));
+        const action = button.getAttribute('data-action');
+        
+        switch(action) {
+            case 'view':
+                viewService(serviceId);
+                break;
+            case 'edit':
+                editService(serviceId);
+                break;
+            case 'delete':
+                deleteService(serviceId);
+                break;
+        }
+    }
 });
 
 // Close modal when clicking outside
